@@ -1,0 +1,96 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # -------------------------
+  # Platform Builds
+  # -------------------------
+  build-macOS:
+    name: Build macOS
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      platform: macOS
+      swift-versions: '["5.10", "6.0", "6.1", "6.2"]'
+
+  build-iOS:
+    name: Build iOS
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      platform: iOS
+      swift-versions: '["6.2"]'
+
+  build-watchOS:
+    name: Build watchOS
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      platform: watchOS
+      swift-versions: '["6.2"]'
+
+  build-tvOS:
+    name: Build tvOS
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      platform: tvOS
+      swift-versions: '["6.2"]'
+
+  build-visionOS:
+    name: Build visionOS
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      platform: visionOS
+      swift-versions: '["6.2"]'
+
+  # -------------------------
+  # Testing
+  # -------------------------
+  test:
+    name: Test
+    runs-on: macos-14
+    needs: [build-macOS, build-iOS, build-watchOS, build-tvOS, build-visionOS]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Swift 6.2
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: '6.2'
+
+      - name: Cache Swift Package Manager
+        uses: actions/cache@v4
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-test-6.2-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-test-6.2-
+            ${{ runner.os }}-spm-
+
+      - name: Run Tests
+        run: swift test --enable-code-coverage
+
+      # --- Coverage Reporting (Non-blocking) ---
+
+      - name: Generate Coverage Report (LCOV)
+        continue-on-error: true
+        run: |
+          PACKAGE_NAME=$(swift package describe --type json | jq -r '.name')
+          SWIFT_PATH=$(which swift)
+          TOOLCHAIN_PATH=$(dirname $(dirname $SWIFT_PATH))
+          $TOOLCHAIN_PATH/bin/llvm-cov export \
+            -instr-profile .build/arm64-apple-macosx/debug/codecov/default.profdata \
+            .build/arm64-apple-macosx/debug/${PACKAGE_NAME}PackageTests.xctest/Contents/MacOS/${PACKAGE_NAME}PackageTests \
+            -format="lcov" > coverage.lcov
+
+      - name: Upload to Codecov
+        continue-on-error: true
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage.lcov
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
