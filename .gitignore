@@ -1,0 +1,7 @@
+# Ignore a specific file
+
+.DS_Store
+
+.swiftpm/xcode/package.xcworkspace/xcuserdata/albertodominguez.xcuserdatad/UserInterfaceState.xcuserstate
+
+.swiftpm/xcode/xcuserdata/albertodominguez.xcuserdatad/xcschemes/xcschememanagement.plist
