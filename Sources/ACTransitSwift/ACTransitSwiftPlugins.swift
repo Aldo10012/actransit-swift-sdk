@@ -1,16 +1,16 @@
 import Foundation
 
-@MainActor
-public struct ACTransitSwiftPlugins {
-    private(set) static var apiToken: String?
+public struct ACTSwiftPlugins {
+    nonisolated(unsafe) private(set) static var apiToken: String = ""
+    internal static let apiBaseURL: String = "https://api.actransit.org/transit"
 
     private init() {}
 
     public static func install(token: String) {
-        ACTransitSwiftPlugins.apiToken = token
+        ACTSwiftPlugins.apiToken = token
     }
 
     static func cleanup() {
-        ACTransitSwiftPlugins.apiToken = nil
+        ACTSwiftPlugins.apiToken = ""
     }
 }

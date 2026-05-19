@@ -4,16 +4,16 @@ import Testing
 @Suite("Test ACTransitSwiftPlugins")
 struct ACTransitSwiftPluginsTests {
     @Test("test installing api token")
-    func installingAPIToken() async throws {
-        let apiTokenWithoutInstall = await ACTransitSwiftPlugins.apiToken
-        #expect(apiTokenWithoutInstall == nil)
+    func installingAPIToken() {
+        let apiTokenWithoutInstall = ACTSwiftPlugins.apiToken
+        #expect(apiTokenWithoutInstall == "")
 
-        await ACTransitSwiftPlugins.install(token: "my_api_token")
-        let apiTokenWithInstall = await ACTransitSwiftPlugins.apiToken
+        ACTSwiftPlugins.install(token: "my_api_token")
+        let apiTokenWithInstall = ACTSwiftPlugins.apiToken
         #expect(apiTokenWithInstall == "my_api_token")
 
-        await ACTransitSwiftPlugins.cleanup()
-        let apiTokenAfterCleanup = await ACTransitSwiftPlugins.apiToken
-        #expect(apiTokenAfterCleanup == nil)
+        ACTSwiftPlugins.cleanup()
+        let apiTokenAfterCleanup = ACTSwiftPlugins.apiToken
+        #expect(apiTokenAfterCleanup == "")
     }
 }
