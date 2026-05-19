@@ -1,6 +1,7 @@
 # Ignore a specific file
 
 .DS_Store
+.build/
 
 .swiftpm/xcode/package.xcworkspace/xcuserdata/albertodominguez.xcuserdatad/UserInterfaceState.xcuserstate
 
