@@ -96,7 +96,7 @@ Returns stops within a radius of the given coordinates (optional params as query
 
 Returns arrival/departure predictions for a given stop.
 
-> **Note:** The official documentation detail page for this endpoint returned HTTP 500 during retrieval. Based on other prediction endpoints in this API, the response likely mirrors the structure described under `/actrealtime/prediction` or returns a simplified array of prediction objects with fields such as `VehicleId`, `RouteId`, `Direction`, `PredictedMinutes`, and `ScheduledTime`.
+> **Note:** The live documentation page for this endpoint returns HTTP 500. The endpoint exists in the API index but its detail page is inaccessible. Based on other prediction endpoints, the response likely mirrors `/actrealtime/prediction` or returns simplified prediction objects.
 
 **Path Parameters**
 
@@ -115,6 +115,8 @@ Returns arrival/departure predictions for a given stop.
 ## `GET /stops/{stopId}/routes`
 
 Returns all transit routes that serve a specific stop.
+
+> **Note:** The live API index describes this endpoint as "Retrieve vehicle predictions for a particular stop" — this appears to be a documentation error. The endpoint name, parameter description ("The stop whose intersecting routes should be retrieved"), and response (array of route ID strings) all confirm it returns routes, not predictions.
 
 **Path Parameters**
 
@@ -169,11 +171,16 @@ Returns all trips that travel to a given stop today.
 | TripStartTime | datetime | Scheduled trip start |
 | TripId | integer | Trip identifier |
 | TripNumber | integer | Public trip number |
-| PassingTime | datetime | Scheduled passing time at this stop |
+| TripNumber2 | integer | Secondary trip number |
+| PositionNumber | integer | Vehicle position number |
 | StopId | integer | Stop identifier |
 | StopDescription | string | Stop description |
-| StopLatitude | decimal | Stop latitude |
+| PassingTime | datetime | Scheduled passing time at this stop |
+| StopNumber1 | integer | Stop number (format 1) |
+| StopNumber2 | string | Stop number (format 2) |
+| PlaceId | string | Place identifier |
 | StopLongitude | decimal | Stop longitude |
+| StopLatitude | decimal | Stop latitude |
 
 ---
 

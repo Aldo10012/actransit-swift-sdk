@@ -108,13 +108,41 @@ Returns trips with operator driving instructions for a given route.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| TimePoints | collection | Driving instructions at each time point |
+| TimePoints | Collection of TimePointInstruction | Driving instructions at each time point |
 | InstructionsText | string | Operator driving instructions as plain text |
 | TripId | integer | Trip identifier |
 | RouteName | string | Route name |
 | ScheduleType | TripScheduleType | Schedule type |
 | StartTime | datetime | Scheduled start time |
 | Direction | string | Trip direction |
+
+**TimePointInstruction fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| Instruction | string | Driving instruction text |
+| TripId | integer | Trip identifier |
+| Sequence | integer | Order along the route path |
+| Latitude | decimal | Geographic latitude |
+| Longitude | decimal | Geographic longitude |
+
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "TimePoints": [
+      { "Instruction": "sample string 1", "TripId": 2, "Sequence": 3, "Latitude": 1.0, "Longitude": 1.0 }
+    ],
+    "InstructionsText": "sample string 1",
+    "TripId": 2,
+    "RouteName": "sample string 3",
+    "ScheduleType": 0,
+    "StartTime": "2026-05-18T...",
+    "Direction": "sample string 5"
+  }
+]
+```
 
 ---
 
@@ -402,20 +430,26 @@ Returns all scheduled trips operating on specified routes today, with stop-level
 | ScheduleType | string | Schedule classification |
 | Headsign | string | Sign text shown on vehicle |
 | Destination | string | Trip destination |
+| Destination2 | string | Secondary destination |
 | TripStartTime | datetime | Scheduled trip start |
-| PassingTime | datetime | Scheduled time at this stop |
 | TripId | integer | Trip identifier |
+| TripNumber | integer | Public trip number |
+| TripNumber2 | integer | Secondary trip number |
+| PositionNumber | integer | Vehicle position number |
 | StopId | integer | Stop identifier |
 | StopDescription | string | Stop description |
-| StopLatitude | decimal | Stop latitude |
-| StopLongitude | decimal | Stop longitude |
+| PassingTime | datetime | Scheduled time at this stop |
+| StopNumber1 | integer | Stop number (format 1) |
+| StopNumber2 | string | Stop number (format 2) |
 | PlaceId | string | Place identifier |
+| StopLongitude | decimal | Stop longitude |
+| StopLatitude | decimal | Stop latitude |
 
 ---
 
 ## `GET /route/{routes}/tripstops`
 
-Returns all stops and trips for specified routes for today. Similar to `/tripstoday` but includes additional internal trip/stop fields.
+Returns all stops and trips for specified routes for today. Returns the same TripStopToday model as `/tripstoday`.
 
 **Path Parameters**
 
@@ -430,17 +464,7 @@ Returns all stops and trips for specified routes for today. Similar to `/tripsto
 | direction | string | No | Filter by direction or destination (comma-delimited) |
 | token | string | Yes | API authentication token |
 
-**Response Body** — Array of TripStopToday objects (superset of `/tripstoday` fields)
-
-| Additional Fields | Type | Description |
-|---|---|---|
-| Destination2 | string | Secondary destination |
-| TripNumber | integer | Public trip number |
-| TripNumber2 | integer | Secondary trip number |
-| PositionNumber | integer | Vehicle position number |
-| InternalTripNumber | integer | Internal system trip number |
-| StopNumber1 | integer | Stop number (format 1) |
-| StopNumber2 | string | Stop number (format 2) |
+**Response Body** — Array of TripStopToday objects (same schema as `/tripstoday`)
 
 ---
 

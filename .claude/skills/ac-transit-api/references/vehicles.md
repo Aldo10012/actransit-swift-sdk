@@ -118,22 +118,22 @@ Returns real-time position and passenger occupancy data for one or more vehicles
 
 ## `GET /vehicle/{vehicleId}/realtimeattributes`
 
-Returns real-time attributes for a specific vehicle on a specific route.
+Returns real-time attributes for a specific vehicle, optionally filtered by route.
 
 **Path Parameters**
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | vehicleId | string | Yes | Vehicle (bus) number |
-| routename | string | Yes | Route name |
 
 **Query Parameters**
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
+| routename | string | No | Route name filter |
 | token | string | Yes | API authentication token |
 
-**Response Body** — Same structure as `GET /vehicle/realtimeattributes` (single VehicleRealtimeAttributes object).
+**Response Body** — Single VehicleRealtimeAttributes object (same fields as `GET /vehicle/realtimeattributes`).
 
 ---
 
