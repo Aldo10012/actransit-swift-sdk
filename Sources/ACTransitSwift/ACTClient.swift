@@ -15,4 +15,8 @@ public class ACTClient {
     public func getGtfs() async throws -> GtfsScheduleInfo {
         try await performer.perform(request: ACTEndpoint.gtfs.getRequest(), decodeTo: GtfsScheduleInfo.self)
     }
+
+    public func getGtfsAll() async throws -> [GtfsInfo] {
+        try await performer.perform(request: ACTEndpoint.gtfsAll.getRequest(), decodeTo: [GtfsInfo].self)
+    }
 }

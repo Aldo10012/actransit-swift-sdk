@@ -37,7 +37,7 @@ For fields that can be `null` in the JSON, always use optionals. For fields that
 
 Implement custom `init(from:)` / `encode(to:)` when the default synthesis can't handle the shape:
 
-- **Date fields**: use `ISO8601DateFormatter` or a custom `DateFormatter`; store as `Date`, not `String`
+- **Date fields**: use `ISO8601DateFormatter` or a custom `DateFormatter`; store as `Date`, not `String`. Declare static formatter instances as `nonisolated(unsafe) private static let` — `ISO8601DateFormatter` and `DateFormatter` are not `Sendable`, so Swift 6 strict concurrency requires this to avoid a compile error on static stored properties.
 - **URL fields**: decode as `URL` with graceful fallback
 - **Enum string mapping**: write a `RawRepresentable` enum with `String` raw values and `unknownCase` fallback
 - **Malformed values**: use `decodeIfPresent` + nil coalescing rather than crashing

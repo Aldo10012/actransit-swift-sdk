@@ -3,12 +3,14 @@ import Foundation
 
 public enum ACTEndpoint {
     case gtfs
+    case gtfsAll
 }
 
 extension ACTEndpoint {
     var path: String {
         return switch self {
         case .gtfs: "/gtfs"
+        case .gtfsAll: "/gtfs/all"
         }
     }
 
@@ -19,6 +21,8 @@ extension ACTEndpoint {
 
         return switch self {
         case .gtfs:
+            factory.build(httpMethod: .GET, baseUrlString: url, parameters: [apiTokenQueryParameter])
+        case .gtfsAll:
             factory.build(httpMethod: .GET, baseUrlString: url, parameters: [apiTokenQueryParameter])
         }
     }

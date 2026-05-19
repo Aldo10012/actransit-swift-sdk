@@ -37,4 +37,15 @@ final class ACTEndpointTests {
         #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
     }
 
+    @Test("test ACTEndpoint.gtfsAll")
+    func gtfsAll() {
+        let endpoint = ACTEndpoint.gtfsAll
+        let request = endpoint.getRequest()
+
+        #expect(endpoint.path == "/gtfs/all")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/gtfs/all")
+        #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
+    }
+
 }

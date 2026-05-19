@@ -129,11 +129,11 @@ public func getGtfsBooking(bookingId: String) async throws -> GtfsScheduleInfo {
 }
 ```
 
-## Step 8 — Write tests
+## Step 8 — Write model tests
 
-File: `Tests/ACTransitSwiftTests/{ModelName}Tests.swift`
+File: `Tests/ACTransitSwiftTests/Models/{ModelName}Tests.swift`
 
-Use the Swift Testing framework (`import Testing`, `@Suite`, `@Test`, `#expect`). Follow the same structure as `ACTEndpointTests.swift` and `GtfsScheduleInfoTests.swift`.
+Use the Swift Testing framework (`import Testing`, `@Suite`, `@Test`, `#expect`). Follow the same structure as `GtfsScheduleInfoTests.swift`.
 
 Cover:
 
@@ -145,13 +145,48 @@ Cover:
 6. **Mock data** — `sample` data is self-consistent (e.g. end date > start date)
 7. **`make()` factory** — overriding one argument leaves the others at their defaults
 
-## Step 9 — Confirm completion
+## Step 9 — Update ACTEndpointTests
+
+File: `Tests/ACTransitSwiftTests/ACTEndpointTests.swift`
+
+Add a `@Test` for the new endpoint case following the same pattern as the existing `gtfs()` test:
+
+```swift
+@Test("test ACTEndpoint.gtfsAll")
+func gtfsAll() {
+    let endpoint = ACTEndpoint.gtfsAll
+    let request = endpoint.getRequest()
+
+    #expect(endpoint.path == "/gtfs/all")
+    #expect(request.httpMethod == .GET)
+    #expect(request.baseUrl == "https://api.actransit.org/transit/gtfs/all")
+    #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
+}
+```
+
+For parameterized endpoints, pass a representative value to the case and verify the path contains it:
+
+```swift
+@Test("test ACTEndpoint.gtfsBooking")
+func gtfsBooking() {
+    let endpoint = ACTEndpoint.gtfsBooking(bookingId: "25FASU")
+    let request = endpoint.getRequest()
+
+    #expect(endpoint.path == "/gtfs/25FASU")
+    #expect(request.httpMethod == .GET)
+    #expect(request.baseUrl == "https://api.actransit.org/transit/gtfs/25FASU")
+    #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
+}
+```
+
+## Step 10 — Confirm completion
 
 Report what was created/updated:
 - Reference file updated? (yes/no, what changed)
 - Model file path
 - Endpoint case added
 - Client method added
-- Test file path
+- Model test file path
+- `ACTEndpointTests` updated? (yes/no)
 
 If the endpoint was binary, explain why it was skipped and what would be needed to support it.

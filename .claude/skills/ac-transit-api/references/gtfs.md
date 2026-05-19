@@ -40,7 +40,18 @@ Returns schedule metadata for all bookings (current, past, and future).
 |------|------|----------|-------------|
 | token | string | Yes | API authentication token |
 
-**Response Body** — Array of schedule objects
+**Response Body** — `[GtfsInfo]` — Array of schedule objects
+
+```json
+[
+  {
+    "BookingId": "sample string 1",
+    "UpdatedDate": "2026-05-18T16:48:54.3989122-07:00",
+    "EarliestServiceDate": "2026-05-18T16:48:54.3989122-07:00",
+    "LatestServiceDate": "2026-05-18T16:48:54.3989122-07:00"
+  }
+]
+```
 
 | Field | Type | Description |
 |-------|------|-------------|
