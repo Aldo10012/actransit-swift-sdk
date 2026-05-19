@@ -72,6 +72,13 @@ Invoke the `swift-struct-generator` skill with:
 - The instruction that all types must be `public`, `Codable`, and `Sendable`
 - Note any date fields (ISO 8601 with potential 7 fractional-second digits) so the generator handles them with a custom decoder
 
+Above the struct declaration, add a `///` doc comment with the API doc URL:
+
+```swift
+/// https://api.actransit.org/transit/Help/Api/GET-gtfs-all
+public struct GtfsInfo: Codable, Sendable {
+```
+
 Write the generated file to:
 ```
 Sources/ACTransitSwift/Models/{ModelName}.swift
@@ -83,8 +90,11 @@ File: `Sources/ACTransitSwift/ACTEndpoint.swift`
 
 Add the new case to the `ACTEndpoint` enum and extend both switch statements:
 
+Above each new case, add a `///` doc comment with the API doc URL:
+
 **Standard (no path params):**
 ```swift
+/// https://api.actransit.org/transit/Help/Api/GET-gtfs-all
 case gtfsAll
 
 // path switch:
@@ -97,6 +107,7 @@ case .gtfsAll:
 
 **Parameterized:**
 ```swift
+/// https://api.actransit.org/transit/Help/Api/GET-gtfs-by-param
 case gtfsBooking(bookingId: String)
 
 // path switch:

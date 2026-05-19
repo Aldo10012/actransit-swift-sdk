@@ -2,7 +2,9 @@ import EZNetworking
 import Foundation
 
 public enum ACTEndpoint {
+    // https://api.actransit.org/transit/Help/Api/GET-gtfs
     case gtfs
+    // https://api.actransit.org/transit/Help/Api/GET-gtfs-all
     case gtfsAll
 }
 

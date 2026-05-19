@@ -1,5 +1,6 @@
 import Foundation
 
+/// https://api.actransit.org/transit/Help/ResourceModel?modelName=GtfsInfo
 public struct GtfsInfo: Codable, Sendable {
     /// Booking ID
     public let bookingId: String

@@ -1,5 +1,6 @@
 import Foundation
 
+/// https://api.actransit.org/transit/Help/ResourceModel?modelName=GtfsScheduleInfo
 public struct GtfsScheduleInfo: Codable, Sendable {
     /// The date the GTFS cchedule data was last updated.
     public let updatedDate: Date
