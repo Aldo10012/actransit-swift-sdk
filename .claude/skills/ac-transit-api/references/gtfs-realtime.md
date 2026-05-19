@@ -1,17 +1,46 @@
-# GtfsRealTime — GTFS-RT Protobuf Feeds
+# GtfsRealTime — GTFS-RT Feeds (Protocol Buffer)
 
-> All endpoints return **binary Protocol Buffer data**, not JSON.
+> **All three endpoints return binary Protocol Buffer data, not JSON.**
 > Use a GTFS-RT parser library to decode responses.
 
+---
+
 ## `GET /gtfsrt/tripupdates`
-GTFS-Realtime trip updates feed (TripUpdates entity).
+
+Returns the GTFS-Realtime trip updates feed, serialized in Protocol Buffer format.
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| token | string | Yes | API authentication token |
+
+**Response** — `HttpResponseMessage` containing Protocol Buffer binary data (GTFS-RT TripUpdates feed entity).
 
 ---
 
 ## `GET /gtfsrt/alerts`
-GTFS-Realtime service alerts feed (Alerts entity).
+
+Returns the GTFS-Realtime service alerts feed, serialized in Protocol Buffer format.
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| token | string | Yes | API authentication token |
+
+**Response** — `HttpResponseMessage` containing Protocol Buffer binary data (GTFS-RT Alerts feed entity).
 
 ---
 
 ## `GET /gtfsrt/vehicles`
-GTFS-Realtime vehicle positions feed (VehiclePositions entity).
+
+Returns the GTFS-Realtime vehicle positions feed, serialized in Protocol Buffer format.
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| token | string | Yes | API authentication token |
+
+**Response** — `HttpResponseMessage` containing Protocol Buffer binary data (GTFS-RT VehiclePositions feed entity).

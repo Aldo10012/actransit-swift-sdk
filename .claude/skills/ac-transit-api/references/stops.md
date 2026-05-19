@@ -1,84 +1,213 @@
-# Stops — Lookup, Proximity Search, Predictions, Profiles
-
-Stop object shape (used across multiple endpoints):
-`{ StopId, Name, Latitude, Longitude, City, ScheduledTime }` — date portion of `ScheduledTime` is irrelevant; use only the time component.
+# Stops — Lookup, Proximity Search, Predictions, and Profiles
 
 ---
 
 ## `GET /stops`
-All currently active AC Transit stops.
 
-**Response:** Array of Stop objects.
+Returns all currently active AC Transit stops.
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| token | string | Yes | API authentication token |
+
+**Response Body** — Array of Stop objects
+
+| Field | Type | Description |
+|-------|------|-------------|
+| StopId | integer | Unique stop identifier |
+| Name | string | Stop name |
+| Latitude | decimal | Geographic latitude |
+| Longitude | decimal | Geographic longitude |
+| City | string | City name |
+| ScheduledTime | datetime | Scheduled departure time (date portion is irrelevant; use only the time component) |
 
 ---
 
 ## `GET /stops/summary`
-Stop count and last-updated timestamp.
 
-**Response:** `{ Count, LastUpdatedDateTime }`
+Returns a summary count and last-updated timestamp for active stops.
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| token | string | Yes | API authentication token |
+
+**Response Body**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| Count | integer | Number of stops in the current list |
+| LastUpdatedDateTime | datetime | Last date/time stop information was changed |
 
 ---
 
 ## `GET /stops/{latitude}/{longitude}/{distance}/{active}/{routeName}`
-Proximity search — all parameters in path.
 
-**Path params:**
-- `latitude`, `longitude` — search center
-- `distance` — radius in feet (default 500, max 25,000)
-- `active` — include inactive stops (default false)
-- `routeName` — filter to a specific route (optional)
+Returns stops within a radius of the given coordinates (all parameters in path).
 
-**Response:** Array of Stop objects ordered nearest to farthest.
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| latitude | decimal | Yes | Search center latitude |
+| longitude | decimal | Yes | Search center longitude |
+| distance | decimal | No | Search radius in feet; default 500, max 25,000 |
+| active | boolean | No | Include inactive stops; default false |
+| routeName | string | No | Filter to a specific route |
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| token | string | Yes | API authentication token |
+
+**Response Body** — Array of Stop objects (same fields as `GET /stops`), ordered by distance from search point nearest to farthest.
 
 ---
 
 ## `GET /stops/{latitude}/{longitude}`
-Proximity search — optional params as query string.
 
-**Path params:** `latitude`, `longitude`
-**Query params:** `distance`, `active`, `routeName`, `token`
+Returns stops within a radius of the given coordinates (optional params as query string).
 
-**Response:** Array of Stop objects ordered nearest to farthest.
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| latitude | decimal | Yes | Search center latitude |
+| longitude | decimal | Yes | Search center longitude |
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| distance | decimal | No | Search radius in feet; default 500, max 25,000 |
+| active | boolean | No | Include inactive stops; default false |
+| routeName | string | No | Filter to a specific route |
+| token | string | Yes | API authentication token |
+
+**Response Body** — Array of Stop objects (same fields as `GET /stops`), ordered by distance nearest to farthest.
 
 ---
 
 ## `GET /stops/{stopId}/predictions`
-Arrival/departure predictions for a stop.
 
-> ⚠️ The official docs returned HTTP 500 for this endpoint. Response likely mirrors `/actrealtime/prediction` or returns `{ VehicleId, RouteId, Direction, PredictedMinutes, ScheduledTime }`.
+Returns arrival/departure predictions for a given stop.
+
+> **Note:** The official documentation detail page for this endpoint returned HTTP 500 during retrieval. Based on other prediction endpoints in this API, the response likely mirrors the structure described under `/actrealtime/prediction` or returns a simplified array of prediction objects with fields such as `VehicleId`, `RouteId`, `Direction`, `PredictedMinutes`, and `ScheduledTime`.
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| stopId | integer | Yes | Stop identifier |
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| token | string | Yes | API authentication token |
 
 ---
 
 ## `GET /stops/{stopId}/routes`
-All routes serving a specific stop.
 
-**Query params:** `callback` (JSONP), `token`
+Returns all transit routes that serve a specific stop.
 
-**Response:** Array of route identifier strings e.g. `["72", "72R", "88"]`
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| stopId | integer | Yes | Stop identifier |
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| callback | string | No | JSONP callback function name |
+| token | string | Yes | API authentication token |
+
+**Response Body** — Array of strings (route identifiers)
+
+```json
+["72", "72R", "88"]
+```
 
 ---
 
 ## `GET /stops/{stopId}/tripstoday`
-All trips that travel to a stop today.
 
-**Query params:** `routes` (comma-delimited filter), `direction` (comma-delimited filter), `token`
+Returns all trips that travel to a given stop today.
 
-**Response:** Array of TripStopToday objects
-`{ RouteId, DirectionId, Direction, ScheduleType, Headsign, Destination, Destination2, TripStartTime, TripId, TripNumber, PassingTime, StopId, StopDescription, StopLatitude, StopLongitude }`
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| stopId | integer | Yes | Stop identifier |
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| routes | string | No | Filter by comma-delimited route list |
+| direction | string | No | Filter by comma-delimited direction/destination list |
+| token | string | Yes | API authentication token |
+
+**Response Body** — Array of TripStopToday objects
+
+| Field | Type | Description |
+|-------|------|-------------|
+| RouteId | string | Route identifier |
+| DirectionId | integer | Numeric direction code |
+| Direction | string | Direction string |
+| ScheduleType | string | Schedule classification |
+| Headsign | string | Vehicle sign text |
+| Destination | string | Trip destination |
+| Destination2 | string | Secondary destination |
+| TripStartTime | datetime | Scheduled trip start |
+| TripId | integer | Trip identifier |
+| TripNumber | integer | Public trip number |
+| PassingTime | datetime | Scheduled passing time at this stop |
+| StopId | integer | Stop identifier |
+| StopDescription | string | Stop description |
+| StopLatitude | decimal | Stop latitude |
+| StopLongitude | decimal | Stop longitude |
 
 ---
 
 ## `GET /stop/{stopId}/destinations`
-All routes and destinations at a stop, including final passing times.
 
-**Response:**
+Returns all routes and destinations available at a given stop, including final passing times.
+
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| stopId | integer | Yes | Stop identifier |
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| token | string | Yes | API authentication token |
+
+**Response Body**
+
 ```json
 {
   "StopId": 1234,
   "Status": "string",
   "RouteDestinations": [
-    { "RouteId": "string", "DirectionId": 1, "Direction": "string",
-      "Destination": "string", "FinalPassingTime": "2026-05-18T22:00:00", "Status": "string" }
+    {
+      "RouteId": "string",
+      "DirectionId": 1,
+      "Direction": "string",
+      "Destination": "string",
+      "FinalPassingTime": "2026-05-18T22:00:00",
+      "Status": "string"
+    }
   ]
 }
 ```
@@ -86,16 +215,41 @@ All routes and destinations at a stop, including final passing times.
 ---
 
 ## `GET /stop/{stopId}/profile`
-Comprehensive stop profile including location, service status, and amenity links.
 
-**Path params:** `stopId` — uses 511's unique stop identifier
+Returns comprehensive profile information for a stop, including location, service status, amenities links, and schedule URLs.
 
-**Response:**
-`{ StopId, Street, City, SiteDirection, Site, Corner, IsInService, Latitude, Longitude, Routes, AllowAlighting, AllowBoarding, PlaceId, PlaceDescription }`
+**Path Parameters**
 
-Plus linked resource objects (each contains a `Url` string):
-- `StopServiceAlerts` — link to service alerts
-- `Amenities` — link to amenities info
-- `Predictions` — link to real-time predictions
-- `Map` — link to stop map
-- `Schedules` — array of `{ RouteId, Url }` per route
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| stopId | integer | Yes | 511's unique stop identifier |
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| token | string | Yes | API authentication token |
+
+**Response Body**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| StopId | integer | Stop identifier |
+| Street | string | Street address |
+| City | string | City name |
+| SiteDirection | string | Directional placement (e.g., NW corner) |
+| Site | string | Site description |
+| Corner | string | Corner description |
+| IsInService | boolean | Whether stop is currently in service |
+| Latitude | decimal | Geographic latitude |
+| Longitude | decimal | Geographic longitude |
+| Routes | string | Comma-delimited list of routes |
+| AllowAlighting | boolean | Passengers may exit here |
+| AllowBoarding | boolean | Passengers may board here |
+| PlaceId | string | Place identifier |
+| PlaceDescription | string | Place description |
+| StopServiceAlerts | object | `{ "Url": "string" }` — link to service alerts |
+| Amenities | object | `{ "Url": "string" }` — link to amenities info |
+| Predictions | object | `{ "Url": "string" }` — link to real-time predictions |
+| Map | object | `{ "Url": "string" }` — link to stop map |
+| Schedules | array | `[{ "RouteId": "string", "Url": "string" }]` — schedule links per route |

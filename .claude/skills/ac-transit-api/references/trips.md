@@ -1,19 +1,83 @@
-# Trips — Cancellations and Exceptions
+# Trips — Cancellation and Exception Data
+
+---
 
 ## `GET /trips/canceled`
-All revenue trip exceptions matching filter criteria.
 
-**Query params:** `lastIncidentUniqueId`, `lastOpenDateTime`, `tripDateTimeFrom`, `tripDateTimeTo`, `token`
+Returns all revenue trip exceptions matching provided filter criteria.
 
-**Response:** Array of TripException objects
-`{ TripExceptionId, EventType, IncidentId, IncidentUniqueId, OpenDateTime, IncidentAddDateTime, TripStartTime, RouteAlpha, Direction, TripNumber, InternalTripNumber, PatternId, FromStopId, ToStopId, FromStopDescription, ToStopDescription, FromStopLatitude, FromStopLongitude, ToStopLatitude, ToStopLongitude, StopsInOrder }`
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| lastIncidentUniqueId | integer | No | Filter by incident unique ID |
+| lastOpenDateTime | datetime | No | Filter by incident open date/time |
+| tripDateTimeFrom | datetime | No | Trip start date/time range — from |
+| tripDateTimeTo | datetime | No | Trip start date/time range — to |
+| token | string | Yes | API authentication token |
+
+**Response Body** — Array of TripException objects
+
+| Field | Type | Description |
+|-------|------|-------------|
+| TripExceptionId | integer | Exception record identifier |
+| EventType | string | Type of exception event |
+| IncidentId | string | Incident identifier |
+| IncidentUniqueId | integer | Unique incident identifier |
+| OpenDateTime | datetime | When incident was opened |
+| IncidentAddDateTime | datetime | When incident was added |
+| TripStartTime | datetime | Trip scheduled start time |
+| RouteAlpha | string | Route identifier |
+| Direction | string | Trip direction |
+| TripNumber | integer | Public trip number |
+| InternalTripNumber | integer | Internal trip number |
+| PatternId | integer | Pattern identifier |
+| FromStopId | string | Origin stop identifier |
+| ToStopId | string | Destination stop identifier |
+| FromStopDescription | string | Origin stop description |
+| ToStopDescription | string | Destination stop description |
+| FromStopLatitude | decimal | Origin stop latitude |
+| FromStopLongitude | decimal | Origin stop longitude |
+| ToStopLatitude | decimal | Destination stop latitude |
+| ToStopLongitude | decimal | Destination stop longitude |
+| StopsInOrder | string | Ordered stop list |
 
 ---
 
 ## `GET /trips/tripcancellationinfo/{tripNumber}`
-Cancellation details and adjacent trips for a specific trip.
 
-**Path params:** `tripNumber` (integer)
+Returns cancellation details and adjacent trips for a specific trip.
 
-**Response:**
-`{ RouteAlpha, Direction, BookingId, Canceled, Reinstated, TripNumber, InternalTripNumber, TripStartTime, ScheduleType, NextTripNumber, NextInternalTripNumber, NextTripStartTime, NextScheduleType, PrevTripNumber, PrevInternalTripNumber, PrevTripStartTime, PrevScheduleType }`
+**Path Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| tripNumber | integer | Yes | Trip identifier |
+
+**Query Parameters**
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| token | string | Yes | API authentication token |
+
+**Response Body**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| RouteAlpha | string | Route identifier |
+| Direction | string | Travel direction |
+| BookingId | string | Associated booking reference |
+| Canceled | boolean | Cancellation status |
+| Reinstated | boolean | Whether trip was restored |
+| TripNumber | integer | Trip identifier |
+| InternalTripNumber | integer | Internal system reference |
+| TripStartTime | datetime | Scheduled departure |
+| ScheduleType | string | Schedule classification |
+| NextTripNumber | integer | Next trip number |
+| NextInternalTripNumber | integer | Next trip internal ID |
+| NextTripStartTime | datetime | Next trip departure time |
+| NextScheduleType | string | Next trip schedule type |
+| PrevTripNumber | integer | Previous trip number |
+| PrevInternalTripNumber | integer | Previous trip internal ID |
+| PrevTripStartTime | datetime | Previous trip departure time |
+| PrevScheduleType | string | Previous trip schedule type |
