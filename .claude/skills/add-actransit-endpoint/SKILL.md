@@ -190,7 +190,16 @@ func gtfsBooking() {
 }
 ```
 
-## Step 10 — Confirm completion
+## Step 10 — Lint and format
+
+Run both tools to enforce codebase consistency:
+
+```bash
+swiftlint --fix Sources Tests
+swiftformat Sources Tests
+```
+
+## Step 11 — Confirm completion
 
 Report what was created/updated:
 - Reference file updated? (yes/no, what changed)

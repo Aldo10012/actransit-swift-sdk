@@ -4,7 +4,6 @@ import Testing
 
 @Suite("GtfsScheduleInfo")
 final class GtfsScheduleInfoTests {
-
     // MARK: - Decoding
 
     @Test("decodes standard ISO 8601 response")

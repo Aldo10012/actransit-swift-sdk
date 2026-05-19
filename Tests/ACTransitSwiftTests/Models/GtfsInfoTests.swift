@@ -4,7 +4,6 @@ import Testing
 
 @Suite("GtfsInfo")
 final class GtfsInfoTests {
-
     // MARK: - Decoding
 
     @Test("decodes standard ISO 8601 array response")

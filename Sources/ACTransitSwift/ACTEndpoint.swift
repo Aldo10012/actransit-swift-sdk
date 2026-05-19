@@ -10,7 +10,7 @@ public enum ACTEndpoint {
 
 extension ACTEndpoint {
     var path: String {
-        return switch self {
+        switch self {
         case .gtfs: "/gtfs"
         case .gtfsAll: "/gtfs/all"
         }

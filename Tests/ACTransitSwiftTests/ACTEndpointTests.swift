@@ -4,7 +4,6 @@ import Testing
 
 @Suite("Test ACTEndpoint")
 final class ACTEndpointTests {
-
     // MARK: constants
 
     enum Constants {
@@ -47,5 +46,4 @@ final class ACTEndpointTests {
         #expect(request.baseUrl == "https://api.actransit.org/transit/gtfs/all")
         #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
     }
-
 }

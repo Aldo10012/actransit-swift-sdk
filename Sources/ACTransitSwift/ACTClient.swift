@@ -4,11 +4,11 @@ import Foundation
 public class ACTClient {
     private let performer: RequestPerformable
 
-    public convenience init () {
+    public convenience init() {
         self.init(performer: RequestPerformer())
     }
 
-    internal init(performer: RequestPerformable) {
+    init(performer: RequestPerformable) {
         self.performer = performer
     }
 

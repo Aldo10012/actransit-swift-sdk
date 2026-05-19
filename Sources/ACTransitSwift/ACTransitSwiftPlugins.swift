@@ -1,8 +1,8 @@
 import Foundation
 
 public struct ACTSwiftPlugins {
-    nonisolated(unsafe) private(set) static var apiToken: String = ""
-    internal static let apiBaseURL: String = "https://api.actransit.org/transit"
+    private(set) nonisolated(unsafe) static var apiToken = ""
+    static let apiBaseURL = "https://api.actransit.org/transit"
 
     private init() {}
 
