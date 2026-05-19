@@ -1,0 +1,157 @@
+---
+name: add-actransit-endpoint
+description: End-to-end integration of a single AC Transit REST API endpoint into the ACTransitSwift SDK. Adds the endpoint case to ACTEndpoint, generates the Swift model struct, wires ACTClient, and writes tests. Invoke with the endpoint path to add, e.g. "gtfs/all" or "routes/{routeId}/stops".
+---
+
+# Add AC Transit Endpoint
+
+Adds full SDK support for one AC Transit REST API endpoint. The argument is the path **without** the leading slash (e.g. `gtfs/all`, `routes/{routeId}/stops`).
+
+## Step 1 — Read the local reference file
+
+Determine the resource group from the first path segment:
+
+| First segment | Reference file |
+|---|---|
+| `gtfs` | `@../../ac-transit-api/references/gtfs.md` |
+| `routes` | `@../../ac-transit-api/references/routes.md` |
+| `trips` | `@../../ac-transit-api/references/trips.md` |
+| `stops` | `@../../ac-transit-api/references/stops.md` |
+| `vehicles` | `@../../ac-transit-api/references/vehicles.md` |
+| `actrealtime` | `@../../ac-transit-api/references/act-realtime.md` |
+| `gtfsrt` | `@../../ac-transit-api/references/gtfs-realtime.md` |
+
+Read the matching reference file for context about the endpoint.
+
+## Step 2 — Cross-reference the live API docs
+
+Fetch the live API documentation for the endpoint. Convert the path to the Help URL format by replacing `/` with `-` and replacing any `{param}` segments with the literal text `by-param`:
+
+- `gtfs/all` → `https://api.actransit.org/transit/Help/Api/GET-gtfs-all`
+- `routes/{routeId}/stops` → `https://api.actransit.org/transit/Help/Api/GET-routes-by-param-stops`
+
+Fetch that URL and extract:
+1. The exact **response JSON sample**
+2. The **resource model name** (e.g. `GtfsScheduleInfo`, `Booking`) — look for the type name linked in the response description or in the URL `?modelName=` on the response type link
+3. All **path parameters** and their types
+4. All **query parameters** beyond `token`
+5. Whether the response is **binary** (ZIP / protobuf) rather than JSON
+
+### Verify and update the reference file
+
+Compare what the live docs say against the local reference file. If there are discrepancies (missing fields, wrong types, outdated response shape), update the reference file to match the live docs before proceeding.
+
+## Step 3 — Classify the endpoint
+
+Based on what you found, classify:
+
+- **Binary response** (`/gtfs/current`, `/gtfs/next`, `/gtfs/{bookingId}`, `/gtfs/download`, any GTFS-RT endpoint): log a note that binary responses are not yet supported, and stop. Do not generate a struct or client method.
+- **JSON response, no path params, no extra query params**: standard case.
+- **JSON response, with path params**: parameterized case — note each param name and type.
+- **JSON response, with extra query params** (beyond `token`): add them as function arguments.
+- **Array response** (`[ModelName]`): the return type is `[ModelName]`.
+
+## Step 4 — Derive Swift names
+
+From the path (e.g. `gtfs/all`), derive:
+
+| Artifact | Rule | Example |
+|---|---|---|
+| Endpoint case name | camelCase of path segments, params become labels | `gtfsAll`, `gtfs(bookingId:)` |
+| Client method name | `get` + PascalCase of path segments | `getGtfsAll`, `getGtfsBooking(bookingId:)` |
+| Model file name | resource model name from API docs | `GtfsScheduleInfo.swift` |
+| Test file name | model name + `Tests` | `GtfsScheduleInfoTests.swift` |
+
+For path parameters, name the associated value after the parameter (e.g. `case gtfsBooking(bookingId: String)`).
+
+## Step 5 — Generate the Swift model
+
+Invoke the `swift-struct-generator` skill with:
+- The **exact JSON sample** from the live API docs
+- The **resource model name** as the required struct name
+- The instruction that all types must be `public`, `Codable`, and `Sendable`
+- Note any date fields (ISO 8601 with potential 7 fractional-second digits) so the generator handles them with a custom decoder
+
+Write the generated file to:
+```
+Sources/ACTransitSwift/Models/{ModelName}.swift
+```
+
+## Step 6 — Update ACTEndpoint.swift
+
+File: `Sources/ACTransitSwift/ACTEndpoint.swift`
+
+Add the new case to the `ACTEndpoint` enum and extend both switch statements:
+
+**Standard (no path params):**
+```swift
+case gtfsAll
+
+// path switch:
+case .gtfsAll: "/gtfs/all"
+
+// getRequest() switch:
+case .gtfsAll:
+    factory.build(httpMethod: .GET, baseUrlString: url, parameters: [apiTokenQueryParameter])
+```
+
+**Parameterized:**
+```swift
+case gtfsBooking(bookingId: String)
+
+// path switch:
+case .gtfsBooking(let bookingId): "/gtfs/\(bookingId)"
+
+// getRequest() switch:
+case .gtfsBooking:
+    factory.build(httpMethod: .GET, baseUrlString: url, parameters: [apiTokenQueryParameter])
+```
+
+**Extra query params** (e.g. a `limit` param): add additional `HTTPParameter` values to the `parameters` array.
+
+## Step 7 — Update ACTClient.swift
+
+File: `Sources/ACTransitSwift/ACTClient.swift`
+
+Add a `public func` that calls through to the endpoint. Match the method signature to the endpoint classification:
+
+**Standard:**
+```swift
+public func getGtfsAll() async throws -> [GtfsScheduleInfo] {
+    try await performer.perform(request: ACTEndpoint.gtfsAll.getRequest(), decodeTo: [GtfsScheduleInfo].self)
+}
+```
+
+**Parameterized:**
+```swift
+public func getGtfsBooking(bookingId: String) async throws -> GtfsScheduleInfo {
+    try await performer.perform(request: ACTEndpoint.gtfsBooking(bookingId: bookingId).getRequest(), decodeTo: GtfsScheduleInfo.self)
+}
+```
+
+## Step 8 — Write tests
+
+File: `Tests/ACTransitSwiftTests/{ModelName}Tests.swift`
+
+Use the Swift Testing framework (`import Testing`, `@Suite`, `@Test`, `#expect`). Follow the same structure as `ACTEndpointTests.swift` and `GtfsScheduleInfoTests.swift`.
+
+Cover:
+
+1. **Decode happy path** — standard JSON with expected field values
+2. **Decode edge cases** — 7-digit fractional seconds (if dates present), optional fields as `nil`, array empty case
+3. **Decode failure** — malformed date string or missing required key throws `DecodingError`
+4. **Encode** — encoded JSON uses the original PascalCase / snake_case keys (not Swift camelCase)
+5. **Round-trip** — `encode → decode` preserves all field values
+6. **Mock data** — `sample` data is self-consistent (e.g. end date > start date)
+7. **`make()` factory** — overriding one argument leaves the others at their defaults
+
+## Step 9 — Confirm completion
+
+Report what was created/updated:
+- Reference file updated? (yes/no, what changed)
+- Model file path
+- Endpoint case added
+- Client method added
+- Test file path
+
+If the endpoint was binary, explain why it was skipped and what would be needed to support it.
