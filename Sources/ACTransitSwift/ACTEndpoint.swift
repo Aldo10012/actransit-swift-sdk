@@ -27,10 +27,10 @@ extension ACTEndpoint {
         }
     }
 
-    func getRequest() -> Request {
+    func getRequest(token: String) -> Request {
         let factory = RequestFactoryImpl()
         let url = ACTSwiftPlugins.apiBaseURL + path
-        let apiTokenQueryParameter = HTTPParameter(key: Constants.tokenKey, value: ACTSwiftPlugins.apiToken)
+        let apiTokenQueryParameter = HTTPParameter(key: Constants.tokenKey, value: token)
 
         switch self {
         case .gtfs:

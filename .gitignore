@@ -3,6 +3,5 @@
 .DS_Store
 .build/
 
-.swiftpm/xcode/package.xcworkspace/xcuserdata/albertodominguez.xcuserdatad/UserInterfaceState.xcuserstate
-
-.swiftpm/xcode/xcuserdata/albertodominguez.xcuserdatad/xcschemes/xcschememanagement.plist
+.swiftpm/xcode/xcuserdata/
+.swiftpm/xcode/package.xcworkspace/xcuserdata/

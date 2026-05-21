@@ -12,24 +12,12 @@ final class ACTEndpointTests {
         static let mockToken = "mockToken"
     }
 
-    // MARK: setup
-
-    init() {
-        ACTSwiftPlugins.install(token: Constants.mockToken)
-    }
-
-    // MARK: teardown
-
-    deinit {
-        ACTSwiftPlugins.cleanup()
-    }
-
     // MARK: - unit tests
 
     @Test("test ACTEndpoint.gtfs")
     func gtfs() {
         let endpoint = ACTEndpoint.gtfs
-        let request = endpoint.getRequest()
+        let request = endpoint.getRequest(token: Constants.mockToken)
 
         #expect(endpoint.path == "/gtfs")
         #expect(request.httpMethod == .GET)
@@ -40,7 +28,7 @@ final class ACTEndpointTests {
     @Test("test ACTEndpoint.gtfsAll")
     func gtfsAll() {
         let endpoint = ACTEndpoint.gtfsAll
-        let request = endpoint.getRequest()
+        let request = endpoint.getRequest(token: Constants.mockToken)
 
         #expect(endpoint.path == "/gtfs/all")
         #expect(request.httpMethod == .GET)
@@ -51,7 +39,7 @@ final class ACTEndpointTests {
     @Test("test ACTEndpoint.tripsCanceled with no optional params")
     func tripsCanceled() {
         let endpoint = ACTEndpoint.tripsCanceled()
-        let request = endpoint.getRequest()
+        let request = endpoint.getRequest(token: Constants.mockToken)
 
         #expect(endpoint.path == "/trips/canceled")
         #expect(request.httpMethod == .GET)
@@ -70,7 +58,7 @@ final class ACTEndpointTests {
             tripDateTimeFrom: fromDate,
             tripDateTimeTo: toDate
         )
-        let request = endpoint.getRequest()
+        let request = endpoint.getRequest(token: Constants.mockToken)
 
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime]
@@ -88,7 +76,7 @@ final class ACTEndpointTests {
     @Test("test ACTEndpoint.tripsTripCancellationInfo")
     func tripsTripCancellationInfo() {
         let endpoint = ACTEndpoint.tripsTripCancellationInfo(tripNumber: 1001)
-        let request = endpoint.getRequest()
+        let request = endpoint.getRequest(token: Constants.mockToken)
 
         #expect(endpoint.path == "/trips/tripcancellationinfo/1001")
         #expect(request.httpMethod == .GET)
