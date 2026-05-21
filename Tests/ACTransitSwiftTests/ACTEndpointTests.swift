@@ -1,5 +1,6 @@
 @testable import ACTransitSwift
 import EZNetworking
+import Foundation
 import Testing
 
 @Suite("Test ACTEndpoint")
@@ -71,13 +72,27 @@ final class ACTEndpointTests {
 
     @Test("test ACTEndpoint.tripsCanceled includes optional params when provided")
     func tripsCanceledWithParams() {
-        let endpoint = ACTEndpoint.tripsCanceled(lastIncidentUniqueId: 42)
+        let openDate = Date(timeIntervalSince1970: 1_746_100_000)
+        let fromDate = Date(timeIntervalSince1970: 1_746_200_000)
+        let toDate = Date(timeIntervalSince1970: 1_746_300_000)
+        let endpoint = ACTEndpoint.tripsCanceled(
+            lastIncidentUniqueId: 42,
+            lastOpenDateTime: openDate,
+            tripDateTimeFrom: fromDate,
+            tripDateTimeTo: toDate
+        )
         let request = endpoint.getRequest()
+
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
 
         #expect(endpoint.path == "/trips/canceled")
         #expect(request.httpMethod == .GET)
-        #expect(request.parameters?.count == 2)
+        #expect(request.parameters?.count == 5)
         #expect(request.parameters?.contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)) == true)
         #expect(request.parameters?.contains(HTTPParameter(key: "lastIncidentUniqueId", value: "42")) == true)
+        #expect(request.parameters?.contains(HTTPParameter(key: "lastOpenDateTime", value: formatter.string(from: openDate))) == true)
+        #expect(request.parameters?.contains(HTTPParameter(key: "tripDateTimeFrom", value: formatter.string(from: fromDate))) == true)
+        #expect(request.parameters?.contains(HTTPParameter(key: "tripDateTimeTo", value: formatter.string(from: toDate))) == true)
     }
 }
