@@ -20,6 +20,13 @@ public class ACTClient {
         try await performer.perform(request: ACTEndpoint.gtfsAll.getRequest(), decodeTo: [GtfsInfo].self)
     }
 
+    public func getTripsTripCancellationInfo(tripNumber: Int) async throws -> TripCancellationInfo {
+        try await performer.perform(
+            request: ACTEndpoint.tripsTripCancellationInfo(tripNumber: tripNumber).getRequest(),
+            decodeTo: TripCancellationInfo.self
+        )
+    }
+
     public func getTripsCanceled(
         lastIncidentUniqueId: Int? = nil,
         lastOpenDateTime: Date? = nil,

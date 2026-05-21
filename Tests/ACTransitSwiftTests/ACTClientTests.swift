@@ -62,6 +62,51 @@ final class ACTClientTests {
         #expect(result[0].latestServiceDate == GtfsInfo.sample.latestServiceDate)
     }
 
+    @Test("test .getTripsTripCancellationInfo() success case")
+    func getTripsTripCancellationInfo() async throws {
+        let jsonString = """
+        {
+            "RouteAlpha": "51A",
+            "Direction": "NB",
+            "BookingId": "25FASU",
+            "Canceled": true,
+            "Reinstated": false,
+            "TripNumber": 1001,
+            "InternalTripNumber": 5001,
+            "TripStartTime": "2025-05-01T09:00:00.0000000-07:00",
+            "ScheduleType": "Weekday",
+            "NextTripNumber": 1002,
+            "NextInternalTripNumber": 5002,
+            "NextTripStartTime": "2025-05-01T09:30:00.0000000-07:00",
+            "NextScheduleType": "Weekday",
+            "PrevTripNumber": 1000,
+            "PrevInternalTripNumber": 5000,
+            "PrevTripStartTime": "2025-05-01T08:30:00.0000000-07:00",
+            "PrevScheduleType": "Weekday"
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.getTripsTripCancellationInfo(tripNumber: TripCancellationInfo.sample.tripNumber)
+        #expect(result.routeAlpha == TripCancellationInfo.sample.routeAlpha)
+        #expect(result.direction == TripCancellationInfo.sample.direction)
+        #expect(result.bookingId == TripCancellationInfo.sample.bookingId)
+        #expect(result.canceled == TripCancellationInfo.sample.canceled)
+        #expect(result.reinstated == TripCancellationInfo.sample.reinstated)
+        #expect(result.tripNumber == TripCancellationInfo.sample.tripNumber)
+        #expect(result.internalTripNumber == TripCancellationInfo.sample.internalTripNumber)
+        #expect(result.tripStartTime == TripCancellationInfo.sample.tripStartTime)
+        #expect(result.scheduleType == TripCancellationInfo.sample.scheduleType)
+        #expect(result.nextTripNumber == TripCancellationInfo.sample.nextTripNumber)
+        #expect(result.nextInternalTripNumber == TripCancellationInfo.sample.nextInternalTripNumber)
+        #expect(result.nextTripStartTime == TripCancellationInfo.sample.nextTripStartTime)
+        #expect(result.nextScheduleType == TripCancellationInfo.sample.nextScheduleType)
+        #expect(result.prevTripNumber == TripCancellationInfo.sample.prevTripNumber)
+        #expect(result.prevInternalTripNumber == TripCancellationInfo.sample.prevInternalTripNumber)
+        #expect(result.prevTripStartTime == TripCancellationInfo.sample.prevTripStartTime)
+        #expect(result.prevScheduleType == TripCancellationInfo.sample.prevScheduleType)
+    }
+
     @Test("test .getTripsCanceled() success case")
     func getTripsCanceled() async throws {
         let jsonString = """

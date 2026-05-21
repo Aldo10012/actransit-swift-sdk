@@ -58,6 +58,17 @@ final class ACTEndpointTests {
         #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
     }
 
+    @Test("test ACTEndpoint.tripsTripCancellationInfo")
+    func tripsTripCancellationInfo() {
+        let endpoint = ACTEndpoint.tripsTripCancellationInfo(tripNumber: 1001)
+        let request = endpoint.getRequest()
+
+        #expect(endpoint.path == "/trips/tripcancellationinfo/1001")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/trips/tripcancellationinfo/1001")
+        #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
+    }
+
     @Test("test ACTEndpoint.tripsCanceled includes optional params when provided")
     func tripsCanceledWithParams() {
         let endpoint = ACTEndpoint.tripsCanceled(lastIncidentUniqueId: 42)

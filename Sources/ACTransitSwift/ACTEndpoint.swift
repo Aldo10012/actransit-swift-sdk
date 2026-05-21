@@ -13,6 +13,8 @@ public enum ACTEndpoint {
         tripDateTimeFrom: Date? = nil,
         tripDateTimeTo: Date? = nil
     )
+    /// https://api.actransit.org/transit/Help/Api/GET-trips-tripcancellationinfo-tripNumber
+    case tripsTripCancellationInfo(tripNumber: Int)
 }
 
 extension ACTEndpoint {
@@ -21,6 +23,7 @@ extension ACTEndpoint {
         case .gtfs: "/gtfs"
         case .gtfsAll: "/gtfs/all"
         case .tripsCanceled: "/trips/canceled"
+        case let .tripsTripCancellationInfo(tripNumber): "/trips/tripcancellationinfo/\(tripNumber)"
         }
     }
 
@@ -49,6 +52,8 @@ extension ACTEndpoint {
                 params.append(HTTPParameter(key: "tripDateTimeTo", value: Self.queryDateFormatter.string(from: tripDateTimeTo)))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case .tripsTripCancellationInfo:
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [apiTokenQueryParameter])
         }
     }
 
