@@ -19,4 +19,21 @@ public class ACTClient {
     public func getGtfsAll() async throws -> [GtfsInfo] {
         try await performer.perform(request: ACTEndpoint.gtfsAll.getRequest(), decodeTo: [GtfsInfo].self)
     }
+
+    public func getTripsCanceled(
+        lastIncidentUniqueId: Int? = nil,
+        lastOpenDateTime: Date? = nil,
+        tripDateTimeFrom: Date? = nil,
+        tripDateTimeTo: Date? = nil
+    ) async throws -> [TripException] {
+        try await performer.perform(
+            request: ACTEndpoint.tripsCanceled(
+                lastIncidentUniqueId: lastIncidentUniqueId,
+                lastOpenDateTime: lastOpenDateTime,
+                tripDateTimeFrom: tripDateTimeFrom,
+                tripDateTimeTo: tripDateTimeTo
+            ).getRequest(),
+            decodeTo: [TripException].self
+        )
+    }
 }
