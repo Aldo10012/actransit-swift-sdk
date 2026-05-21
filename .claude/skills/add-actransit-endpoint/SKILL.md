@@ -190,7 +190,85 @@ func gtfsBooking() {
 }
 ```
 
-## Step 10 — Lint and format
+## Step 10 — Add ACTClient success test
+
+File: `Tests/ACTransitSwiftTests/ACTClientTests.swift`
+
+Append a new `@Test` inside the `ACTClientTests` suite (before the closing `}`). The mock JSON must use the same PascalCase keys the API returns. Assert every field against the model's `.sample` static property — do **not** use a `decode` helper that decodes to a specific type.
+
+**Standard (single object) response:**
+```swift
+@Test("test .getGtfs() success case")
+func getGtfs() async throws {
+    let jsonString = """
+    {
+        "UpdatedDate": "2025-05-01T12:00:00.0000000-07:00",
+        "EarliestServiceDate": "2025-04-28T00:00:00.0000000-07:00",
+        "LatestServiceDate": "2025-08-31T00:00:00.0000000-07:00"
+    }
+    """
+    setup(mockJSON: jsonString.data(using: .utf8))
+
+    let result = try await sut.getGtfs()
+
+    #expect(result.updatedDate == GtfsScheduleInfo.sample.updatedDate)
+    #expect(result.earliestServiceDate == GtfsScheduleInfo.sample.earliestServiceDate)
+    #expect(result.latestServiceDate == GtfsScheduleInfo.sample.latestServiceDate)
+}
+```
+
+**Array response** — wrap in `[…]`, assert `count == 1`, index into `result[0]`:
+```swift
+@Test("test .getGtfsAll() success case")
+func getGtfsAll() async throws {
+    let jsonString = """
+    [
+        {
+            "BookingId": "25FASU",
+            "UpdatedDate": "2025-05-01T12:00:00.0000000-07:00",
+            "EarliestServiceDate": "2025-04-28T00:00:00.0000000-07:00",
+            "LatestServiceDate": "2025-08-31T00:00:00.0000000-07:00"
+        }
+    ]
+    """
+    setup(mockJSON: jsonString.data(using: .utf8))
+
+    let result = try await sut.getGtfsAll()
+
+    #expect(result.count == 1)
+    #expect(result[0].bookingId == GtfsInfo.sample.bookingId)
+    #expect(result[0].updatedDate == GtfsInfo.sample.updatedDate)
+    #expect(result[0].earliestServiceDate == GtfsInfo.sample.earliestServiceDate)
+    #expect(result[0].latestServiceDate == GtfsInfo.sample.latestServiceDate)
+}
+```
+
+**Parameterized method** — pass a representative argument matching `.sample`:
+```swift
+@Test("test .getGtfsBooking() success case")
+func getGtfsBooking() async throws {
+    let jsonString = """
+    {
+        "BookingId": "25FASU",
+        "UpdatedDate": "2025-05-01T12:00:00.0000000-07:00",
+        "EarliestServiceDate": "2025-04-28T00:00:00.0000000-07:00",
+        "LatestServiceDate": "2025-08-31T00:00:00.0000000-07:00"
+    }
+    """
+    setup(mockJSON: jsonString.data(using: .utf8))
+
+    let result = try await sut.getGtfsBooking(bookingId: GtfsInfo.sample.bookingId)
+
+    #expect(result.bookingId == GtfsInfo.sample.bookingId)
+    #expect(result.updatedDate == GtfsInfo.sample.updatedDate)
+    #expect(result.earliestServiceDate == GtfsInfo.sample.earliestServiceDate)
+    #expect(result.latestServiceDate == GtfsInfo.sample.latestServiceDate)
+}
+```
+
+Use the correct date format from the sample data. For non-date fields, use the literal value from `.sample` directly in the JSON string.
+
+## Step 11 — Lint and format
 
 Run both tools to enforce codebase consistency:
 
@@ -199,7 +277,7 @@ swiftlint --fix Sources Tests
 swiftformat Sources Tests
 ```
 
-## Step 11 — Confirm completion
+## Step 12 — Confirm completion
 
 Report what was created/updated:
 - Reference file updated? (yes/no, what changed)
@@ -208,5 +286,6 @@ Report what was created/updated:
 - Client method added
 - Model test file path
 - `ACTEndpointTests` updated? (yes/no)
+- `ACTClientTests` updated? (yes/no)
 
 If the endpoint was binary, explain why it was skipped and what would be needed to support it.
