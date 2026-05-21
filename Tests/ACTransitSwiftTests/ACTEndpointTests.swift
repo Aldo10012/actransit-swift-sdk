@@ -59,17 +59,6 @@ final class ACTEndpointTests {
         #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
     }
 
-    @Test("test ACTEndpoint.tripsTripCancellationInfo")
-    func tripsTripCancellationInfo() {
-        let endpoint = ACTEndpoint.tripsTripCancellationInfo(tripNumber: 1001)
-        let request = endpoint.getRequest()
-
-        #expect(endpoint.path == "/trips/tripcancellationinfo/1001")
-        #expect(request.httpMethod == .GET)
-        #expect(request.baseUrl == "https://api.actransit.org/transit/trips/tripcancellationinfo/1001")
-        #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
-    }
-
     @Test("test ACTEndpoint.tripsCanceled includes optional params when provided")
     func tripsCanceledWithParams() {
         let openDate = Date(timeIntervalSince1970: 1_746_100_000)
@@ -94,5 +83,16 @@ final class ACTEndpointTests {
         #expect(request.parameters?.contains(HTTPParameter(key: "lastOpenDateTime", value: formatter.string(from: openDate))) == true)
         #expect(request.parameters?.contains(HTTPParameter(key: "tripDateTimeFrom", value: formatter.string(from: fromDate))) == true)
         #expect(request.parameters?.contains(HTTPParameter(key: "tripDateTimeTo", value: formatter.string(from: toDate))) == true)
+    }
+
+    @Test("test ACTEndpoint.tripsTripCancellationInfo")
+    func tripsTripCancellationInfo() {
+        let endpoint = ACTEndpoint.tripsTripCancellationInfo(tripNumber: 1001)
+        let request = endpoint.getRequest()
+
+        #expect(endpoint.path == "/trips/tripcancellationinfo/1001")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/trips/tripcancellationinfo/1001")
+        #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
     }
 }
