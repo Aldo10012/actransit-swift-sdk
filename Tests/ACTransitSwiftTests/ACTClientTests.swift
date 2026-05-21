@@ -110,31 +110,29 @@ final class ACTClientTests {
     @Test("test .getTripsCanceled() success case")
     func getTripsCanceled() async throws {
         let jsonString = """
-        [
-            {
-                "TripExceptionId": 12345,
-                "EventType": "Canceled",
-                "IncidentId": "INC-001",
-                "IncidentUniqueId": 67890,
-                "OpenDateTime": "2025-05-01T08:00:00.0000000-07:00",
-                "IncidentAddDateTime": "2025-05-01T07:55:00.0000000-07:00",
-                "TripStartTime": "2025-05-01T09:00:00.0000000-07:00",
-                "RouteAlpha": "51A",
-                "Direction": "NB",
-                "TripNumber": 1001,
-                "InternalTripNumber": 5001,
-                "PatternId": 301,
-                "FromStopId": "1234",
-                "ToStopId": "5678",
-                "FromStopDescription": "Main St & 1st Ave",
-                "ToStopDescription": "Broadway & 5th Ave",
-                "FromStopLatitude": 37.8044,
-                "FromStopLongitude": -122.2711,
-                "ToStopLatitude": 37.8102,
-                "ToStopLongitude": -122.2705,
-                "StopsInOrder": "1234,2345,3456,5678"
-            }
-        ]
+        [{
+            "TripExceptionId": 12345,
+            "EventType": "Canceled",
+            "IncidentId": "INC-001",
+            "IncidentUniqueId": 67890,
+            "OpenDateTime": "2025-05-01T08:00:00.0000000-07:00",
+            "IncidentAddDateTime": "2025-05-01T07:55:00.0000000-07:00",
+            "TripStartTime": "2025-05-01T09:00:00.0000000-07:00",
+            "RouteAlpha": "51A",
+            "Direction": "NB",
+            "TripNumber": 1001,
+            "InternalTripNumber": 5001,
+            "PatternId": 301,
+            "FromStopId": "1234",
+            "ToStopId": "5678",
+            "FromStopDescription": "Main St & 1st Ave",
+            "ToStopDescription": "Broadway & 5th Ave",
+            "FromStopLatitude": 37.8044,
+            "FromStopLongitude": -122.2711,
+            "ToStopLatitude": 37.8102,
+            "ToStopLongitude": -122.2705,
+            "StopsInOrder": "1234,2345,3456,5678"
+        }]
         """
         setup(mockJSON: jsonString.data(using: .utf8))
 
