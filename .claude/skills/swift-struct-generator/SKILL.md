@@ -37,7 +37,10 @@ For fields that can be `null` in the JSON, always use optionals. For fields that
 
 Implement custom `init(from:)` / `encode(to:)` when the default synthesis can't handle the shape:
 
-- **Date fields**: use `ISO8601DateFormatter` or a custom `DateFormatter`; store as `Date`, not `String`. Declare static formatter instances as `nonisolated(unsafe) private static let` — `ISO8601DateFormatter` and `DateFormatter` are not `Sendable`, so Swift 6 strict concurrency requires this to avoid a compile error on static stored properties.
+- **Date fields**: store as `Date`, not `String`. Use the shared formatters from `Extensions/ISO8601DateFormatter+Extensions.swift` — **do not** declare a new per-struct formatter:
+  - `ISO8601DateFormatter.ACTFormat` — internet date-time **with** fractional seconds; use for encoding/decoding API response date fields
+  - `ISO8601DateFormatter.ACTQueryFormat` — internet date-time **without** fractional seconds; use for formatting query parameter dates and constructing `sample` mock data
+  - The AC Transit API can return up to 7 fractional-second digits; normalize to 3 before parsing with: `string.replacingOccurrences(of: #"(\.\d{3})\d+"#, with: "$1", options: .regularExpression)`
 - **URL fields**: decode as `URL` with graceful fallback
 - **Enum string mapping**: write a `RawRepresentable` enum with `String` raw values and `unknownCase` fallback
 - **Malformed values**: use `decodeIfPresent` + nil coalescing rather than crashing

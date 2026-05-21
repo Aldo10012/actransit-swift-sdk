@@ -70,7 +70,7 @@ Invoke the `swift-struct-generator` skill with:
 - The **exact JSON sample** from the live API docs
 - The **resource model name** as the required struct name
 - The instruction that all types must be `public`, `Codable`, and `Sendable`
-- Note any date fields (ISO 8601 with potential 7 fractional-second digits) so the generator handles them with a custom decoder
+- Note any date fields (ISO 8601 with potential 7 fractional-second digits) so the generator handles them with a custom decoder using `ISO8601DateFormatter.ACTFormat` from the shared extension — never declare a new per-struct formatter
 
 Above the struct declaration, add a `///` doc comment with the API doc URL:
 

@@ -125,9 +125,9 @@ public struct TripException: Codable, Sendable {
         try container.encode(eventType, forKey: .eventType)
         try container.encode(incidentId, forKey: .incidentId)
         try container.encode(incidentUniqueId, forKey: .incidentUniqueId)
-        try container.encode(Self.iso8601.string(from: openDateTime), forKey: .openDateTime)
-        try container.encode(Self.iso8601.string(from: incidentAddDateTime), forKey: .incidentAddDateTime)
-        try container.encode(Self.iso8601.string(from: tripStartTime), forKey: .tripStartTime)
+        try container.encode(ISO8601DateFormatter.ACTFormat.string(from: openDateTime), forKey: .openDateTime)
+        try container.encode(ISO8601DateFormatter.ACTFormat.string(from: incidentAddDateTime), forKey: .incidentAddDateTime)
+        try container.encode(ISO8601DateFormatter.ACTFormat.string(from: tripStartTime), forKey: .tripStartTime)
         try container.encode(routeAlpha, forKey: .routeAlpha)
         try container.encode(direction, forKey: .direction)
         try container.encode(tripNumber, forKey: .tripNumber)
@@ -151,7 +151,7 @@ public struct TripException: Codable, Sendable {
             with: "$1",
             options: .regularExpression
         )
-        guard let date = iso8601.date(from: normalized) else {
+        guard let date = ISO8601DateFormatter.ACTFormat.date(from: normalized) else {
             throw DecodingError.dataCorrupted(
                 .init(codingPath: [], debugDescription: "Cannot parse date '\(string)' for key '\(key)'")
             )
@@ -159,24 +159,16 @@ public struct TripException: Codable, Sendable {
         return date
     }
 
-    private nonisolated(unsafe) static let iso8601: ISO8601DateFormatter = {
-        let f = ISO8601DateFormatter()
-        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return f
-    }()
-
     // MARK: - Mock Data
 
-    public static let sample: TripException = {
-        let f = ISO8601DateFormatter()
-        return TripException(
+    public static let sample: TripException = TripException(
             tripExceptionId: 12345,
             eventType: "Canceled",
             incidentId: "INC-001",
             incidentUniqueId: 67890,
-            openDateTime: f.date(from: "2025-05-01T08:00:00-07:00")!,
-            incidentAddDateTime: f.date(from: "2025-05-01T07:55:00-07:00")!,
-            tripStartTime: f.date(from: "2025-05-01T09:00:00-07:00")!,
+            openDateTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T08:00:00-07:00")!,
+            incidentAddDateTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T07:55:00-07:00")!,
+            tripStartTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T09:00:00-07:00")!,
             routeAlpha: "51A",
             direction: "NB",
             tripNumber: 1001,
@@ -192,7 +184,6 @@ public struct TripException: Codable, Sendable {
             toStopLongitude: -122.2705,
             stopsInOrder: "1234,2345,3456,5678"
         )
-    }()
 
     public static let minimal = TripException(
         tripExceptionId: 0,

@@ -30,9 +30,9 @@ public struct GtfsScheduleInfo: Codable, Sendable {
 
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(Self.iso8601.string(from: updatedDate), forKey: .updatedDate)
-        try container.encode(Self.iso8601.string(from: earliestServiceDate), forKey: .earliestServiceDate)
-        try container.encode(Self.iso8601.string(from: latestServiceDate), forKey: .latestServiceDate)
+        try container.encode(ISO8601DateFormatter.ACTFormat.string(from: updatedDate), forKey: .updatedDate)
+        try container.encode(ISO8601DateFormatter.ACTFormat.string(from: earliestServiceDate), forKey: .earliestServiceDate)
+        try container.encode(ISO8601DateFormatter.ACTFormat.string(from: latestServiceDate), forKey: .latestServiceDate)
     }
 
     // The API returns up to 7 fractional-second digits; normalize to 3 before parsing.
@@ -42,7 +42,7 @@ public struct GtfsScheduleInfo: Codable, Sendable {
             with: "$1",
             options: .regularExpression
         )
-        guard let date = iso8601.date(from: normalized) else {
+        guard let date = ISO8601DateFormatter.ACTFormat.date(from: normalized) else {
             throw DecodingError.dataCorrupted(
                 .init(codingPath: [], debugDescription: "Cannot parse date '\(string)' for key '\(key)'")
             )
@@ -50,22 +50,13 @@ public struct GtfsScheduleInfo: Codable, Sendable {
         return date
     }
 
-    private nonisolated(unsafe) static let iso8601: ISO8601DateFormatter = {
-        let f = ISO8601DateFormatter()
-        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return f
-    }()
-
     // MARK: - Mock Data
 
-    public static let sample: GtfsScheduleInfo = {
-        let f = ISO8601DateFormatter()
-        return GtfsScheduleInfo(
-            updatedDate: f.date(from: "2025-05-01T12:00:00-07:00")!,
-            earliestServiceDate: f.date(from: "2025-04-28T00:00:00-07:00")!,
-            latestServiceDate: f.date(from: "2025-08-31T00:00:00-07:00")!
-        )
-    }()
+    public static let sample: GtfsScheduleInfo = GtfsScheduleInfo(
+        updatedDate: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T12:00:00-07:00")!,
+        earliestServiceDate: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-04-28T00:00:00-07:00")!,
+        latestServiceDate: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-08-31T00:00:00-07:00")!
+    )
 
     public static let minimal = GtfsScheduleInfo(
         updatedDate: .distantPast,
