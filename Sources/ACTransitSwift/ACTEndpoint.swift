@@ -60,6 +60,4 @@ extension ACTEndpoint {
     enum Constants {
         static let tokenKey = "token"
     }
-
-
 }
