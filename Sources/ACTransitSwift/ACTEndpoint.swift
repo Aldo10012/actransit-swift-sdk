@@ -43,13 +43,13 @@ extension ACTEndpoint {
                 params.append(HTTPParameter(key: "lastIncidentUniqueId", value: String(lastIncidentUniqueId)))
             }
             if let lastOpenDateTime {
-                params.append(HTTPParameter(key: "lastOpenDateTime", value: Self.queryDateFormatter.string(from: lastOpenDateTime)))
+                params.append(HTTPParameter(key: "lastOpenDateTime", value: ISO8601DateFormatter.ACTQueryFormat.string(from: lastOpenDateTime)))
             }
             if let tripDateTimeFrom {
-                params.append(HTTPParameter(key: "tripDateTimeFrom", value: Self.queryDateFormatter.string(from: tripDateTimeFrom)))
+                params.append(HTTPParameter(key: "tripDateTimeFrom", value: ISO8601DateFormatter.ACTQueryFormat.string(from: tripDateTimeFrom)))
             }
             if let tripDateTimeTo {
-                params.append(HTTPParameter(key: "tripDateTimeTo", value: Self.queryDateFormatter.string(from: tripDateTimeTo)))
+                params.append(HTTPParameter(key: "tripDateTimeTo", value: ISO8601DateFormatter.ACTQueryFormat.string(from: tripDateTimeTo)))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case .tripsTripCancellationInfo:
@@ -60,10 +60,4 @@ extension ACTEndpoint {
     enum Constants {
         static let tokenKey = "token"
     }
-
-    private nonisolated(unsafe) static let queryDateFormatter: ISO8601DateFormatter = {
-        let f = ISO8601DateFormatter()
-        f.formatOptions = [.withInternetDateTime]
-        return f
-    }()
 }

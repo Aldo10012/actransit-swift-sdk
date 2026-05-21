@@ -108,15 +108,15 @@ public struct TripCancellationInfo: Codable, Sendable {
         try container.encode(reinstated, forKey: .reinstated)
         try container.encode(tripNumber, forKey: .tripNumber)
         try container.encode(internalTripNumber, forKey: .internalTripNumber)
-        try container.encode(Self.iso8601.string(from: tripStartTime), forKey: .tripStartTime)
+        try container.encode(ISO8601DateFormatter.ACTFormat.string(from: tripStartTime), forKey: .tripStartTime)
         try container.encode(scheduleType, forKey: .scheduleType)
         try container.encode(nextTripNumber, forKey: .nextTripNumber)
         try container.encode(nextInternalTripNumber, forKey: .nextInternalTripNumber)
-        try container.encode(Self.iso8601.string(from: nextTripStartTime), forKey: .nextTripStartTime)
+        try container.encode(ISO8601DateFormatter.ACTFormat.string(from: nextTripStartTime), forKey: .nextTripStartTime)
         try container.encode(nextScheduleType, forKey: .nextScheduleType)
         try container.encode(prevTripNumber, forKey: .prevTripNumber)
         try container.encode(prevInternalTripNumber, forKey: .prevInternalTripNumber)
-        try container.encode(Self.iso8601.string(from: prevTripStartTime), forKey: .prevTripStartTime)
+        try container.encode(ISO8601DateFormatter.ACTFormat.string(from: prevTripStartTime), forKey: .prevTripStartTime)
         try container.encode(prevScheduleType, forKey: .prevScheduleType)
     }
 
@@ -127,7 +127,7 @@ public struct TripCancellationInfo: Codable, Sendable {
             with: "$1",
             options: .regularExpression
         )
-        guard let date = iso8601.date(from: normalized) else {
+        guard let date = ISO8601DateFormatter.ACTFormat.date(from: normalized) else {
             throw DecodingError.dataCorrupted(
                 .init(codingPath: [], debugDescription: "Cannot parse date '\(string)' for key '\(key)'")
             )
@@ -135,36 +135,27 @@ public struct TripCancellationInfo: Codable, Sendable {
         return date
     }
 
-    private nonisolated(unsafe) static let iso8601: ISO8601DateFormatter = {
-        let f = ISO8601DateFormatter()
-        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-        return f
-    }()
-
     // MARK: - Mock Data
 
-    public static let sample: TripCancellationInfo = {
-        let f = ISO8601DateFormatter()
-        return TripCancellationInfo(
-            routeAlpha: "51A",
-            direction: "NB",
-            bookingId: "25FASU",
-            canceled: true,
-            reinstated: false,
-            tripNumber: 1001,
-            internalTripNumber: 5001,
-            tripStartTime: f.date(from: "2025-05-01T09:00:00-07:00")!,
-            scheduleType: "Weekday",
-            nextTripNumber: 1002,
-            nextInternalTripNumber: 5002,
-            nextTripStartTime: f.date(from: "2025-05-01T09:30:00-07:00")!,
-            nextScheduleType: "Weekday",
-            prevTripNumber: 1000,
-            prevInternalTripNumber: 5000,
-            prevTripStartTime: f.date(from: "2025-05-01T08:30:00-07:00")!,
-            prevScheduleType: "Weekday"
-        )
-    }()
+    public static let sample: TripCancellationInfo = TripCancellationInfo(
+        routeAlpha: "51A",
+        direction: "NB",
+        bookingId: "25FASU",
+        canceled: true,
+        reinstated: false,
+        tripNumber: 1001,
+        internalTripNumber: 5001,
+        tripStartTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T09:00:00-07:00")!,
+        scheduleType: "Weekday",
+        nextTripNumber: 1002,
+        nextInternalTripNumber: 5002,
+        nextTripStartTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T09:30:00-07:00")!,
+        nextScheduleType: "Weekday",
+        prevTripNumber: 1000,
+        prevInternalTripNumber: 5000,
+        prevTripStartTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T08:30:00-07:00")!,
+        prevScheduleType: "Weekday"
+    )
 
     public static let minimal = TripCancellationInfo(
         routeAlpha: "",
