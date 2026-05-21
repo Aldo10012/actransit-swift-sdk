@@ -100,7 +100,7 @@ case gtfsAll
 // path switch:
 case .gtfsAll: "/gtfs/all"
 
-// getRequest() switch:
+// getRequest(token:) switch:
 case .gtfsAll:
     factory.build(httpMethod: .GET, baseUrlString: url, parameters: [apiTokenQueryParameter])
 ```
@@ -113,7 +113,7 @@ case gtfsBooking(bookingId: String)
 // path switch:
 case .gtfsBooking(let bookingId): "/gtfs/\(bookingId)"
 
-// getRequest() switch:
+// getRequest(token:) switch:
 case .gtfsBooking:
     factory.build(httpMethod: .GET, baseUrlString: url, parameters: [apiTokenQueryParameter])
 ```
@@ -129,14 +129,14 @@ Add a `public func` that calls through to the endpoint. Match the method signatu
 **Standard:**
 ```swift
 public func getGtfsAll() async throws -> [GtfsScheduleInfo] {
-    try await performer.perform(request: ACTEndpoint.gtfsAll.getRequest(), decodeTo: [GtfsScheduleInfo].self)
+    try await performer.perform(request: ACTEndpoint.gtfsAll.getRequest(token: token), decodeTo: [GtfsScheduleInfo].self)
 }
 ```
 
 **Parameterized:**
 ```swift
 public func getGtfsBooking(bookingId: String) async throws -> GtfsScheduleInfo {
-    try await performer.perform(request: ACTEndpoint.gtfsBooking(bookingId: bookingId).getRequest(), decodeTo: GtfsScheduleInfo.self)
+    try await performer.perform(request: ACTEndpoint.gtfsBooking(bookingId: bookingId).getRequest(token: token), decodeTo: GtfsScheduleInfo.self)
 }
 ```
 
@@ -168,7 +168,7 @@ Add a `@Test` for the new endpoint case following the same pattern as the existi
 @Test("test ACTEndpoint.gtfsAll")
 func gtfsAll() {
     let endpoint = ACTEndpoint.gtfsAll
-    let request = endpoint.getRequest()
+    let request = endpoint.getRequest(token: Constants.mockToken)
 
     #expect(endpoint.path == "/gtfs/all")
     #expect(request.httpMethod == .GET)
@@ -183,7 +183,7 @@ For parameterized endpoints, pass a representative value to the case and verify 
 @Test("test ACTEndpoint.gtfsBooking")
 func gtfsBooking() {
     let endpoint = ACTEndpoint.gtfsBooking(bookingId: "25FASU")
-    let request = endpoint.getRequest()
+    let request = endpoint.getRequest(token: Constants.mockToken)
 
     #expect(endpoint.path == "/gtfs/25FASU")
     #expect(request.httpMethod == .GET)

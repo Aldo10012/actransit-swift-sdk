@@ -8,17 +8,13 @@ final class ACTClientTests {
     private var sut: ACTClient
 
     init() {
-        sut = ACTClient(performer: MockRequestPerformer())
-    }
-
-    deinit {
-        self.sut = ACTClient(performer: MockRequestPerformer())
+        sut = ACTClient(token: "mockToken", performer: MockRequestPerformer())
     }
 
     private func setup(mockJSON: Data?) {
         var performer = MockRequestPerformer()
         performer.fixture = mockJSON
-        sut = ACTClient(performer: performer)
+        sut = ACTClient(token: "mockToken", performer: performer)
     }
 
     // MARK: - Tests

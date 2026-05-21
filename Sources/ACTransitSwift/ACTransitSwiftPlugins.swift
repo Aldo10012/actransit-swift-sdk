@@ -1,16 +1,22 @@
 import Foundation
 
 public struct ACTSwiftPlugins {
-    private(set) nonisolated(unsafe) static var apiToken = ""
+    private static let lock = NSLock()
+    private nonisolated(unsafe) static var _apiToken = ""
+
     static let apiBaseURL = "https://api.actransit.org/transit"
 
     private init() {}
 
+    static var apiToken: String {
+        lock.withLock { _apiToken }
+    }
+
     public static func install(token: String) {
-        ACTSwiftPlugins.apiToken = token
+        lock.withLock { _apiToken = token }
     }
 
     static func cleanup() {
-        ACTSwiftPlugins.apiToken = ""
+        lock.withLock { _apiToken = "" }
     }
 }
