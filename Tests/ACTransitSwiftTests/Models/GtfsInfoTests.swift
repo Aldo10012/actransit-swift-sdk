@@ -2,7 +2,7 @@
 import Foundation
 import Testing
 
-@Suite("GtfsInfo")
+@Suite("Test GtfsInfo")
 final class GtfsInfoTests {
     // MARK: - Decoding
 

@@ -2,7 +2,7 @@
 import Foundation
 import Testing
 
-@Suite("GtfsScheduleInfo")
+@Suite("Test GtfsScheduleInfo")
 final class GtfsScheduleInfoTests {
     // MARK: - Decoding
 

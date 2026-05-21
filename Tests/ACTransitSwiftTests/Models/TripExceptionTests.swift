@@ -2,7 +2,7 @@
 import Foundation
 import Testing
 
-@Suite("TripException")
+@Suite("Test TripException")
 final class TripExceptionTests {
     // MARK: - Decoding
 
