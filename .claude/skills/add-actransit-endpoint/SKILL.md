@@ -146,6 +146,8 @@ File: `Tests/ACTransitSwiftTests/Models/{ModelName}Tests.swift`
 
 Use the Swift Testing framework (`import Testing`, `@Suite`, `@Test`, `#expect`). Follow the same structure as `GtfsScheduleInfoTests.swift`.
 
+The `@Suite` name must start with `"Test "` (e.g. `@Suite("Test GtfsInfo")`).
+
 Cover:
 
 1. **Decode happy path** — standard JSON with expected field values

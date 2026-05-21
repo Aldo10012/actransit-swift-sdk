@@ -6,7 +6,7 @@ struct ACTransitSwiftPluginsTests {
     @Test("test installing api token")
     func installingAPIToken() {
         let apiTokenWithoutInstall = ACTSwiftPlugins.apiToken
-        #expect(apiTokenWithoutInstall == "")
+        #expect(apiTokenWithoutInstall.isEmpty)
 
         ACTSwiftPlugins.install(token: "my_api_token")
         let apiTokenWithInstall = ACTSwiftPlugins.apiToken
@@ -14,6 +14,6 @@ struct ACTransitSwiftPluginsTests {
 
         ACTSwiftPlugins.cleanup()
         let apiTokenAfterCleanup = ACTSwiftPlugins.apiToken
-        #expect(apiTokenAfterCleanup == "")
+        #expect(apiTokenAfterCleanup.isEmpty)
     }
 }
