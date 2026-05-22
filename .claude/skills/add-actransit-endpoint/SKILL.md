@@ -1,6 +1,6 @@
 ---
 name: add-actransit-endpoint
-description: End-to-end integration of a single AC Transit REST API endpoint into the ACTransitSwift SDK. Adds the endpoint case to ACTEndpoint, generates the Swift model struct, wires ACTClient, and writes tests. Invoke with the endpoint path to add, e.g. "gtfs/all" or "routes/{routeId}/stops".
+description: End-to-end integration of a single AC Transit REST API endpoint into the ACTransitSwift SDK. Adds the endpoint case to the appropriate per-group endpoint enum, generates the Swift model struct, wires the service, and writes tests. Invoke with the endpoint path to add, e.g. "gtfs/all" or "routes/{routeId}/stops".
 ---
 
 # Add AC Transit Endpoint
@@ -53,16 +53,18 @@ Based on what you found, classify:
 
 ## Step 4 — Derive Swift names
 
-From the path (e.g. `gtfs/all`), derive:
+The SDK uses a service-namespaced architecture. Each resource group has its own endpoint enum and service struct. Method names are concise — the service already carries the resource group context, so don't repeat it in the method name.
 
 | Artifact | Rule | Example |
 |---|---|---|
-| Endpoint case name | camelCase of path segments, params become labels | `gtfsAll`, `gtfs(bookingId:)` |
-| Client method name | `get` + PascalCase of path segments | `getGtfsAll`, `getGtfsBooking(bookingId:)` |
+| Endpoint case name | camelCase of path segments after the group prefix, params become labels | `all`, `booking(bookingId:)` |
+| Service method name | camelCase of path segments after the group prefix, params become argument labels | `all()`, `booking(bookingId:)` |
+| Endpoint enum name | PascalCase group name + `Endpoint` | `GTFSEndpoint`, `RoutesEndpoint` |
+| Service struct name | PascalCase group name + `Service` | `GTFSService`, `RoutesService` |
 | Model file name | resource model name from API docs | `GtfsScheduleInfo.swift` |
 | Test file name | model name + `Tests` | `GtfsScheduleInfoTests.swift` |
 
-For path parameters, name the associated value after the parameter (e.g. `case gtfsBooking(bookingId: String)`).
+For path parameters, name the associated value after the parameter (e.g. `case booking(bookingId: String)`).
 
 ## Step 5 — Generate the Swift model
 
@@ -84,59 +86,65 @@ Write the generated file to:
 Sources/ACTransitSwift/Models/{ModelName}.swift
 ```
 
-## Step 6 — Update ACTEndpoint.swift
+## Step 6 — Update the endpoint enum
 
-File: `Sources/ACTransitSwift/ACTEndpoint.swift`
+File: `Sources/ACTransitSwift/Endpoints/{Group}Endpoint.swift`
 
-Add the new case to the `ACTEndpoint` enum and extend both switch statements:
+If the file doesn't exist yet (new resource group), create it following the same pattern as `GTFSEndpoint.swift` or `TripsEndpoint.swift`.
+
+Add the new case and extend both switch statements:
 
 Above each new case, add a `///` doc comment with the API doc URL:
 
 **Standard (no path params):**
 ```swift
 /// https://api.actransit.org/transit/Help/Api/GET-gtfs-all
-case gtfsAll
+case all
 
 // path switch:
-case .gtfsAll: "/gtfs/all"
+case .all: "/gtfs/all"
 
 // getRequest(token:) switch:
-case .gtfsAll:
+case .all:
     factory.build(httpMethod: .GET, baseUrlString: url, parameters: [apiTokenQueryParameter])
 ```
 
 **Parameterized:**
 ```swift
 /// https://api.actransit.org/transit/Help/Api/GET-gtfs-by-param
-case gtfsBooking(bookingId: String)
+case booking(bookingId: String)
 
 // path switch:
-case .gtfsBooking(let bookingId): "/gtfs/\(bookingId)"
+case .booking(let bookingId): "/gtfs/\(bookingId)"
 
 // getRequest(token:) switch:
-case .gtfsBooking:
+case .booking:
     factory.build(httpMethod: .GET, baseUrlString: url, parameters: [apiTokenQueryParameter])
 ```
 
 **Extra query params** (e.g. a `limit` param): add additional `HTTPParameter` values to the `parameters` array.
 
-## Step 7 — Update ACTClient.swift
+## Step 7 — Update the service
 
-File: `Sources/ACTransitSwift/ACTClient.swift`
+File: `Sources/ACTransitSwift/Services/{Group}Service.swift`
 
-Add a `public func` that calls through to the endpoint. Match the method signature to the endpoint classification:
+If the file doesn't exist yet (new resource group), create it following the same pattern as `GTFSService.swift` or `TripsService.swift`, and add a `public let {group}: {Group}Service` property to `ACTransitClient` in `Sources/ACTransitSwift/ACTransitClient.swift`.
+
+Add a `public func` that calls through to the endpoint:
 
 **Standard:**
 ```swift
-public func getGtfsAll() async throws -> [GtfsScheduleInfo] {
-    try await performer.perform(request: ACTEndpoint.gtfsAll.getRequest(token: token), decodeTo: [GtfsScheduleInfo].self)
+/// All schedules: past, current, and future.
+public func all() async throws -> [GtfsInfo] {
+    try await performer.perform(request: GTFSEndpoint.all.getRequest(token: token), decodeTo: [GtfsInfo].self)
 }
 ```
 
 **Parameterized:**
 ```swift
-public func getGtfsBooking(bookingId: String) async throws -> GtfsScheduleInfo {
-    try await performer.perform(request: ACTEndpoint.gtfsBooking(bookingId: bookingId).getRequest(token: token), decodeTo: GtfsScheduleInfo.self)
+/// Schedule for a specific booking ID.
+public func booking(bookingId: String) async throws -> GtfsInfo {
+    try await performer.perform(request: GTFSEndpoint.booking(bookingId: bookingId).getRequest(token: token), decodeTo: GtfsInfo.self)
 }
 ```
 
@@ -158,16 +166,18 @@ Cover:
 6. **Mock data** — `sample` data is self-consistent (e.g. end date > start date)
 7. **`make()` factory** — overriding one argument leaves the others at their defaults
 
-## Step 9 — Update ACTEndpointTests
+## Step 9 — Update the endpoint tests
 
-File: `Tests/ACTransitSwiftTests/ACTEndpointTests.swift`
+File: `Tests/ACTransitSwiftTests/Endpoints/{Group}EndpointTests.swift`
 
-Add a `@Test` for the new endpoint case following the same pattern as the existing `gtfs()` test:
+If the file doesn't exist yet (new resource group), create it following the same pattern as `GTFSEndpointTests.swift` or `TripsEndpointTests.swift`.
+
+Add a `@Test` for the new endpoint case:
 
 ```swift
-@Test("test ACTEndpoint.gtfsAll")
-func gtfsAll() {
-    let endpoint = ACTEndpoint.gtfsAll
+@Test("test GTFSEndpoint.all")
+func all() {
+    let endpoint = GTFSEndpoint.all
     let request = endpoint.getRequest(token: Constants.mockToken)
 
     #expect(endpoint.path == "/gtfs/all")
@@ -177,12 +187,12 @@ func gtfsAll() {
 }
 ```
 
-For parameterized endpoints, pass a representative value to the case and verify the path contains it:
+For parameterized endpoints, pass a representative value and verify the path contains it:
 
 ```swift
-@Test("test ACTEndpoint.gtfsBooking")
-func gtfsBooking() {
-    let endpoint = ACTEndpoint.gtfsBooking(bookingId: "25FASU")
+@Test("test GTFSEndpoint.booking")
+func booking() {
+    let endpoint = GTFSEndpoint.booking(bookingId: "25FASU")
     let request = endpoint.getRequest(token: Constants.mockToken)
 
     #expect(endpoint.path == "/gtfs/25FASU")
@@ -192,16 +202,18 @@ func gtfsBooking() {
 }
 ```
 
-## Step 10 — Add ACTClient success test
+## Step 10 — Add service tests
 
-File: `Tests/ACTransitSwiftTests/ACTClientTests.swift`
+File: `Tests/ACTransitSwiftTests/Services/{Group}ServiceTests.swift`
 
-Append a new `@Test` inside the `ACTClientTests` suite (before the closing `}`). The mock JSON must use the same PascalCase keys the API returns. Assert every field against the model's `.sample` static property — do **not** use a `decode` helper that decodes to a specific type.
+If the file doesn't exist yet (new resource group), create it following the same pattern as `GTFSServiceTests.swift` or `TripsServiceTests.swift`.
+
+Append a new `@Test` inside the suite. The mock JSON must use the same PascalCase keys the API returns. Assert every field against the model's `.sample` static property.
 
 **Standard (single object) response:**
 ```swift
-@Test("test .getGtfs() success case")
-func getGtfs() async throws {
+@Test("test .active() success case")
+func active() async throws {
     let jsonString = """
     {
         "UpdatedDate": "2025-05-01T12:00:00.0000000-07:00",
@@ -211,7 +223,7 @@ func getGtfs() async throws {
     """
     setup(mockJSON: jsonString.data(using: .utf8))
 
-    let result = try await sut.getGtfs()
+    let result = try await sut.active()
 
     #expect(result.updatedDate == GtfsScheduleInfo.sample.updatedDate)
     #expect(result.earliestServiceDate == GtfsScheduleInfo.sample.earliestServiceDate)
@@ -221,8 +233,8 @@ func getGtfs() async throws {
 
 **Array response** — wrap in `[…]`, assert `count == 1`, index into `result[0]`:
 ```swift
-@Test("test .getGtfsAll() success case")
-func getGtfsAll() async throws {
+@Test("test .all() success case")
+func all() async throws {
     let jsonString = """
     [
         {
@@ -235,7 +247,7 @@ func getGtfsAll() async throws {
     """
     setup(mockJSON: jsonString.data(using: .utf8))
 
-    let result = try await sut.getGtfsAll()
+    let result = try await sut.all()
 
     #expect(result.count == 1)
     #expect(result[0].bookingId == GtfsInfo.sample.bookingId)
@@ -247,8 +259,8 @@ func getGtfsAll() async throws {
 
 **Parameterized method** — pass a representative argument matching `.sample`:
 ```swift
-@Test("test .getGtfsBooking() success case")
-func getGtfsBooking() async throws {
+@Test("test .booking() success case")
+func booking() async throws {
     let jsonString = """
     {
         "BookingId": "25FASU",
@@ -259,7 +271,7 @@ func getGtfsBooking() async throws {
     """
     setup(mockJSON: jsonString.data(using: .utf8))
 
-    let result = try await sut.getGtfsBooking(bookingId: GtfsInfo.sample.bookingId)
+    let result = try await sut.booking(bookingId: GtfsInfo.sample.bookingId)
 
     #expect(result.bookingId == GtfsInfo.sample.bookingId)
     #expect(result.updatedDate == GtfsInfo.sample.updatedDate)
@@ -268,9 +280,38 @@ func getGtfsBooking() async throws {
 }
 ```
 
-Use the correct date format from the sample data. For non-date fields, use the literal value from `.sample` directly in the JSON string.
+## Step 11 — Add ACTransitClient test
 
-## Step 11 — Lint and format
+File: `Tests/ACTransitSwiftTests/ACTransitClientTests.swift`
+
+Append a new `@Test` inside the `ACTransitClientTests` suite (before the closing `}`). Call through the client's service property (e.g. `sut.gtfs.all()`). Assert every field against the model's `.sample` static property.
+
+```swift
+@Test("test .gtfs.all() success case")
+func gtfsAll() async throws {
+    let jsonString = """
+    [
+        {
+            "BookingId": "25FASU",
+            "UpdatedDate": "2025-05-01T12:00:00.0000000-07:00",
+            "EarliestServiceDate": "2025-04-28T00:00:00.0000000-07:00",
+            "LatestServiceDate": "2025-08-31T00:00:00.0000000-07:00"
+        }
+    ]
+    """
+    setup(mockJSON: jsonString.data(using: .utf8))
+
+    let result = try await sut.gtfs.all()
+
+    #expect(result.count == 1)
+    #expect(result[0].bookingId == GtfsInfo.sample.bookingId)
+    #expect(result[0].updatedDate == GtfsInfo.sample.updatedDate)
+    #expect(result[0].earliestServiceDate == GtfsInfo.sample.earliestServiceDate)
+    #expect(result[0].latestServiceDate == GtfsInfo.sample.latestServiceDate)
+}
+```
+
+## Step 12 — Lint and format
 
 Run both tools to enforce codebase consistency:
 
@@ -279,15 +320,16 @@ swiftlint --fix Sources Tests
 swiftformat Sources Tests
 ```
 
-## Step 12 — Confirm completion
+## Step 13 — Confirm completion
 
 Report what was created/updated:
 - Reference file updated? (yes/no, what changed)
 - Model file path
-- Endpoint case added
-- Client method added
+- Endpoint enum updated (file path, case added)
+- Service updated (file path, method added)
 - Model test file path
-- `ACTEndpointTests` updated? (yes/no)
-- `ACTClientTests` updated? (yes/no)
+- Endpoint test file updated? (yes/no, file path)
+- Service test file updated? (yes/no, file path)
+- `ACTransitClientTests` updated? (yes/no)
 
 If the endpoint was binary, explain why it was skipped and what would be needed to support it.

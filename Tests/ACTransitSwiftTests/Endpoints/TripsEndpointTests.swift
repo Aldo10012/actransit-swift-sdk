@@ -3,42 +3,16 @@ import EZNetworking
 import Foundation
 import Testing
 
-@Suite("Test ACTEndpoint")
-final class ACTEndpointTests {
-    // MARK: constants
-
+@Suite("Test TripsEndpoint")
+final class TripsEndpointTests {
     enum Constants {
         static let tokenKey = "token"
         static let mockToken = "mockToken"
     }
 
-    // MARK: - unit tests
-
-    @Test("test ACTEndpoint.gtfs")
-    func gtfs() {
-        let endpoint = ACTEndpoint.gtfs
-        let request = endpoint.getRequest(token: Constants.mockToken)
-
-        #expect(endpoint.path == "/gtfs")
-        #expect(request.httpMethod == .GET)
-        #expect(request.baseUrl == "https://api.actransit.org/transit/gtfs")
-        #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
-    }
-
-    @Test("test ACTEndpoint.gtfsAll")
-    func gtfsAll() {
-        let endpoint = ACTEndpoint.gtfsAll
-        let request = endpoint.getRequest(token: Constants.mockToken)
-
-        #expect(endpoint.path == "/gtfs/all")
-        #expect(request.httpMethod == .GET)
-        #expect(request.baseUrl == "https://api.actransit.org/transit/gtfs/all")
-        #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
-    }
-
-    @Test("test ACTEndpoint.tripsCanceled with no optional params")
-    func tripsCanceled() {
-        let endpoint = ACTEndpoint.tripsCanceled()
+    @Test("test TripsEndpoint.canceled with no optional params")
+    func canceled() {
+        let endpoint = TripsEndpoint.canceled()
         let request = endpoint.getRequest(token: Constants.mockToken)
 
         #expect(endpoint.path == "/trips/canceled")
@@ -47,12 +21,12 @@ final class ACTEndpointTests {
         #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
     }
 
-    @Test("test ACTEndpoint.tripsCanceled includes optional params when provided")
-    func tripsCanceledWithParams() {
+    @Test("test TripsEndpoint.canceled includes optional params when provided")
+    func canceledWithParams() {
         let openDate = Date(timeIntervalSince1970: 1_746_100_000)
         let fromDate = Date(timeIntervalSince1970: 1_746_200_000)
         let toDate = Date(timeIntervalSince1970: 1_746_300_000)
-        let endpoint = ACTEndpoint.tripsCanceled(
+        let endpoint = TripsEndpoint.canceled(
             lastIncidentUniqueId: 42,
             lastOpenDateTime: openDate,
             tripDateTimeFrom: fromDate,
@@ -73,9 +47,9 @@ final class ACTEndpointTests {
         #expect(request.parameters?.contains(HTTPParameter(key: "tripDateTimeTo", value: formatter.string(from: toDate))) == true)
     }
 
-    @Test("test ACTEndpoint.tripsTripCancellationInfo")
-    func tripsTripCancellationInfo() {
-        let endpoint = ACTEndpoint.tripsTripCancellationInfo(tripNumber: 1001)
+    @Test("test TripsEndpoint.cancellationInfo")
+    func cancellationInfo() {
+        let endpoint = TripsEndpoint.cancellationInfo(tripNumber: 1001)
         let request = endpoint.getRequest(token: Constants.mockToken)
 
         #expect(endpoint.path == "/trips/tripcancellationinfo/1001")

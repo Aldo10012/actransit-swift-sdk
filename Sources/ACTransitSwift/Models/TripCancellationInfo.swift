@@ -137,7 +137,7 @@ public struct TripCancellationInfo: Codable, Sendable {
 
     // MARK: - Mock Data
 
-    public static let sample: TripCancellationInfo = TripCancellationInfo(
+    public static let sample = TripCancellationInfo(
         routeAlpha: "51A",
         direction: "NB",
         bookingId: "25FASU",

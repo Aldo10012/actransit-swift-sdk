@@ -3,24 +3,24 @@ import EZNetworking
 import Foundation
 import Testing
 
-@Suite("Test ACTClient")
-final class ACTClientTests {
-    private var sut: ACTClient
+@Suite("Test ACTransitClient")
+final class ACTransitClientTests {
+    private var sut: ACTransitClient
 
     init() {
-        sut = ACTClient(token: "mockToken", performer: MockRequestPerformer())
+        sut = ACTransitClient(token: "mockToken", performer: MockRequestPerformer())
     }
 
     private func setup(mockJSON: Data?) {
         var performer = MockRequestPerformer()
         performer.fixture = mockJSON
-        sut = ACTClient(token: "mockToken", performer: performer)
+        sut = ACTransitClient(token: "mockToken", performer: performer)
     }
 
     // MARK: - Tests
 
-    @Test("test .getGtfs() success case")
-    func getGtfs() async throws {
+    @Test("test .gtfs.active() success case")
+    func gtfsActive() async throws {
         let jsonString = """
         {
             "UpdatedDate": "2025-05-01T12:00:00.0000000-07:00",
@@ -30,14 +30,14 @@ final class ACTClientTests {
         """
         setup(mockJSON: jsonString.data(using: .utf8))
 
-        let result = try await sut.getGtfs()
+        let result = try await sut.gtfs.active()
         #expect(result.updatedDate == GtfsScheduleInfo.sample.updatedDate)
         #expect(result.earliestServiceDate == GtfsScheduleInfo.sample.earliestServiceDate)
         #expect(result.latestServiceDate == GtfsScheduleInfo.sample.latestServiceDate)
     }
 
-    @Test("test .getGtfsAll() success case")
-    func getGtfsAll() async throws {
+    @Test("test .gtfs.all() success case")
+    func gtfsAll() async throws {
         let jsonString = """
         [
             {
@@ -50,7 +50,7 @@ final class ACTClientTests {
         """
         setup(mockJSON: jsonString.data(using: .utf8))
 
-        let result = try await sut.getGtfsAll()
+        let result = try await sut.gtfs.all()
         #expect(result.count == 1)
         #expect(result[0].bookingId == GtfsInfo.sample.bookingId)
         #expect(result[0].updatedDate == GtfsInfo.sample.updatedDate)
@@ -58,8 +58,8 @@ final class ACTClientTests {
         #expect(result[0].latestServiceDate == GtfsInfo.sample.latestServiceDate)
     }
 
-    @Test("test .getTripsTripCancellationInfo() success case")
-    func getTripsTripCancellationInfo() async throws {
+    @Test("test .trips.cancellationInfo() success case")
+    func tripsCancellationInfo() async throws {
         let jsonString = """
         {
             "RouteAlpha": "51A",
@@ -83,7 +83,7 @@ final class ACTClientTests {
         """
         setup(mockJSON: jsonString.data(using: .utf8))
 
-        let result = try await sut.getTripsTripCancellationInfo(tripNumber: TripCancellationInfo.sample.tripNumber)
+        let result = try await sut.trips.cancellationInfo(tripNumber: TripCancellationInfo.sample.tripNumber)
         #expect(result.routeAlpha == TripCancellationInfo.sample.routeAlpha)
         #expect(result.direction == TripCancellationInfo.sample.direction)
         #expect(result.bookingId == TripCancellationInfo.sample.bookingId)
@@ -103,8 +103,8 @@ final class ACTClientTests {
         #expect(result.prevScheduleType == TripCancellationInfo.sample.prevScheduleType)
     }
 
-    @Test("test .getTripsCanceled() success case")
-    func getTripsCanceled() async throws {
+    @Test("test .trips.canceled() success case")
+    func tripsCanceled() async throws {
         let jsonString = """
         [
             {
@@ -134,7 +134,7 @@ final class ACTClientTests {
         """
         setup(mockJSON: jsonString.data(using: .utf8))
 
-        let result = try await sut.getTripsCanceled()
+        let result = try await sut.trips.canceled()
         #expect(result.count == 1)
         #expect(result[0].tripExceptionId == TripException.sample.tripExceptionId)
         #expect(result[0].eventType == TripException.sample.eventType)
