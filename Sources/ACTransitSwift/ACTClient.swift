@@ -6,7 +6,7 @@ public class ACTClient {
     private let performer: RequestPerformable
 
     public convenience init() {
-        self.init(token: ACTSwiftPlugins.apiToken, performer: RequestPerformer())
+        self.init(token: ACTransitPlugins.apiToken, performer: RequestPerformer())
     }
 
     init(token: String, performer: RequestPerformable) {

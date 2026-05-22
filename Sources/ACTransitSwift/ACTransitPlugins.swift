@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ACTSwiftPlugins {
+public struct ACTransitPlugins {
     private static let lock = NSLock()
     private nonisolated(unsafe) static var _apiToken = ""
 
