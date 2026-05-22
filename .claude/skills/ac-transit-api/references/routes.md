@@ -33,6 +33,35 @@ Returns all AC Transit routes for a given booking period.
 | IsAllNighter | boolean | True if all-night service |
 | IsSchool | boolean | True if school route |
 
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "Division": "sample string 1",
+    "IsLocal": true,
+    "IsTransbay": true,
+    "IsAllNighter": true,
+    "IsRapid": true,
+    "IsSchool": true,
+    "RouteId": "sample string 7",
+    "Name": "sample string 8",
+    "Description": "sample string 9"
+  },
+  {
+    "Division": "sample string 1",
+    "IsLocal": true,
+    "IsTransbay": true,
+    "IsAllNighter": true,
+    "IsRapid": true,
+    "IsSchool": true,
+    "RouteId": "sample string 7",
+    "Name": "sample string 8",
+    "Description": "sample string 9"
+  }
+]
+```
+
 ---
 
 ## `GET /route/{routeName}/{booking}`
@@ -83,6 +112,27 @@ Returns all trips for a given route, optionally filtered by direction and schedu
 | ScheduleType | integer | 0 = Weekday, etc. |
 | StartTime | datetime | ISO 8601 scheduled start time |
 | Direction | string | Trip direction |
+
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "TripId": 1,
+    "RouteName": "sample string 2",
+    "ScheduleType": 0,
+    "StartTime": "2026-05-21T08:22:19.1486563-07:00",
+    "Direction": "sample string 4"
+  },
+  {
+    "TripId": 1,
+    "RouteName": "sample string 2",
+    "ScheduleType": 0,
+    "StartTime": "2026-05-21T08:22:19.1486563-07:00",
+    "Direction": "sample string 4"
+  }
+]
+```
 
 ---
 
@@ -238,6 +288,25 @@ Returns the ordered geographic waypoints (timepoints) for a specific trip.
 | Latitude | decimal | Geographic latitude |
 | Longitude | decimal | Geographic longitude |
 
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "TripId": 1,
+    "Sequence": 2,
+    "Latitude": 1.0,
+    "Longitude": 1.0
+  },
+  {
+    "TripId": 1,
+    "Sequence": 2,
+    "Latitude": 1.0,
+    "Longitude": 1.0
+  }
+]
+```
+
 ---
 
 ## `GET /route/{routeName}/trip/{tripId}/stops`
@@ -268,6 +337,29 @@ Returns all stops with scheduled departure times for a specific trip.
 | City | string | City where stop is located |
 | ScheduledTime | datetime | Scheduled vehicle departure time (date portion is irrelevant; use only the time) |
 
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "StopId": 1,
+    "Name": "sample string 2",
+    "Latitude": 3.0,
+    "Longitude": 4.0,
+    "City": "sample string 5",
+    "ScheduledTime": "2026-05-21T08:22:20.1513063-07:00"
+  },
+  {
+    "StopId": 1,
+    "Name": "sample string 2",
+    "Latitude": 3.0,
+    "Longitude": 4.0,
+    "City": "sample string 5",
+    "ScheduledTime": "2026-05-21T08:22:20.1513063-07:00"
+  }
+]
+```
+
 ---
 
 ## `GET /route/{routeName}/vehicles`
@@ -296,6 +388,29 @@ Returns real-time location data for all vehicles currently operating on a route.
 | Longitude | decimal | Geographic longitude (nullable) |
 | Heading | integer | Direction of travel in degrees (nullable) |
 | TimeLastReported | datetime | Most recent data timestamp (nullable) |
+
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "VehicleId": 1,
+    "CurrentTripId": 2,
+    "Latitude": 1.0,
+    "Longitude": 1.0,
+    "Heading": 1,
+    "TimeLastReported": "2026-05-21T08:22:18.75695-07:00"
+  },
+  {
+    "VehicleId": 1,
+    "CurrentTripId": 2,
+    "Latitude": 1.0,
+    "Longitude": 1.0,
+    "Heading": 1,
+    "TimeLastReported": "2026-05-21T08:22:18.75695-07:00"
+  }
+]
+```
 
 ---
 
@@ -329,6 +444,29 @@ Returns all future trip estimates between two stops on a route.
 | ExpectedDepartureTime | datetime | Predicted vehicle arrival at origin |
 | TripDuration | timespan | Total journey duration |
 | VehicleId | integer | Vehicle servicing the trip |
+
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "RouteName": "sample string 1",
+    "OriginStopId": 2,
+    "DestinationStopId": 3,
+    "ExpectedDepartureTime": "2026-05-21T01:03:49.799401-07:00",
+    "TripDuration": "00:00:00.1234567",
+    "VehicleId": 1
+  },
+  {
+    "RouteName": "sample string 1",
+    "OriginStopId": 2,
+    "DestinationStopId": 3,
+    "ExpectedDepartureTime": "2026-05-21T01:03:49.799401-07:00",
+    "TripDuration": "00:00:00.1234567",
+    "VehicleId": 1
+  }
+]
+```
 
 ---
 
@@ -401,6 +539,32 @@ Returns waypoints optimized for speed. Same top-level structure as `/waypoints/`
 | scheduleType | TripScheduleType | No | `Weekday` (default), `Saturday`, or `Sunday` |
 | token | string | Yes | API authentication token |
 
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "Booking": "sample string 1",
+    "RouteAlpha": "sample string 2",
+    "Patterns": [
+      {
+        "DirectionId": 1,
+        "Direction": "sample string 2",
+        "Destination": "sample string 3",
+        "FirstPlaceId": "sample string 4",
+        "LastPlaceId": "sample string 5",
+        "IsDefault": true,
+        "TotalDistance": 7,
+        "Waypoints": [
+          "sample string 1",
+          "sample string 2"
+        ]
+      }
+    ]
+  }
+]
+```
+
 ---
 
 ## `GET /route/{routes}/tripstoday`
@@ -445,6 +609,57 @@ Returns all scheduled trips operating on specified routes today, with stop-level
 | StopLongitude | decimal | Stop longitude |
 | StopLatitude | decimal | Stop latitude |
 
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "RouteId": "sample string 1",
+    "DirectionId": 2,
+    "Direction": "sample string 3",
+    "ScheduleType": "sample string 4",
+    "Headsign": "sample string 5",
+    "Destination": "sample string 6",
+    "Destination2": "sample string 7",
+    "TripStartTime": "2026-05-21T04:12:43.2840424-07:00",
+    "TripId": 9,
+    "TripNumber": 10,
+    "TripNumber2": 11,
+    "PositionNumber": 12,
+    "StopId": 13,
+    "StopDescription": "sample string 14",
+    "PassingTime": "2026-05-21T04:12:43.2840424-07:00",
+    "StopNumber1": 16,
+    "StopNumber2": "sample string 17",
+    "PlaceId": "sample string 18",
+    "StopLongitude": 19.0,
+    "StopLatitude": 20.0
+  },
+  {
+    "RouteId": "sample string 1",
+    "DirectionId": 2,
+    "Direction": "sample string 3",
+    "ScheduleType": "sample string 4",
+    "Headsign": "sample string 5",
+    "Destination": "sample string 6",
+    "Destination2": "sample string 7",
+    "TripStartTime": "2026-05-21T04:12:43.2840424-07:00",
+    "TripId": 9,
+    "TripNumber": 10,
+    "TripNumber2": 11,
+    "PositionNumber": 12,
+    "StopId": 13,
+    "StopDescription": "sample string 14",
+    "PassingTime": "2026-05-21T04:12:43.2840424-07:00",
+    "StopNumber1": 16,
+    "StopNumber2": "sample string 17",
+    "PlaceId": "sample string 18",
+    "StopLongitude": 19.0,
+    "StopLatitude": 20.0
+  }
+]
+```
+
 ---
 
 ## `GET /route/{routes}/tripstops`
@@ -465,6 +680,57 @@ Returns all stops and trips for specified routes for today. Returns the same Tri
 | token | string | Yes | API authentication token |
 
 **Response Body** — Array of TripStopToday objects (same schema as `/tripstoday`)
+
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "RouteId": "sample string 1",
+    "DirectionId": 2,
+    "Direction": "sample string 3",
+    "ScheduleType": "sample string 4",
+    "Headsign": "sample string 5",
+    "Destination": "sample string 6",
+    "Destination2": "sample string 7",
+    "TripStartTime": "2026-05-21T08:22:18.1297581-07:00",
+    "TripId": 9,
+    "TripNumber": 10,
+    "TripNumber2": 11,
+    "PositionNumber": 12,
+    "StopId": 13,
+    "StopDescription": "sample string 14",
+    "PassingTime": "2026-05-21T08:22:18.1297581-07:00",
+    "StopNumber1": 16,
+    "StopNumber2": "sample string 17",
+    "PlaceId": "sample string 18",
+    "StopLongitude": 19.0,
+    "StopLatitude": 20.0
+  },
+  {
+    "RouteId": "sample string 1",
+    "DirectionId": 2,
+    "Direction": "sample string 3",
+    "ScheduleType": "sample string 4",
+    "Headsign": "sample string 5",
+    "Destination": "sample string 6",
+    "Destination2": "sample string 7",
+    "TripStartTime": "2026-05-21T08:22:18.1297581-07:00",
+    "TripId": 9,
+    "TripNumber": 10,
+    "TripNumber2": 11,
+    "PositionNumber": 12,
+    "StopId": 13,
+    "StopDescription": "sample string 14",
+    "PassingTime": "2026-05-21T08:22:18.1297581-07:00",
+    "StopNumber1": 16,
+    "StopNumber2": "sample string 17",
+    "PlaceId": "sample string 18",
+    "StopLongitude": 19.0,
+    "StopLatitude": 20.0
+  }
+]
+```
 
 ---
 
@@ -595,6 +861,25 @@ Returns all destinations serviced by a given route, with directional detail.
 | Direction | string | Cardinal direction string |
 | Destination | string | Destination string |
 
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "RouteId": "sample string 1",
+    "DirectionId": 2,
+    "Direction": "sample string 3",
+    "Destination": "sample string 4"
+  },
+  {
+    "RouteId": "sample string 1",
+    "DirectionId": 2,
+    "Direction": "sample string 3",
+    "Destination": "sample string 4"
+  }
+]
+```
+
 ---
 
 ## `GET /route/{routes}/exceptions/{booking}`
@@ -657,3 +942,18 @@ Returns profile (description) information for specified routes.
 |-------|------|-------------|
 | RouteId | string | Route name |
 | Profile | string | Route description text |
+
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "RouteId": "sample string 1",
+    "Profile": "sample string 2"
+  },
+  {
+    "RouteId": "sample string 1",
+    "Profile": "sample string 2"
+  }
+]
+```

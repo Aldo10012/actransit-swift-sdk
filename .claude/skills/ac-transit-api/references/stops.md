@@ -23,6 +23,29 @@ Returns all currently active AC Transit stops.
 | City | string | City name |
 | ScheduledTime | datetime | Scheduled departure time (date portion is irrelevant; use only the time component) |
 
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "StopId": 1,
+    "Name": "sample string 2",
+    "Latitude": 3.0,
+    "Longitude": 4.0,
+    "City": "sample string 5",
+    "ScheduledTime": "2026-05-21T07:48:20.0106759-07:00"
+  },
+  {
+    "StopId": 1,
+    "Name": "sample string 2",
+    "Latitude": 3.0,
+    "Longitude": 4.0,
+    "City": "sample string 5",
+    "ScheduledTime": "2026-05-21T07:48:20.0106759-07:00"
+  }
+]
+```
+
 ---
 
 ## `GET /stops/summary`
@@ -41,6 +64,15 @@ Returns a summary count and last-updated timestamp for active stops.
 |-------|------|-------------|
 | Count | integer | Number of stops in the current list |
 | LastUpdatedDateTime | datetime | Last date/time stop information was changed |
+
+**Response Sample (JSON):**
+
+```json
+{
+  "Count": 1,
+  "LastUpdatedDateTime": "2026-05-21T18:01:14.8019863-07:00"
+}
+```
 
 ---
 
@@ -182,6 +214,57 @@ Returns all trips that travel to a given stop today.
 | StopLongitude | decimal | Stop longitude |
 | StopLatitude | decimal | Stop latitude |
 
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "RouteId": "sample string 1",
+    "DirectionId": 2,
+    "Direction": "sample string 3",
+    "ScheduleType": "sample string 4",
+    "Headsign": "sample string 5",
+    "Destination": "sample string 6",
+    "Destination2": "sample string 7",
+    "TripStartTime": "2026-05-21T08:22:20.1043981-07:00",
+    "TripId": 9,
+    "TripNumber": 10,
+    "TripNumber2": 11,
+    "PositionNumber": 12,
+    "StopId": 13,
+    "StopDescription": "sample string 14",
+    "PassingTime": "2026-05-21T08:22:20.1043981-07:00",
+    "StopNumber1": 16,
+    "StopNumber2": "sample string 17",
+    "PlaceId": "sample string 18",
+    "StopLongitude": 19.0,
+    "StopLatitude": 20.0
+  },
+  {
+    "RouteId": "sample string 1",
+    "DirectionId": 2,
+    "Direction": "sample string 3",
+    "ScheduleType": "sample string 4",
+    "Headsign": "sample string 5",
+    "Destination": "sample string 6",
+    "Destination2": "sample string 7",
+    "TripStartTime": "2026-05-21T08:22:20.1043981-07:00",
+    "TripId": 9,
+    "TripNumber": 10,
+    "TripNumber2": 11,
+    "PositionNumber": 12,
+    "StopId": 13,
+    "StopDescription": "sample string 14",
+    "PassingTime": "2026-05-21T08:22:20.1043981-07:00",
+    "StopNumber1": 16,
+    "StopNumber2": "sample string 17",
+    "PlaceId": "sample string 18",
+    "StopLongitude": 19.0,
+    "StopLatitude": 20.0
+  }
+]
+```
+
 ---
 
 ## `GET /stop/{stopId}/destinations`
@@ -260,3 +343,46 @@ Returns comprehensive profile information for a stop, including location, servic
 | Predictions | object | `{ "Url": "string" }` — link to real-time predictions |
 | Map | object | `{ "Url": "string" }` — link to stop map |
 | Schedules | array | `[{ "RouteId": "string", "Url": "string" }]` — schedule links per route |
+
+**Response Sample (JSON):**
+
+```json
+{
+  "StopId": 1,
+  "Street": "sample string 2",
+  "City": "sample string 3",
+  "SiteDirection": "sample string 4",
+  "Site": "sample string 5",
+  "Corner": "sample string 6",
+  "IsInService": true,
+  "Latitude": 8.0,
+  "Longitude": 9.0,
+  "Routes": "sample string 10",
+  "AllowAlighting": true,
+  "AllowBoarding": true,
+  "PlaceId": "sample string 13",
+  "PlaceDescription": "sample string 14",
+  "StopServiceAlerts": {
+    "Url": "sample string 1"
+  },
+  "Amenities": {
+    "Url": "sample string 1"
+  },
+  "Predictions": {
+    "Url": "sample string 1"
+  },
+  "Map": {
+    "Url": "sample string 1"
+  },
+  "Schedules": [
+    {
+      "RouteId": "sample string 1",
+      "Url": "sample string 2"
+    },
+    {
+      "RouteId": "sample string 1",
+      "Url": "sample string 2"
+    }
+  ]
+}
+```

@@ -42,6 +42,41 @@ Returns all revenue trip exceptions matching provided filter criteria.
 | ToStopLongitude | decimal | Destination stop longitude |
 | StopsInOrder | string | Ordered stop list |
 
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "TripExceptionId": 1,
+    "EventType": "sample string 2",
+    "IncidentId": "sample string 3",
+    "IncidentUniqueId": 4,
+    "OpenDateTime": "2026-05-21T17:57:14.8531098-07:00",
+    "IncidentAddDateTime": "2026-05-21T17:57:14.8531098-07:00",
+    "ScheduleType": "sample string 5",
+    "SourceType": "sample string 6",
+    "TripNumber": 1,
+    "InternalTripNumber": 1,
+    "TripStartTime": "2026-05-21T17:57:14.8531098-07:00",
+    "RouteAlpha": "sample string 7",
+    "Direction": "sample string 8",
+    "PatternId": 1,
+    "BookingId": "sample string 9",
+    "FromId511": "sample string 10",
+    "FromStopId": "sample string 11",
+    "ToId511": "sample string 12",
+    "ToStopId": "sample string 13",
+    "FromStopDescription": "sample string 14",
+    "FromStopLatitude": 1.0,
+    "FromStopLongitude": 1.0,
+    "ToStopDescription": "sample string 15",
+    "ToStopLatitude": 1.0,
+    "ToStopLongitude": 1.0,
+    "StopsInOrder": "sample string 16"
+  }
+]
+```
+
 ---
 
 ## `GET /trips/tripcancellationinfo/{tripNumber}`
@@ -81,3 +116,27 @@ Returns cancellation details and adjacent trips for a specific trip.
 | PrevInternalTripNumber | integer | Previous trip internal ID |
 | PrevTripStartTime | datetime | Previous trip departure time |
 | PrevScheduleType | string | Previous trip schedule type |
+
+**Response Sample (JSON):**
+
+```json
+{
+  "RouteAlpha": "sample string 1",
+  "Direction": "sample string 2",
+  "BookingId": "sample string 3",
+  "Canceled": true,
+  "Reinstated": true,
+  "TripNumber": 1,
+  "InternalTripNumber": 1,
+  "TripStartTime": "2026-05-21T18:00:13.5769221-07:00",
+  "ScheduleType": "sample string 4",
+  "NextTripNumber": 1,
+  "NextInternalTripNumber": 1,
+  "NextTripStartTime": "2026-05-21T18:00:13.5769221-07:00",
+  "NextScheduleType": "sample string 5",
+  "PrevTripNumber": 1,
+  "PrevInternalTripNumber": 1,
+  "PrevTripStartTime": "2026-05-21T18:00:13.5769221-07:00",
+  "PrevScheduleType": "sample string 6"
+}
+```

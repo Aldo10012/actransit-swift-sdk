@@ -397,6 +397,54 @@ Returns all stops, optionally filtered to a single route, with optional field li
 
 **Response Body** — Same structure as `/actrealtime/stop` (array of stop objects inside `bustime-response.stops`).
 
+**Response Sample (JSON):**
+
+```json
+{
+  "bustime-response": {
+    "stops": [
+      {
+        "stpid": "sample string 1",
+        "stpnm": "sample string 2",
+        "lat": 3.0,
+        "lon": 4.0,
+        "dtradd": [
+          "sample string 1",
+          "sample string 2"
+        ],
+        "dtrrem": [
+          "sample string 1",
+          "sample string 2"
+        ]
+      },
+      {
+        "stpid": "sample string 1",
+        "stpnm": "sample string 2",
+        "lat": 3.0,
+        "lon": 4.0,
+        "dtradd": [
+          "sample string 1",
+          "sample string 2"
+        ],
+        "dtrrem": [
+          "sample string 1",
+          "sample string 2"
+        ]
+      }
+    ],
+    "error": [
+      {
+        "rtpidatafeed": "sample string 1",
+        "stpid": "sample string 2",
+        "rt": "sample string 3",
+        "vid": "sample string 4",
+        "msg": "sample string 5"
+      }
+    ]
+  }
+}
+```
+
 ---
 
 ## `GET /actrealtime/vehicle`
