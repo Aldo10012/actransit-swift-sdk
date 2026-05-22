@@ -1,4 +1,4 @@
-@preconcurrency import EZNetworking
+import EZNetworking
 import Foundation
 
 public struct TripsService {
