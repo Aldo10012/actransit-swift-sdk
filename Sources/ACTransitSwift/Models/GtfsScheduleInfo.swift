@@ -52,7 +52,7 @@ public struct GtfsScheduleInfo: Codable, Sendable {
 
     // MARK: - Mock Data
 
-    public static let sample: GtfsScheduleInfo = GtfsScheduleInfo(
+    public static let sample = GtfsScheduleInfo(
         updatedDate: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T12:00:00-07:00")!,
         earliestServiceDate: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-04-28T00:00:00-07:00")!,
         latestServiceDate: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-08-31T00:00:00-07:00")!

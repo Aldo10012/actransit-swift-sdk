@@ -161,29 +161,29 @@ public struct TripException: Codable, Sendable {
 
     // MARK: - Mock Data
 
-    public static let sample: TripException = TripException(
-            tripExceptionId: 12345,
-            eventType: "Canceled",
-            incidentId: "INC-001",
-            incidentUniqueId: 67890,
-            openDateTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T08:00:00-07:00")!,
-            incidentAddDateTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T07:55:00-07:00")!,
-            tripStartTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T09:00:00-07:00")!,
-            routeAlpha: "51A",
-            direction: "NB",
-            tripNumber: 1001,
-            internalTripNumber: 5001,
-            patternId: 301,
-            fromStopId: "1234",
-            toStopId: "5678",
-            fromStopDescription: "Main St & 1st Ave",
-            toStopDescription: "Broadway & 5th Ave",
-            fromStopLatitude: 37.8044,
-            fromStopLongitude: -122.2711,
-            toStopLatitude: 37.8102,
-            toStopLongitude: -122.2705,
-            stopsInOrder: "1234,2345,3456,5678"
-        )
+    public static let sample = TripException(
+        tripExceptionId: 12345,
+        eventType: "Canceled",
+        incidentId: "INC-001",
+        incidentUniqueId: 67890,
+        openDateTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T08:00:00-07:00")!,
+        incidentAddDateTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T07:55:00-07:00")!,
+        tripStartTime: ISO8601DateFormatter.ACTQueryFormat.date(from: "2025-05-01T09:00:00-07:00")!,
+        routeAlpha: "51A",
+        direction: "NB",
+        tripNumber: 1001,
+        internalTripNumber: 5001,
+        patternId: 301,
+        fromStopId: "1234",
+        toStopId: "5678",
+        fromStopDescription: "Main St & 1st Ave",
+        toStopDescription: "Broadway & 5th Ave",
+        fromStopLatitude: 37.8044,
+        fromStopLongitude: -122.2711,
+        toStopLatitude: 37.8102,
+        toStopLongitude: -122.2705,
+        stopsInOrder: "1234,2345,3456,5678"
+    )
 
     public static let minimal = TripException(
         tripExceptionId: 0,
