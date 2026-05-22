@@ -1,7 +1,7 @@
 import EZNetworking
 import Foundation
 
-public class ACTClient {
+public class ACTransitClient {
     /// GTFS schedule endpoints.
     public let gtfs: GTFSService
     /// Trip cancellation endpoints.

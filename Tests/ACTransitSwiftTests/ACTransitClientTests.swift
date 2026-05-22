@@ -3,18 +3,18 @@ import EZNetworking
 import Foundation
 import Testing
 
-@Suite("Test ACTClient")
-final class ACTClientTests {
-    private var sut: ACTClient
+@Suite("Test ACTransitClient")
+final class ACTransitClientTests {
+    private var sut: ACTransitClient
 
     init() {
-        sut = ACTClient(token: "mockToken", performer: MockRequestPerformer())
+        sut = ACTransitClient(token: "mockToken", performer: MockRequestPerformer())
     }
 
     private func setup(mockJSON: Data?) {
         var performer = MockRequestPerformer()
         performer.fixture = mockJSON
-        sut = ACTClient(token: "mockToken", performer: performer)
+        sut = ACTransitClient(token: "mockToken", performer: performer)
     }
 
     // MARK: - Tests
