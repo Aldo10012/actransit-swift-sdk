@@ -81,13 +81,35 @@ The SDK uses a service-namespaced architecture. Each resource group has its own 
 
 For path parameters, name the associated value after the parameter (e.g. `case booking(bookingId: String)`).
 
-## Step 5 — Generate the Swift model
+## Step 5 — Resolve named types, then generate the Swift model
 
-Invoke the `swift-struct-generator` skill with:
-- The **exact JSON sample** from the live API docs
-- The **resource model name** as the required struct name
-- The instruction that all types must be `public`, `Codable`, and `Sendable`
-- Note any date fields (ISO 8601 with potential 7 fractional-second digits) so the generator handles them with a custom decoder using `ISO8601DateFormatter.ACTFormat` from the shared extension — never declare a new per-struct formatter
+**Before writing any Swift**, check the ResourceModel page for every field whose type is not a plain primitive (`string`, `integer`, `boolean`, `decimal`, `date`). Fetch `https://api.actransit.org/transit/Help/ResourceModel?modelName={TypeName}` for each named type.
+
+- **Enum types** (e.g. `TripScheduleType`): Create a Swift enum in the endpoint file with the correct raw values from the API docs. Note: the API may use integer values in JSON responses but accept string values for query parameters — handle both in one enum:
+  ```swift
+  public enum TripScheduleType: Int, Codable, Sendable {
+      case weekday = 0   // API JSON value
+      case saturday = 5
+      case sunday = 6
+
+      /// String value used when passing this type as a query parameter.
+      var queryValue: String {
+          switch self {
+          case .weekday: "Weekday"
+          case .saturday: "Saturday"
+          case .sunday: "Sunday"
+          }
+      }
+  }
+  ```
+  In model structs, use the enum type directly (e.g. `public let scheduleType: TripScheduleType`) — never use `Int` or `String` when the API doc names a typed enum.
+- **Nested object types**: Generate a separate `public struct` for each (can live in the same `.swift` file if tightly coupled).
+
+**Generate the model struct:**
+- `public struct`, `Codable`, `Sendable`
+- Named enum fields use the enum type, never a bare `Int` or `String`
+- CodingKeys using PascalCase API key names
+- Custom `init(from:)` only for models with date fields (use `ISO8601DateFormatter.ACTFormat` from the shared extension — never declare a new per-struct formatter)
 
 Above the struct declaration, add a `///` doc comment with the ResourceModel URL:
 
@@ -99,6 +121,8 @@ public struct GtfsInfo: Codable, Sendable {
 `.sample` values must use **real data from a live API call**, not placeholder strings like `"sample string 1"`.
 
 For each property, fetch `https://api.actransit.org/transit/Help/ResourceModel?modelName={ModelName}` and add a `///` doc comment with the API's description above the property declaration. Only add a doc comment if the API docs provide a description for that property — omit it if they don't.
+
+Static factory: `.sample`, `.minimal` (if optional fields exist), and `.make(…)`.
 
 Write the generated file to:
 ```
@@ -143,7 +167,8 @@ case let .routes(booking, _):
 // getRequest(token:) switch:
 case let .routes(_, sortType):
     var params: [HTTPParameter] = [tokenParam]
-    if let sortType { params.append(HTTPParameter(key: "sortType", value: sortType.rawValue)) }
+    // Use .queryValue (not .rawValue) for enums that accept string values as query params
+    if let sortType { params.append(HTTPParameter(key: "sortType", value: sortType.queryValue)) }
     return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
 ```
 

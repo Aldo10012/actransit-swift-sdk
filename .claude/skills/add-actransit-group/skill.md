@@ -135,9 +135,32 @@ Fetch the Help page for this endpoint and extract:
 
 Follow the same patterns as the existing `GTFSEndpoint`, `GTFSService`, `GtfsInfo`, and their tests.
 
+**Resolve named types from the ResourceModel page** — When a field's type on the ResourceModel page is a named type (not a Swift primitive like `string`, `integer`, `boolean`), fetch `https://api.actransit.org/transit/Help/ResourceModel?modelName={TypeName}` to get the full definition before writing any Swift code.
+
+- **Enum types** (e.g. `TripScheduleType`): Create a Swift enum in the endpoint file with the correct raw values from the API docs. Note: the API may use integer values in JSON responses but accept string values for query parameters — handle both in one enum:
+  ```swift
+  public enum TripScheduleType: Int, Codable, Sendable {
+      case weekday = 0   // API JSON value
+      case saturday = 5
+      case sunday = 6
+
+      /// String value used when passing this type as a query parameter.
+      var queryValue: String {
+          switch self {
+          case .weekday: "Weekday"
+          case .saturday: "Saturday"
+          case .sunday: "Sunday"
+          }
+      }
+  }
+  ```
+  In `getRequest(token:)`, use `.queryValue` (not `.rawValue`) when building query parameters for these enums. In model structs, use the enum type directly (e.g. `public let scheduleType: TripScheduleType`) — never use `Int` or `String` when the API doc names a typed enum.
+- **Nested object types**: Generate a separate `public struct` for each (can live in the same `.swift` file if tightly coupled).
+
 **Generate the Swift model** — based on the JSON sample and resource model name:
 - `public struct`, `Codable`, `Sendable`
 - CodingKeys using PascalCase API key names
+- Named enum fields use the enum type (never a bare `Int` or `String` when the API doc names a typed enum)
 - Custom `init(from:)` only for models with date fields (use `ISO8601DateFormatter.ACTFormat` via the shared extension — never declare a new per-struct formatter)
 - Static `.sample`, `.minimal` (if optional fields exist), and `.make(…)` factory
 - `.sample` values must use **real data from a live API call**, not placeholder strings
@@ -153,7 +176,8 @@ Follow the same patterns as the existing `GTFSEndpoint`, `GTFSService`, `GtfsInf
   - Format: `/// https://api.actransit.org/transit/{path}?{queryParams}` (only include non-token params)
   - Example: `/// https://api.actransit.org/transit/routes/{booking}?sortType={sortType}`
 - Below the URL comment, add `/// - Parameters:` docstrings for each associated value, copied from the API docs description
-- Use typed Swift enums for typed API parameters (e.g. `RouteSortType` instead of `String`); define them in the endpoint file
+- Use typed Swift enums for typed API parameters; define them in the endpoint file
+- For enum query params, use `.queryValue` (not `.rawValue`) when building `HTTPParameter` values
 - Optional path params (bookingId, etc.) should use `= nil` defaults on the associated value
 - Required query params should be non-optional associated values
 - Extend both switch statements: `path` and `getRequest(token:)`
