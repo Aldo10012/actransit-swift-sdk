@@ -17,4 +17,12 @@ public struct StopsService {
             decodeTo: [Stop].self
         )
     }
+
+    /// Retrieves a summary count and last-updated timestamp for active stops.
+    public func summary() async throws -> StopSummary {
+        try await performer.perform(
+            request: StopsEndpoint.summary.getRequest(token: token),
+            decodeTo: StopSummary.self
+        )
+    }
 }

@@ -43,6 +43,21 @@ final class StopsServiceTests {
         #expect(result[0].longitude == Stop.sample.longitude)
         #expect(result[0].city == Stop.sample.city)
     }
+
+    @Test("test .summary() success case")
+    func summary() async throws {
+        let jsonString = """
+        {
+            "Count": 4850,
+            "LastUpdatedDateTime": "2026-05-24T00:00:00.000-07:00"
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.summary()
+        #expect(result.count == StopSummary.sample.count)
+        #expect(result.lastUpdatedDateTime == StopSummary.sample.lastUpdatedDateTime)
+    }
 }
 
 // MARK: - mocks
