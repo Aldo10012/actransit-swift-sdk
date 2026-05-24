@@ -70,7 +70,7 @@ final class RoutesServiceTests {
         [
             {
                 "TimePoints": null,
-                "InstructionsText": "VIA CAMPUS DR, INTO MISSION BELL DR, R\\ COLLEGE LN, L\\ SAN PABLO AV",
+                "InstructionsText": "VIA CAMPUS DR, INTO MISSION BELL DR, R COLLEGE LN, L SAN PABLO AV",
                 "TripId": 11861464,
                 "RouteName": "72",
                 "ScheduleType": 0,
