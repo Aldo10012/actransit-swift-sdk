@@ -150,6 +150,25 @@ final class ACTransitClientTests {
         #expect(result[0].name == Stop.sample.name)
     }
 
+    @Test("test .vehicles.vehicle(vehicleId:) success case")
+    func vehiclesVehicle() async throws {
+        let jsonString = """
+        {
+            "VehicleId": 1505,
+            "CurrentTripId": 11862132,
+            "Latitude": 37.8376083374023,
+            "Longitude": -122.281852722168,
+            "Heading": 350,
+            "TimeLastReported": "2026-05-23T21:17:35"
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.vehicles.vehicle(vehicleId: 1505)
+        #expect(result.vehicleId == Vehicle.sample.vehicleId)
+        #expect(result.currentTripId == Vehicle.sample.currentTripId)
+    }
+
     @Test("test .trips.canceled() success case")
     func tripsCanceled() async throws {
         let jsonString = """
