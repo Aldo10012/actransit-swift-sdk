@@ -22,6 +22,10 @@ enum StopsEndpoint {
     ///   - active: Include inactive stops; default false.
     ///   - routeName: Filter to a specific route.
     case nearby(latitude: Double, longitude: Double, distance: Double? = nil, active: Bool? = nil, routeName: String? = nil)
+    /// https://api.actransit.org/transit/stops/{stopId}/routes
+    /// - Parameters:
+    ///   - stopId: The stop whose intersecting routes should be retrieved.
+    case stopRoutes(stopId: Int)
 }
 
 extension StopsEndpoint {
@@ -35,6 +39,8 @@ extension StopsEndpoint {
             buildNearbyByPathPath(lat: lat, lon: lon, distance: distance, active: active, routeName: routeName)
         case let .nearby(lat, lon, _, _, _):
             "/stops/\(lat)/\(lon)"
+        case let .stopRoutes(stopId):
+            "/stops/\(stopId)/routes"
         }
     }
 
@@ -57,7 +63,7 @@ extension StopsEndpoint {
         let url = ACTransitPlugins.apiBaseURL + path
         let tokenParam = HTTPParameter(key: Constants.tokenKey, value: token)
         switch self {
-        case .allStops, .summary, .nearbyByPath:
+        case .allStops, .summary, .nearbyByPath, .stopRoutes:
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         case let .nearby(_, _, distance, active, routeName):
             var params: [HTTPParameter] = [tokenParam]

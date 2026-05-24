@@ -53,4 +53,14 @@ public struct StopsService {
             decodeTo: [Stop].self
         )
     }
+
+    /// Retrieves all transit routes that serve a specific stop.
+    /// - Parameters:
+    ///   - stopId: The stop whose intersecting routes should be retrieved.
+    public func stopRoutes(stopId: Int) async throws -> [String] {
+        try await performer.perform(
+            request: StopsEndpoint.stopRoutes(stopId: stopId).getRequest(token: token),
+            decodeTo: [String].self
+        )
+    }
 }

@@ -102,6 +102,20 @@ final class StopsServiceTests {
         #expect(result[0].stopId == Stop.sample.stopId)
         #expect(result[0].name == Stop.sample.name)
     }
+
+    @Test("test .stopRoutes() success case")
+    func stopRoutes() async throws {
+        let jsonString = """
+        ["72", "72R", "88"]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.stopRoutes(stopId: 55888)
+        #expect(result.count == 3)
+        #expect(result[0] == "72")
+        #expect(result[1] == "72R")
+        #expect(result[2] == "88")
+    }
 }
 
 // MARK: - mocks
