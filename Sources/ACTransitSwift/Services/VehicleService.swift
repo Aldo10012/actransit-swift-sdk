@@ -19,4 +19,14 @@ public struct VehicleService {
             decodeTo: Vehicle.self
         )
     }
+
+    /// Returns physical and operational specifications for one or all active vehicles.
+    /// - Parameters:
+    ///   - vehicleId: Alphanumeric string representing the vehicle ID (ie. bus number); omit to retrieve all active vehicles.
+    public func characteristics(vehicleId: String? = nil) async throws -> [VehicleCharacteristics] {
+        try await performer.perform(
+            request: VehicleEndpoint.characteristics(vehicleId: vehicleId).getRequest(token: token),
+            decodeTo: [VehicleCharacteristics].self
+        )
+    }
 }

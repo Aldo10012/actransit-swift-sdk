@@ -20,4 +20,26 @@ final class VehicleEndpointTests {
         #expect(request.baseUrl == "https://api.actransit.org/transit/vehicle/1505")
         #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
     }
+
+    @Test("test VehicleEndpoint.characteristics(vehicleId:) without vehicleId")
+    func characteristicsAll() {
+        let endpoint = VehicleEndpoint.characteristics()
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/vehicle/characteristics")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/vehicle/characteristics")
+        #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
+    }
+
+    @Test("test VehicleEndpoint.characteristics(vehicleId:) with vehicleId")
+    func characteristicsFiltered() {
+        let endpoint = VehicleEndpoint.characteristics(vehicleId: "1505")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/vehicle/characteristics")
+        #expect(request.httpMethod == .GET)
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "vehicleId", value: "1505")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+    }
 }
