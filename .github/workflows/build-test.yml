@@ -66,10 +66,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build
-          key: ${{ runner.os }}-spm-test-6.2-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-spm-v2-test-6.2-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-spm-test-6.2-
-            ${{ runner.os }}-spm-
+            ${{ runner.os }}-spm-v2-test-6.2-
+            ${{ runner.os }}-spm-v2-
 
       - name: Run Tests
         run: swift test --enable-code-coverage

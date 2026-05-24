@@ -103,6 +103,31 @@ final class ACTransitClientTests {
         #expect(result.prevScheduleType == TripCancellationInfo.sample.prevScheduleType)
     }
 
+    @Test("test .routes.routes() success case")
+    func routesRoutes() async throws {
+        let jsonString = """
+        [
+            {
+                "RouteId": "1T",
+                "Name": "1T",
+                "Division": "D4",
+                "Description": "International - E. 14th",
+                "IsLocal": true,
+                "IsTransbay": false,
+                "IsRapid": false,
+                "IsAllNighter": false,
+                "IsSchool": false
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.routes.routes()
+        #expect(result.count == 1)
+        #expect(result[0].routeId == RouteDivision.sample.routeId)
+        #expect(result[0].name == RouteDivision.sample.name)
+    }
+
     @Test("test .trips.canceled() success case")
     func tripsCanceled() async throws {
         let jsonString = """

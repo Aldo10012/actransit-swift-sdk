@@ -1,11 +1,13 @@
 ---
 name: add-actransit-group
-description: Adds all endpoints for a single AC Transit API resource group into the SDK. Reads the group's reference file to enumerate every endpoint, invokes /add-actransit-endpoint for each one in order, commits each successful addition separately, then opens a PR. Invoke with the group name, e.g. "routes", "stops", "vehicles".
+description: Adds all endpoints for a single AC Transit API resource group into the SDK. Reads the group's reference file to enumerate every endpoint, implements each one in order (one commit per endpoint), then opens a PR. Invoke with the group name, e.g. "routes", "stops", "vehicles".
 ---
 
 # Add AC Transit Group
 
 Adds full SDK support for every endpoint in one AC Transit API resource group. The argument is the **group name** (first path segment), e.g. `routes`, `gtfs`, `trips`, `stops`, `vehicles`, `actrealtime`, `gtfsrt`.
+
+> **IMPORTANT — Do NOT call `/add-actransit-endpoint` from inside this skill.** Nested skill invocations break the loop — control returns to the user after the sub-skill finishes instead of continuing to the next endpoint. All endpoint implementation steps are inlined directly in Step 4 below.
 
 ---
 
@@ -93,34 +95,134 @@ Examples:
 
 If a matching case is found, **skip silently** — add the path to the skipped-existing list and move to the next endpoint.
 
-### 4b — Invoke /add-actransit-endpoint
+### 4b — Cross-reference the live API docs
 
-Run `/add-actransit-endpoint {path}` for the current endpoint. That skill handles:
-- Fetching live API docs and cross-referencing the reference file (updating the reference file if needed)
-- Generating the Swift model
-- Adding the endpoint case to the enum
-- Adding the service method
-- Writing all tests
-- Running swiftlint and swiftformat
+**Find the Help URL** by fetching the Help index and locating the matching endpoint:
 
-### 4c — Commit or record skip
-
-After `/add-actransit-endpoint` returns, check git status:
-
-```bash
-git status --porcelain
+```
+https://api.actransit.org/transit/Help
 ```
 
-- **If files were changed**: stage everything (including any reference file updates) and commit:
-  ```bash
-  git add Sources Tests .claude
-  git commit -m "feat: add {path} endpoint"
+The Help URL format follows this pattern:
+- Replace `/` with `-` in the path
+- Remove `{` and `}` from path params (keep the param name)
+- Append required/key query params with `_paramName`
+
+Examples:
+- `gtfs/all` → `https://api.actransit.org/transit/Help/Api/GET-gtfs-all`
+- `routes/{booking}?sortType={sortType}` → `https://api.actransit.org/transit/Help/Api/GET-routes-booking_sortType`
+- `trips/tripcancellationinfo/{tripNumber}` → `https://api.actransit.org/transit/Help/Api/GET-trips-tripcancellationinfo-tripNumber`
+
+If the constructed URL returns an error, fetch the Help index to find the exact URL.
+
+Fetch the Help page for this endpoint and extract:
+1. The exact **response JSON sample**
+2. The **resource model name** — look for the `?modelName=` link in the response description (e.g. `RouteDivision`, `GtfsScheduleInfo`)
+3. All **path parameters**, their types, and full descriptions
+4. All **query parameters** beyond `token` — names, types, required vs optional, typed enum values, and full descriptions
+5. Whether the response is **binary** (ZIP / protobuf) rather than JSON
+
+**Call the actual API to verify** — if an API token is available, call the live endpoint and confirm the response shape matches the docs. Use real response values for `.sample` data, not placeholder strings.
+
+**Verify and update the reference file** — if the live docs or live response reveal discrepancies (missing fields, wrong types, different model name), update the reference file before proceeding.
+
+### 4c — Classify the endpoint
+
+- **Binary response**: log a note, add to the skipped-binary list, and move to the next endpoint.
+- **JSON response**: proceed to 4d.
+
+### 4d — Implement the endpoint
+
+Follow the same patterns as the existing `GTFSEndpoint`, `GTFSService`, `GtfsInfo`, and their tests.
+
+**Resolve named types from the ResourceModel page** — When a field's type on the ResourceModel page is a named type (not a Swift primitive like `string`, `integer`, `boolean`), fetch `https://api.actransit.org/transit/Help/ResourceModel?modelName={TypeName}` to get the full definition before writing any Swift code.
+
+- **Enum types** (e.g. `TripScheduleType`): Create a Swift enum in the endpoint file with the correct raw values from the API docs. Note: the API may use integer values in JSON responses but accept string values for query parameters — handle both in one enum:
+  ```swift
+  public enum TripScheduleType: Int, Codable, Sendable {
+      case weekday = 0   // API JSON value
+      case saturday = 5
+      case sunday = 6
+
+      /// String value used when passing this type as a query parameter.
+      var queryValue: String {
+          switch self {
+          case .weekday: "Weekday"
+          case .saturday: "Saturday"
+          case .sunday: "Sunday"
+          }
+      }
+  }
   ```
-  Add the path to the added list.
+  In `getRequest(token:)`, use `.queryValue` (not `.rawValue`) when building query parameters for these enums. In model structs, use the enum type directly (e.g. `public let scheduleType: TripScheduleType`) — never use `Int` or `String` when the API doc names a typed enum.
+- **Nested object types**: Generate a separate `public struct` for each (can live in the same `.swift` file if tightly coupled).
 
-- **If no files were changed**: `/add-actransit-endpoint` determined the endpoint was binary or otherwise unsupported. Add to the skipped-binary list. Do not commit.
+**Generate the Swift model** — based on the JSON sample and resource model name:
+- `public struct`, `Codable`, `Sendable`
+- CodingKeys using PascalCase API key names
+- Named enum fields use the enum type (never a bare `Int` or `String` when the API doc names a typed enum)
+- Custom `init(from:)` only for models with date fields (use `ISO8601DateFormatter.ACTFormat` via the shared extension — never declare a new per-struct formatter)
+- Static `.sample`, `.minimal` (if optional fields exist), and `.make(…)` factory
+- `.sample` values must use **real data from a live API call**, not placeholder strings
+- Doc comment `/// https://api.actransit.org/transit/Help/ResourceModel?modelName={ModelName}` above the struct declaration
+- For each property, fetch the ResourceModel page and add a `///` doc comment with the API's description. Only add a doc comment if the API docs provide a description for that property — omit it if they don't.
+- Write to `Sources/ACTransitSwift/Models/{ModelName}.swift`
 
-Repeat Step 4 for every remaining endpoint in the work list.
+**If the response is `[String]`** (directions endpoint), no model file is needed.
+
+**Update the endpoint enum** (`Sources/ACTransitSwift/Endpoints/{Group}Endpoint.swift`):
+- Create the file if this is the first endpoint for the group, following the pattern of `GTFSEndpoint.swift`
+- Add a `///` doc comment with the **actual API endpoint URL** above the new case — NOT the Help URL
+  - Format: `/// https://api.actransit.org/transit/{path}?{queryParams}` (only include non-token params)
+  - Example: `/// https://api.actransit.org/transit/routes/{booking}?sortType={sortType}`
+- Below the URL comment, add `/// - Parameters:` docstrings for each associated value, copied from the API docs description
+- Use typed Swift enums for typed API parameters; define them in the endpoint file
+- For enum query params, use `.queryValue` (not `.rawValue`) when building `HTTPParameter` values
+- Optional path params (bookingId, etc.) should use `= nil` defaults on the associated value
+- Required query params should be non-optional associated values
+- Extend both switch statements: `path` and `getRequest(token:)`
+
+**Update the service** (`Sources/ACTransitSwift/Services/{Group}Service.swift`):
+- Create the file if this is the first endpoint for the group, following the pattern of `GTFSService.swift`
+- If the service file is new, also add `public let {group}: {Group}Service` to `ACTransitClient` and initialize it in `init(token:performer:)`
+- Add the `public func` method with a `///` doc comment: one summary line followed by `/// - Parameters:` for each argument, with descriptions copied from the API docs
+
+**Write model tests** (`Tests/ACTransitSwiftTests/Models/{ModelName}Tests.swift`):
+- Only needed for models with custom `init(from:)` decoders (i.e. date fields)
+- `@Suite("Test {ModelName}")` — name must start with `"Test "`
+- Cover: decode happy path, 7-digit fractional seconds, empty array, malformed date throws, encode PascalCase keys, round-trip, `.sample` sanity check, `.make()` override
+
+**Update endpoint tests** (`Tests/ACTransitSwiftTests/Endpoints/{Group}EndpointTests.swift`):
+- Create the file if new, following `GTFSEndpointTests.swift`
+- Add a `@Test` for the new case; verify `path`, `httpMethod`, `baseUrl`, and `parameters`
+- Use `(request.parameters ?? []).contains(…)` when checking for specific params alongside others
+
+**Update service tests** (`Tests/ACTransitSwiftTests/Services/{Group}ServiceTests.swift`):
+- Create the file if new, following `GTFSServiceTests.swift`
+- Add a `@Test` with mock JSON using PascalCase keys; assert every field against `.sample`
+
+**Update ACTransitClient tests** (`Tests/ACTransitSwiftTests/ACTransitClientTests.swift`):
+- Add one `@Test` that calls through `sut.{group}.{method}(…)` and asserts against `.sample`
+- Only needed for the **first** endpoint of a new group (or one representative endpoint per group)
+
+**Run lint and format:**
+```bash
+swiftlint --fix Sources Tests
+swiftformat Sources Tests
+```
+
+### 4e — Commit (one commit per endpoint, no exceptions)
+
+After implementing the endpoint, stage and commit **immediately**:
+
+```bash
+git add Sources Tests .claude
+git commit -m "feat: add {path} endpoint"
+```
+
+> **One commit per endpoint is required.** Do not batch multiple endpoints into a single commit. Do not wait until the end to commit. Each commit must contain exactly the changes for one endpoint (its model, enum case, service method, and tests).
+
+Add the path to the added list and proceed to the next endpoint.
 
 ---
 
