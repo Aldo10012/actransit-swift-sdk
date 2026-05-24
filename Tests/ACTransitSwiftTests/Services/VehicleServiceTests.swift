@@ -19,6 +19,33 @@ final class VehicleServiceTests {
 
     // MARK: - Tests
 
+    @Test("test .routeRealtimeAttributes(routeName:) success case")
+    func routeRealtimeAttributes() async throws {
+        let jsonString = """
+        [
+            {
+                "VehicleId": "1505",
+                "CurrentRoute": "51A",
+                "LastPositionLatitude": 37.8376083374023,
+                "LastPositionLongitude": -122.281852722168,
+                "DateTimePositionReported": "2026-05-23T21:17:35.000-07:00",
+                "VehicleCapacity": 60,
+                "CurrentPassengerCount": 25,
+                "EstimatedOccupancyPercentage": 42,
+                "EstimatedOccupancyStatusColor": "#00CC00",
+                "EstimatedOccupancyStatus": "Not Crowded",
+                "DateTimeAPCReported": "2026-05-23T21:17:35.000-07:00"
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.routeRealtimeAttributes(routeName: "51A")
+        #expect(result.count == 1)
+        #expect(result[0].vehicleId == VehicleRealtimeAttributes.sample.vehicleId)
+        #expect(result[0].currentRoute == VehicleRealtimeAttributes.sample.currentRoute)
+    }
+
     @Test("test .vehicleRealtimeAttributes(vehicleId:) success case")
     func vehicleRealtimeAttributes() async throws {
         let jsonString = """

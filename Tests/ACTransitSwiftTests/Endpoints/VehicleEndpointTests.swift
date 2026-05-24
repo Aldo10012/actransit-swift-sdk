@@ -97,4 +97,25 @@ final class VehicleEndpointTests {
         #expect((request.parameters ?? []).contains(HTTPParameter(key: "routename", value: "51A")))
         #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
     }
+
+    @Test("test VehicleEndpoint.routeRealtimeAttributes(routeName:)")
+    func routeRealtimeAttributes() {
+        let endpoint = VehicleEndpoint.routeRealtimeAttributes(routeName: "51A")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/vehicle/route/51A/realtimeattributes")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/vehicle/route/51A/realtimeattributes")
+        #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
+    }
+
+    @Test("test VehicleEndpoint.routeRealtimeAttributes(routeName:vehicleId:) with vehicleId")
+    func routeRealtimeAttributesWithVehicleId() {
+        let endpoint = VehicleEndpoint.routeRealtimeAttributes(routeName: "51A", vehicleId: "1505")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/vehicle/route/51A/realtimeattributes")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "vehicleId", value: "1505")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+    }
 }

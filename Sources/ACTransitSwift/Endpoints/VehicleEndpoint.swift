@@ -24,6 +24,11 @@ enum VehicleEndpoint {
     ///   - vehicleId: Vehicle (bus) number.
     ///   - routeName: Name of the route that the vehicle is currently servicing.
     case vehicleRealtimeAttributes(vehicleId: String, routeName: String? = nil)
+    /// https://api.actransit.org/transit/vehicle/route/{routename}/realtimeattributes?vehicleId={vehicleId}
+    /// - Parameters:
+    ///   - routeName: Route name identifier.
+    ///   - vehicleId: Optional vehicle ID filter.
+    case routeRealtimeAttributes(routeName: String, vehicleId: String? = nil)
 }
 
 extension VehicleEndpoint {
@@ -39,6 +44,8 @@ extension VehicleEndpoint {
             "/vehicle/realtimeattributes"
         case let .vehicleRealtimeAttributes(vehicleId, _):
             "/vehicle/\(vehicleId)/realtimeattributes"
+        case let .routeRealtimeAttributes(routeName, _):
+            "/vehicle/route/\(routeName)/realtimeattributes"
         }
     }
 
@@ -70,6 +77,12 @@ extension VehicleEndpoint {
             var params: [HTTPParameter] = [tokenParam]
             if let routeName {
                 params.append(HTTPParameter(key: "routename", value: routeName))
+            }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .routeRealtimeAttributes(_, vehicleId):
+            var params: [HTTPParameter] = [tokenParam]
+            if let vehicleId {
+                params.append(HTTPParameter(key: "vehicleId", value: vehicleId))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }

@@ -61,4 +61,15 @@ public struct VehicleService {
             decodeTo: VehicleRealtimeAttributes.self
         )
     }
+
+    /// Returns real-time attributes for vehicles on a specific route, optionally filtered by vehicle ID.
+    /// - Parameters:
+    ///   - routeName: Route name identifier.
+    ///   - vehicleId: Optional vehicle ID filter.
+    public func routeRealtimeAttributes(routeName: String, vehicleId: String? = nil) async throws -> [VehicleRealtimeAttributes] {
+        try await performer.perform(
+            request: VehicleEndpoint.routeRealtimeAttributes(routeName: routeName, vehicleId: vehicleId).getRequest(token: token),
+            decodeTo: [VehicleRealtimeAttributes].self
+        )
+    }
 }
