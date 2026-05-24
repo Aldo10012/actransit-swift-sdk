@@ -91,4 +91,15 @@ public struct RoutesService {
             decodeTo: [TimePoint].self
         )
     }
+
+    /// Retrieves a list of bus stops for a specific trip on a given route.
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    ///   - tripId: The trip identifier.
+    public func tripStops(routeName: String, tripId: Int) async throws -> [Stop] {
+        try await performer.perform(
+            request: RoutesEndpoint.tripStops(routeName: routeName, tripId: tripId).getRequest(token: token),
+            decodeTo: [Stop].self
+        )
+    }
 }
