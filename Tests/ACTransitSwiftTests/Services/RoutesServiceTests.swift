@@ -164,6 +164,56 @@ final class RoutesServiceTests {
         #expect(result[0].isSchool == RouteDivision.sample.isSchool)
     }
 
+    @Test("test .timetable() success case")
+    func timetable() async throws {
+        let jsonString = """
+        [
+            {
+                "BookingId": "2604SP",
+                "RouteId": "72",
+                "Destination": "To Jack London Square",
+                "Direction": "Southbound",
+                "DayCode": "Saturday",
+                "Stops": [
+                    {
+                        "StopId": 55888,
+                        "StopDescription": "Contra Costa College",
+                        "PlaceId": "CCCO",
+                        "StopLongitude": -122.3398753,
+                        "StopLatitude": 37.9710794
+                    }
+                ],
+                "Trips": [
+                    {
+                        "TripStartTime": "2026-05-23T05:10:00",
+                        "TripId": 12324070,
+                        "TripDestination": "Jack London Square",
+                        "TripStops": [
+                            {
+                                "StopId": 55888,
+                                "PassingTime": "2026-05-23T05:10:00"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.timetable(routes: "72", direction: "Southbound")
+        #expect(result.count == 1)
+        #expect(result[0].bookingId == TimeTable.sample.bookingId)
+        #expect(result[0].routeId == TimeTable.sample.routeId)
+        #expect(result[0].direction == TimeTable.sample.direction)
+        #expect(result[0].stops.count == 1)
+        #expect(result[0].stops[0].stopId == TimeTableStop.sample.stopId)
+        #expect(result[0].trips.count == 1)
+        #expect(result[0].trips[0].tripId == TimeTableTrip.sample.tripId)
+        #expect(result[0].trips[0].tripStops.count == 1)
+        #expect(result[0].trips[0].tripStops[0].passingTime == TimeTableTripStop.sample.passingTime)
+    }
+
     @Test("test .tripStopsToday() success case")
     func tripStopsToday() async throws {
         let jsonString = """

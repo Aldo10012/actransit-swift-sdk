@@ -99,6 +99,13 @@ enum RoutesEndpoint {
     ///   - routes: Comma-delimited route identifiers.
     ///   - direction: Optional direction or destination to filter by (comma delimited).
     case tripStopsToday(routes: String, direction: String? = nil)
+    /// https://api.actransit.org/transit/route/{routes}/timetable/{direction}?dayCode={dayCode}&hasAllStops={hasAllStops}
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers.
+    ///   - direction: Direction or destination designation.
+    ///   - dayCode: Day type: `Weekday`, `Saturday`, or `Sunday`. Defaults to current day.
+    ///   - hasAllStops: If true, include all stops rather than major locations only. Default false.
+    case timetable(routes: String, direction: String? = nil, dayCode: String? = nil, hasAllStops: Bool? = nil)
 }
 
 extension RoutesEndpoint {
@@ -152,6 +159,12 @@ extension RoutesEndpoint {
             "/route/\(routes)/tripstoday"
         case let .tripStopsToday(routes, _):
             "/route/\(routes)/tripstops"
+        case let .timetable(routes, direction, _, _):
+            if let direction {
+                "/route/\(routes)/timetable/\(direction)"
+            } else {
+                "/route/\(routes)/timetable"
+            }
         }
     }
 
@@ -237,6 +250,15 @@ extension RoutesEndpoint {
             var params: [HTTPParameter] = [tokenParam]
             if let direction {
                 params.append(HTTPParameter(key: "direction", value: direction))
+            }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .timetable(_, _, dayCode, hasAllStops):
+            var params: [HTTPParameter] = [tokenParam]
+            if let dayCode {
+                params.append(HTTPParameter(key: "dayCode", value: dayCode))
+            }
+            if let hasAllStops {
+                params.append(HTTPParameter(key: "hasAllStops", value: String(hasAllStops)))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }

@@ -170,4 +170,17 @@ public struct RoutesService {
             decodeTo: [TripStopToday].self
         )
     }
+
+    /// Retrieves the timetable for a given route.
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers.
+    ///   - direction: Direction or destination designation.
+    ///   - dayCode: Day type: `Weekday`, `Saturday`, or `Sunday`. Defaults to current day.
+    ///   - hasAllStops: If true, include all stops rather than major locations only. Default false.
+    public func timetable(routes: String, direction: String? = nil, dayCode: String? = nil, hasAllStops: Bool? = nil) async throws -> [TimeTable] {
+        try await performer.perform(
+            request: RoutesEndpoint.timetable(routes: routes, direction: direction, dayCode: dayCode, hasAllStops: hasAllStops).getRequest(token: token),
+            decodeTo: [TimeTable].self
+        )
+    }
 }
