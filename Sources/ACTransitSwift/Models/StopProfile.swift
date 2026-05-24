@@ -15,7 +15,7 @@ public struct InfoUrl: Codable, Sendable {
     public static let sample = InfoUrl(url: "https://511.org/transit/real-time-arrivals")
 
     public static func make(url: String = sample.url) -> InfoUrl {
-InfoUrl(url: url)
+        InfoUrl(url: url)
     }
 }
 
@@ -43,7 +43,7 @@ public struct RouteUrl: Codable, Sendable {
         routeId: String = sample.routeId,
         url: String = sample.url
     ) -> RouteUrl {
-RouteUrl(routeId: routeId, url: url)
+        RouteUrl(routeId: routeId, url: url)
     }
 }
 
@@ -58,6 +58,7 @@ public struct StopProfile: Codable, Sendable {
     public let isInService: Bool
     public let latitude: Double
     public let longitude: Double
+    /// Comma-delimited list of route identifiers serving this stop. Split on `","` to obtain individual route IDs.
     public let routes: String?
     public let allowAlighting: Bool
     public let allowBoarding: Bool
@@ -200,7 +201,7 @@ public struct StopProfile: Codable, Sendable {
         map: InfoUrl? = sample.map,
         schedules: [RouteUrl] = sample.schedules
     ) -> StopProfile {
-StopProfile(
+        StopProfile(
             stopId: stopId,
             street: street,
             city: city,

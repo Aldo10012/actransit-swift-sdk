@@ -13,6 +13,10 @@ enum StopsEndpoint {
     ///   - distance: Search radius in feet; default 500, max 25,000.
     ///   - active: Include inactive stops; default false.
     ///   - routeName: Filter to a specific route.
+    ///
+    /// - Note: Parameters are positional in the path. `active` is only included when `distance` is set;
+    ///   `routeName` is only included when both `distance` and `active` are set. Omitting an earlier
+    ///   optional silently drops all later optionals. Use `.nearby` for independent query-string params.
     case nearbyByPath(latitude: Double, longitude: Double, distance: Double? = nil, active: Bool? = nil, routeName: String? = nil)
     /// https://api.actransit.org/transit/stops/{latitude}/{longitude}?distance={distance}&active={active}&routeName={routeName}
     /// - Parameters:
@@ -34,7 +38,7 @@ enum StopsEndpoint {
     case tripsToday(stopId: Int, routes: String? = nil, direction: String? = nil)
     /// https://api.actransit.org/transit/stop/{stopId}/destinations
     /// - Parameters:
-    ///   - stopId: The stop for whose destinations should be retrieved.
+    ///   - stopId: The stop whose destinations should be retrieved.
     case destinations(stopId: Int)
     /// https://api.actransit.org/transit/stop/{stopId}/profile
     /// - Parameters:

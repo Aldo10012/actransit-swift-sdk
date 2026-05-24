@@ -54,6 +54,20 @@ final class StopsEndpointTests {
         #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
     }
 
+    @Test("test StopsEndpoint.nearbyByPath with distance only")
+    func nearbyByPathDistanceOnly() {
+        // distance provided but not active/routeName — path stops after distance segment
+        let endpoint = StopsEndpoint.nearbyByPath(latitude: 37.9710794, longitude: -122.3398753, distance: 500.0)
+        #expect(endpoint.path == "/stops/37.9710794/-122.3398753/500.0")
+    }
+
+    @Test("test StopsEndpoint.nearbyByPath silently drops routeName without distance")
+    func nearbyByPathSilentDropWithoutDistance() {
+        // routeName without distance is dropped — the API path requires positional ordering
+        let endpoint = StopsEndpoint.nearbyByPath(latitude: 37.9710794, longitude: -122.3398753, routeName: "72")
+        #expect(endpoint.path == "/stops/37.9710794/-122.3398753")
+    }
+
     @Test("test StopsEndpoint.nearby")
     func nearby() {
         let endpoint = StopsEndpoint.nearby(latitude: 37.9710794, longitude: -122.3398753)
