@@ -164,6 +164,62 @@ final class RoutesServiceTests {
         #expect(result[0].isSchool == RouteDivision.sample.isSchool)
     }
 
+    @Test("test .schedule() success case")
+    func schedule() async throws {
+        let jsonString = """
+        {
+            "BookingId": "2604SP",
+            "RouteProfiles": [
+                {"RouteId": "72", "Profile": "Contra Costa College to Jack London Square via San Pablo Ave., El Cerrito del Norte BART, and Downtown Oakland."}
+            ],
+            "DateExceptions": [],
+            "Stops": [
+                {
+                    "StopId": "55867",
+                    "PlaceName": "San Pablo Ave. & Marin Ave.",
+                    "PlaceId": "SPMA",
+                    "StopDescription": "San Pablo Av & Marin Av (Albany City Hall)",
+                    "Longitude": -122.2976044,
+                    "Latitude": 37.886486,
+                    "City": "Albany"
+                }
+            ],
+            "Routes": [
+                {
+                    "RouteId": "72",
+                    "LineDirection": "Northbound",
+                    "LineDestination": "To Contra Costa College",
+                    "DayCode": ["Weekday"],
+                    "OperatingDOW": "Mondays through Fridays except holidays",
+                    "Trips": [
+                        {
+                            "StartTime": "05:00:00",
+                            "PatternId": "147",
+                            "TripId": ["2305020"],
+                            "Status": "OK",
+                            "StopTimes": [
+                                {"StopTime": "2026-05-23T05:00:00", "StopId": "51632", "PlaceId": "2NWN", "Occupancy": "Not Crowded"}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.schedule(routes: "72")
+        #expect(result.bookingId == TripScheduleInfo.sample.bookingId)
+        #expect(result.routeProfiles.count == 1)
+        #expect(result.routeProfiles[0].routeId == RouteProfile.sample.routeId)
+        #expect(result.stops.count == 1)
+        #expect(result.stops[0].stopId == TripScheduleStop.sample.stopId)
+        #expect(result.routes.count == 1)
+        #expect(result.routes[0].trips.count == 1)
+        #expect(result.routes[0].trips[0].startTime == TripScheduleTrip.sample.startTime)
+        #expect(result.routes[0].trips[0].stopTimes[0].occupancy == TripScheduleStopTime.sample.occupancy)
+    }
+
     @Test("test .timetable() success case")
     func timetable() async throws {
         let jsonString = """

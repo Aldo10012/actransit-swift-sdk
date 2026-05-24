@@ -106,6 +106,16 @@ enum RoutesEndpoint {
     ///   - dayCode: Day type: `Weekday`, `Saturday`, or `Sunday`. Defaults to current day.
     ///   - hasAllStops: If true, include all stops rather than major locations only. Default false.
     case timetable(routes: String, direction: String? = nil, dayCode: String? = nil, hasAllStops: Bool? = nil)
+    /// https://api.actransit.org/transit/route/{routes}/schedule/{booking}?direction={direction}&destination={destination}&dayCode={dayCode}&hasAllStops={hasAllStops}&stopId={stopId}
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers.
+    ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+    ///   - direction: Optional route direction.
+    ///   - destination: Optional route destination.
+    ///   - dayCode: Day type: `Weekday`, `Saturday`, or `Sunday`. Defaults to today.
+    ///   - hasAllStops: If true, include waypoints. Default false.
+    ///   - stopId: Filter results to a specific stop by ID511 code.
+    case schedule(routes: String, booking: String? = nil, direction: String? = nil, destination: String? = nil, dayCode: String? = nil, hasAllStops: Bool? = nil, stopId: String? = nil)
 }
 
 extension RoutesEndpoint {
@@ -164,6 +174,12 @@ extension RoutesEndpoint {
                 "/route/\(routes)/timetable/\(direction)"
             } else {
                 "/route/\(routes)/timetable"
+            }
+        case let .schedule(routes, booking, _, _, _, _, _):
+            if let booking {
+                "/route/\(routes)/schedule/\(booking)"
+            } else {
+                "/route/\(routes)/schedule"
             }
         }
     }
@@ -259,6 +275,24 @@ extension RoutesEndpoint {
             }
             if let hasAllStops {
                 params.append(HTTPParameter(key: "hasAllStops", value: String(hasAllStops)))
+            }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .schedule(_, _, direction, destination, dayCode, hasAllStops, stopId):
+            var params: [HTTPParameter] = [tokenParam]
+            if let direction {
+                params.append(HTTPParameter(key: "direction", value: direction))
+            }
+            if let destination {
+                params.append(HTTPParameter(key: "destination", value: destination))
+            }
+            if let dayCode {
+                params.append(HTTPParameter(key: "dayCode", value: dayCode))
+            }
+            if let hasAllStops {
+                params.append(HTTPParameter(key: "hasAllStops", value: String(hasAllStops)))
+            }
+            if let stopId {
+                params.append(HTTPParameter(key: "stopId", value: stopId))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }

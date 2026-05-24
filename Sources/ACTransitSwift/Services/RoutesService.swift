@@ -183,4 +183,20 @@ public struct RoutesService {
             decodeTo: [TimeTable].self
         )
     }
+
+    /// Retrieves stops and schedules for a given route.
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers.
+    ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+    ///   - direction: Optional route direction.
+    ///   - destination: Optional route destination.
+    ///   - dayCode: Day type: `Weekday`, `Saturday`, or `Sunday`. Defaults to today.
+    ///   - hasAllStops: If true, include waypoints. Default false.
+    ///   - stopId: Filter results to a specific stop by ID511 code.
+    public func schedule(routes: String, booking: String? = nil, direction: String? = nil, destination: String? = nil, dayCode: String? = nil, hasAllStops: Bool? = nil, stopId: String? = nil) async throws -> TripScheduleInfo {
+        try await performer.perform(
+            request: RoutesEndpoint.schedule(routes: routes, booking: booking, direction: direction, destination: destination, dayCode: dayCode, hasAllStops: hasAllStops, stopId: stopId).getRequest(token: token),
+            decodeTo: TripScheduleInfo.self
+        )
+    }
 }
