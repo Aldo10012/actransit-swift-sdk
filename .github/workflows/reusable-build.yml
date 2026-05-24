@@ -34,11 +34,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .build
-          key: ${{ runner.os }}-spm-${{ inputs.platform }}-${{ matrix.swift-version }}-${{ hashFiles('**/Package.resolved') }}
+          key: ${{ runner.os }}-spm-v2-${{ inputs.platform }}-${{ matrix.swift-version }}-${{ hashFiles('**/Package.resolved') }}
           restore-keys: |
-            ${{ runner.os }}-spm-${{ inputs.platform }}-${{ matrix.swift-version }}-
-            ${{ runner.os }}-spm-${{ inputs.platform }}-
-            ${{ runner.os }}-spm-
+            ${{ runner.os }}-spm-v2-${{ inputs.platform }}-${{ matrix.swift-version }}-
+            ${{ runner.os }}-spm-v2-${{ inputs.platform }}-
+            ${{ runner.os }}-spm-v2-
 
       - name: Build for ${{ inputs.platform }}
         run: swift build
