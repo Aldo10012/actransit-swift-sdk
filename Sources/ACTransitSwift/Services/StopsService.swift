@@ -1,0 +1,98 @@
+import EZNetworking
+import Foundation
+
+public struct StopsService {
+    private let token: String
+    private let performer: RequestPerformable
+
+    init(token: String, performer: RequestPerformable) {
+        self.token = token
+        self.performer = performer
+    }
+
+    /// Retrieves all currently active AC Transit stops.
+    public func allStops() async throws -> [Stop] {
+        try await performer.perform(
+            request: StopsEndpoint.allStops.getRequest(token: token),
+            decodeTo: [Stop].self
+        )
+    }
+
+    /// Retrieves a summary count and last-updated timestamp for active stops.
+    public func summary() async throws -> StopSummary {
+        try await performer.perform(
+            request: StopsEndpoint.summary.getRequest(token: token),
+            decodeTo: StopSummary.self
+        )
+    }
+
+    /// Retrieves stops within a radius of the given coordinates, with all optional parameters embedded in the path.
+    /// - Parameters:
+    ///   - latitude: Search center latitude.
+    ///   - longitude: Search center longitude.
+    ///   - distance: Search radius in feet; default 500, max 25,000.
+    ///   - active: Include inactive stops; default false.
+    ///   - routeName: Filter to a specific route.
+    public func nearbyByPath(latitude: Double, longitude: Double, distance: Double? = nil, active: Bool? = nil, routeName: String? = nil) async throws -> [Stop] {
+        try await performer.perform(
+            request: StopsEndpoint.nearbyByPath(latitude: latitude, longitude: longitude, distance: distance, active: active, routeName: routeName).getRequest(token: token),
+            decodeTo: [Stop].self
+        )
+    }
+
+    /// Retrieves stops within a radius of the given coordinates, with optional parameters as query string.
+    /// - Parameters:
+    ///   - latitude: Search center latitude.
+    ///   - longitude: Search center longitude.
+    ///   - distance: Search radius in feet; default 500, max 25,000.
+    ///   - active: Include inactive stops; default false.
+    ///   - routeName: Filter to a specific route.
+    public func nearby(latitude: Double, longitude: Double, distance: Double? = nil, active: Bool? = nil, routeName: String? = nil) async throws -> [Stop] {
+        try await performer.perform(
+            request: StopsEndpoint.nearby(latitude: latitude, longitude: longitude, distance: distance, active: active, routeName: routeName).getRequest(token: token),
+            decodeTo: [Stop].self
+        )
+    }
+
+    /// Retrieves all transit routes that serve a specific stop.
+    /// - Parameters:
+    ///   - stopId: The stop whose intersecting routes should be retrieved.
+    public func stopRoutes(stopId: Int) async throws -> [String] {
+        try await performer.perform(
+            request: StopsEndpoint.stopRoutes(stopId: stopId).getRequest(token: token),
+            decodeTo: [String].self
+        )
+    }
+
+    /// Retrieves all trips that travel to a given stop today.
+    /// - Parameters:
+    ///   - stopId: The stopId to query for.
+    ///   - routes: Optional route(s) to filter by (comma delimited).
+    ///   - direction: Optional direction or destination to filter by (comma delimited).
+    public func tripsToday(stopId: Int, routes: String? = nil, direction: String? = nil) async throws -> [TripStopToday] {
+        try await performer.perform(
+            request: StopsEndpoint.tripsToday(stopId: stopId, routes: routes, direction: direction).getRequest(token: token),
+            decodeTo: [TripStopToday].self
+        )
+    }
+
+    /// Retrieves all routes and destinations available at a given stop.
+    /// - Parameters:
+    ///   - stopId: The stop whose destinations should be retrieved.
+    public func destinations(stopId: Int) async throws -> StopDestination {
+        try await performer.perform(
+            request: StopsEndpoint.destinations(stopId: stopId).getRequest(token: token),
+            decodeTo: StopDestination.self
+        )
+    }
+
+    /// Retrieves comprehensive profile information for a stop.
+    /// - Parameters:
+    ///   - stopId: 511's unique stop identifier whose stop information will be retrieved.
+    public func profile(stopId: Int) async throws -> StopProfile {
+        try await performer.perform(
+            request: StopsEndpoint.profile(stopId: stopId).getRequest(token: token),
+            decodeTo: StopProfile.self
+        )
+    }
+}

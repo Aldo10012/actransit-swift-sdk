@@ -66,7 +66,7 @@ public struct TimeTableTrip: Codable, Sendable {
         tripDestination: String = sample.tripDestination,
         tripStops: [TimeTableTripStop] = sample.tripStops
     ) -> TimeTableTrip {
-TimeTableTrip(tripStartTime: tripStartTime, tripId: tripId, tripDestination: tripDestination, tripStops: tripStops)
+        TimeTableTrip(tripStartTime: tripStartTime, tripId: tripId, tripDestination: tripDestination, tripStops: tripStops)
     }
 }
 
@@ -166,6 +166,6 @@ public struct TimeTable: Codable, Sendable {
         stops: [TimeTableStop] = sample.stops,
         trips: [TimeTableTrip] = sample.trips
     ) -> TimeTable {
-TimeTable(bookingId: bookingId, routeId: routeId, destination: destination, direction: direction, dayCode: dayCode, stops: stops, trips: trips)
+        TimeTable(bookingId: bookingId, routeId: routeId, destination: destination, direction: direction, dayCode: dayCode, stops: stops, trips: trips)
     }
 }
