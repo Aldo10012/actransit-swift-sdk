@@ -19,6 +19,35 @@ final class VehicleServiceTests {
 
     // MARK: - Tests
 
+    @Test("test .vehicleCharacteristics(vehicleId:) success case")
+    func vehicleCharacteristics() async throws {
+        let jsonString = """
+        {
+            "VehicleId": "1505",
+            "IsActive": true,
+            "Description": "Gillig - Diesel",
+            "VehicleType": "40",
+            "VehicleTypeDescription": "Standard Bus",
+            "Make": "Gillig",
+            "SerialNumber": "12345",
+            "LicenseNumber": "1234567",
+            "Length": "40",
+            "PropulsionType": "Diesel",
+            "HasWiFi": true,
+            "HasAC": true,
+            "StandingCapacity": "30",
+            "SeatingCapacity": "38",
+            "LimitCapacity": "60"
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.vehicleCharacteristics(vehicleId: "1505")
+        #expect(result.vehicleId == VehicleCharacteristics.sample.vehicleId)
+        #expect(result.make == VehicleCharacteristics.sample.make)
+        #expect(result.propulsionType == VehicleCharacteristics.sample.propulsionType)
+    }
+
     @Test("test .characteristics() success case")
     func characteristics() async throws {
         let jsonString = """

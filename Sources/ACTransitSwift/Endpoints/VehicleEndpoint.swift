@@ -10,6 +10,10 @@ enum VehicleEndpoint {
     /// - Parameters:
     ///   - vehicleId: Alphanumeric string representing the vehicle ID (ie. bus number); omit to retrieve all active vehicles.
     case characteristics(vehicleId: String? = nil)
+    /// https://api.actransit.org/transit/vehicle/{vehicleId}/characteristics
+    /// - Parameters:
+    ///   - vehicleId: Vehicle (bus) number.
+    case vehicleCharacteristics(vehicleId: String)
 }
 
 extension VehicleEndpoint {
@@ -19,6 +23,8 @@ extension VehicleEndpoint {
             "/vehicle/\(vehicleId)"
         case .characteristics:
             "/vehicle/characteristics"
+        case let .vehicleCharacteristics(vehicleId):
+            "/vehicle/\(vehicleId)/characteristics"
         }
     }
 
@@ -35,6 +41,8 @@ extension VehicleEndpoint {
                 params.append(HTTPParameter(key: "vehicleId", value: vehicleId))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case .vehicleCharacteristics:
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         }
     }
 

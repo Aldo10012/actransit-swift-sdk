@@ -29,4 +29,14 @@ public struct VehicleService {
             decodeTo: [VehicleCharacteristics].self
         )
     }
+
+    /// Returns physical and operational specifications for a specific vehicle.
+    /// - Parameters:
+    ///   - vehicleId: Vehicle (bus) number.
+    public func vehicleCharacteristics(vehicleId: String) async throws -> VehicleCharacteristics {
+        try await performer.perform(
+            request: VehicleEndpoint.vehicleCharacteristics(vehicleId: vehicleId).getRequest(token: token),
+            decodeTo: VehicleCharacteristics.self
+        )
+    }
 }
