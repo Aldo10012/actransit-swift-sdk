@@ -10,6 +10,18 @@ public struct RoutesService {
         self.performer = performer
     }
 
+    /// Retrieves trips with operator driving instructions for a given route.
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    ///   - direction: Filter by direction of travel.
+    ///   - scheduleType: Required. The schedule type: `Weekday`, `Saturday`, or `Sunday`.
+    public func tripsInstructions(routeName: String, direction: String? = nil, scheduleType: TripScheduleType) async throws -> [TripInstruction] {
+        try await performer.perform(
+            request: RoutesEndpoint.tripsInstructions(routeName: routeName, direction: direction, scheduleType: scheduleType).getRequest(token: token),
+            decodeTo: [TripInstruction].self
+        )
+    }
+
     /// Retrieves all trips for a given route, optionally filtered by direction and schedule type.
     /// - Parameters:
     ///   - routeName: The route identifier.

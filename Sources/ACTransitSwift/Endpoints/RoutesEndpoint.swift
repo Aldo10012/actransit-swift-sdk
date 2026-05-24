@@ -6,10 +6,19 @@ public enum RouteSortType: String {
     case natural = "Natural"
 }
 
-public enum TripScheduleType: String {
-    case weekday = "Weekday"
-    case saturday = "Saturday"
-    case sunday = "Sunday"
+public enum TripScheduleType: Int, Codable, Sendable {
+    case weekday = 0
+    case saturday = 5
+    case sunday = 6
+
+    /// String value used when passing this type as a query parameter.
+    var queryValue: String {
+        switch self {
+        case .weekday: "Weekday"
+        case .saturday: "Saturday"
+        case .sunday: "Sunday"
+        }
+    }
 }
 
 enum RoutesEndpoint {
@@ -29,6 +38,12 @@ enum RoutesEndpoint {
     ///   - direction: Filter results by direction of travel.
     ///   - scheduleType: Filter by schedule type: `Weekday`, `Saturday`, or `Sunday`.
     case trips(routeName: String, direction: String? = nil, scheduleType: TripScheduleType? = nil)
+    /// https://api.actransit.org/transit/route/{routeName}/tripsinstructions
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    ///   - direction: Filter by direction of travel.
+    ///   - scheduleType: Required. The schedule type: `Weekday`, `Saturday`, or `Sunday`.
+    case tripsInstructions(routeName: String, direction: String? = nil, scheduleType: TripScheduleType)
 }
 
 extension RoutesEndpoint {
@@ -48,6 +63,8 @@ extension RoutesEndpoint {
             }
         case let .trips(routeName, _, _):
             "/route/\(routeName)/trips"
+        case let .tripsInstructions(routeName, _, _):
+            "/route/\(routeName)/tripsinstructions"
         }
     }
 
@@ -71,8 +88,15 @@ extension RoutesEndpoint {
                 params.append(HTTPParameter(key: "direction", value: direction))
             }
             if let scheduleType {
-                params.append(HTTPParameter(key: "scheduleType", value: scheduleType.rawValue))
+                params.append(HTTPParameter(key: "scheduleType", value: scheduleType.queryValue))
             }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .tripsInstructions(_, direction, scheduleType):
+            var params: [HTTPParameter] = [tokenParam]
+            if let direction {
+                params.append(HTTPParameter(key: "direction", value: direction))
+            }
+            params.append(HTTPParameter(key: "scheduleType", value: scheduleType.queryValue))
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }
     }
