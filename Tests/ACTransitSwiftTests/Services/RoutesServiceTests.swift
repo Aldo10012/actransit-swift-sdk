@@ -1,8 +1,10 @@
+// swiftlint:disable file_length
 @testable import ACTransitSwift
 import EZNetworking
 import Foundation
 import Testing
 
+// swiftlint:disable type_body_length
 @Suite("Test RoutesService")
 final class RoutesServiceTests {
     private var sut: RoutesService
@@ -602,6 +604,8 @@ final class RoutesServiceTests {
     }
 }
 
+// swiftlint:enable type_body_length
+
 // MARK: - mocks
 
 private struct MockRequestPerformer: RequestPerformable {
@@ -614,3 +618,5 @@ private struct MockRequestPerformer: RequestPerformable {
         return try JSONDecoder().decode(decodableObject, from: fixture)
     }
 }
+
+// swiftlint:enable file_length
