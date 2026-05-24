@@ -1,11 +1,13 @@
 import EZNetworking
 import Foundation
 
+/// https://api.actransit.org/transit/Help/ResourceModel?modelName=TransitApiRouteSortType
 public enum RouteSortType: String, Codable, Sendable {
     case alphabetical = "Alphabetical"
     case natural = "Natural"
 }
 
+/// https://api.actransit.org/transit/Help/ResourceModel?modelName=TripScheduleType
 public enum TripScheduleType: Int, Codable, Sendable {
     case weekday = 0
     case saturday = 5
