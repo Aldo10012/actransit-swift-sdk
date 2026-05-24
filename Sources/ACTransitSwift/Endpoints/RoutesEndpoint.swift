@@ -67,6 +67,10 @@ enum RoutesEndpoint {
     ///   - routeName: The route identifier.
     ///   - tripId: The trip identifier.
     case tripStops(routeName: String, tripId: Int)
+    /// https://api.actransit.org/transit/route/{routeName}/vehicles
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    case vehicles(routeName: String)
 }
 
 extension RoutesEndpoint {
@@ -100,6 +104,8 @@ extension RoutesEndpoint {
             "/route/\(routeName)/trip/\(tripId)/pattern"
         case let .tripStops(routeName, tripId):
             "/route/\(routeName)/trip/\(tripId)/stops"
+        case let .vehicles(routeName):
+            "/route/\(routeName)/vehicles"
         }
     }
 
@@ -153,6 +159,8 @@ extension RoutesEndpoint {
         case .pattern:
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         case .tripStops:
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
+        case .vehicles:
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         }
     }

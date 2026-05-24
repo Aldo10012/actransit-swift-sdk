@@ -102,4 +102,14 @@ public struct RoutesService {
             decodeTo: [Stop].self
         )
     }
+
+    /// Retrieves all vehicles currently servicing a given route.
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    public func vehicles(routeName: String) async throws -> [Vehicle] {
+        try await performer.perform(
+            request: RoutesEndpoint.vehicles(routeName: routeName).getRequest(token: token),
+            decodeTo: [Vehicle].self
+        )
+    }
 }
