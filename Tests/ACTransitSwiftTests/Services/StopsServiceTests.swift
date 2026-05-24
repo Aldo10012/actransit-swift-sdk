@@ -116,6 +116,42 @@ final class StopsServiceTests {
         #expect(result[1] == "72R")
         #expect(result[2] == "88")
     }
+
+    @Test("test .tripsToday() success case")
+    func tripsToday() async throws {
+        let jsonString = """
+        [
+            {
+                "RouteId": "72",
+                "DirectionId": 0,
+                "Direction": "Southbound",
+                "ScheduleType": "Saturday",
+                "Headsign": "Jack London Square",
+                "Destination": "Jack London Square",
+                "Destination2": "To Jack London Square",
+                "TripStartTime": "2000-01-01T05:10:00",
+                "TripId": 11862075,
+                "TripNumber": 12324070,
+                "TripNumber2": 11862075,
+                "PositionNumber": 1,
+                "StopId": 55888,
+                "StopDescription": "Contra Costa College",
+                "PassingTime": "2000-01-01T05:10:00",
+                "StopNumber1": 4508,
+                "StopNumber2": "1600410",
+                "PlaceId": "CCCO",
+                "StopLongitude": -122.3398753,
+                "StopLatitude": 37.9710794
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.tripsToday(stopId: 55888)
+        #expect(result.count == 1)
+        #expect(result[0].routeId == TripStopToday.sample.routeId)
+        #expect(result[0].stopId == TripStopToday.sample.stopId)
+    }
 }
 
 // MARK: - mocks

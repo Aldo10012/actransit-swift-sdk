@@ -26,6 +26,12 @@ enum StopsEndpoint {
     /// - Parameters:
     ///   - stopId: The stop whose intersecting routes should be retrieved.
     case stopRoutes(stopId: Int)
+    /// https://api.actransit.org/transit/stops/{stopId}/tripstoday?routes={routes}&direction={direction}
+    /// - Parameters:
+    ///   - stopId: The stopId to query for.
+    ///   - routes: Optional route(s) to filter by (comma delimited).
+    ///   - direction: Optional direction or destination to filter by (comma delimited).
+    case tripsToday(stopId: Int, routes: String? = nil, direction: String? = nil)
 }
 
 extension StopsEndpoint {
@@ -41,6 +47,8 @@ extension StopsEndpoint {
             "/stops/\(lat)/\(lon)"
         case let .stopRoutes(stopId):
             "/stops/\(stopId)/routes"
+        case let .tripsToday(stopId, _, _):
+            "/stops/\(stopId)/tripstoday"
         }
     }
 
@@ -65,6 +73,15 @@ extension StopsEndpoint {
         switch self {
         case .allStops, .summary, .nearbyByPath, .stopRoutes:
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
+        case let .tripsToday(_, routes, direction):
+            var params: [HTTPParameter] = [tokenParam]
+            if let routes {
+                params.append(HTTPParameter(key: "routes", value: routes))
+            }
+            if let direction {
+                params.append(HTTPParameter(key: "direction", value: direction))
+            }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .nearby(_, _, distance, active, routeName):
             var params: [HTTPParameter] = [tokenParam]
             if let distance {

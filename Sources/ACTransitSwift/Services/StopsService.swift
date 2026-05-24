@@ -63,4 +63,16 @@ public struct StopsService {
             decodeTo: [String].self
         )
     }
+
+    /// Retrieves all trips that travel to a given stop today.
+    /// - Parameters:
+    ///   - stopId: The stopId to query for.
+    ///   - routes: Optional route(s) to filter by (comma delimited).
+    ///   - direction: Optional direction or destination to filter by (comma delimited).
+    public func tripsToday(stopId: Int, routes: String? = nil, direction: String? = nil) async throws -> [TripStopToday] {
+        try await performer.perform(
+            request: StopsEndpoint.tripsToday(stopId: stopId, routes: routes, direction: direction).getRequest(token: token),
+            decodeTo: [TripStopToday].self
+        )
+    }
 }
