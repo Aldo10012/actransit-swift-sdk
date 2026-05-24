@@ -14,6 +14,14 @@ enum StopsEndpoint {
     ///   - active: Include inactive stops; default false.
     ///   - routeName: Filter to a specific route.
     case nearbyByPath(latitude: Double, longitude: Double, distance: Double? = nil, active: Bool? = nil, routeName: String? = nil)
+    /// https://api.actransit.org/transit/stops/{latitude}/{longitude}?distance={distance}&active={active}&routeName={routeName}
+    /// - Parameters:
+    ///   - latitude: Search center latitude.
+    ///   - longitude: Search center longitude.
+    ///   - distance: Search radius in feet; default 500, max 25,000.
+    ///   - active: Include inactive stops; default false.
+    ///   - routeName: Filter to a specific route.
+    case nearby(latitude: Double, longitude: Double, distance: Double? = nil, active: Bool? = nil, routeName: String? = nil)
 }
 
 extension StopsEndpoint {
@@ -25,6 +33,8 @@ extension StopsEndpoint {
             "/stops/summary"
         case let .nearbyByPath(lat, lon, distance, active, routeName):
             buildNearbyByPathPath(lat: lat, lon: lon, distance: distance, active: active, routeName: routeName)
+        case let .nearby(lat, lon, _, _, _):
+            "/stops/\(lat)/\(lon)"
         }
     }
 
@@ -49,6 +59,18 @@ extension StopsEndpoint {
         switch self {
         case .allStops, .summary, .nearbyByPath:
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
+        case let .nearby(_, _, distance, active, routeName):
+            var params: [HTTPParameter] = [tokenParam]
+            if let distance {
+                params.append(HTTPParameter(key: "distance", value: String(distance)))
+            }
+            if let active {
+                params.append(HTTPParameter(key: "active", value: String(active)))
+            }
+            if let routeName {
+                params.append(HTTPParameter(key: "routeName", value: routeName))
+            }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }
     }
 
