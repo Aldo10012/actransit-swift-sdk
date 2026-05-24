@@ -199,4 +199,14 @@ public struct RoutesService {
             decodeTo: TripScheduleInfo.self
         )
     }
+
+    /// Retrieves all destinations for a given route.
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    public func destinations(routeName: String) async throws -> [RouteDestination] {
+        try await performer.perform(
+            request: RoutesEndpoint.destinations(routeName: routeName).getRequest(token: token),
+            decodeTo: [RouteDestination].self
+        )
+    }
 }

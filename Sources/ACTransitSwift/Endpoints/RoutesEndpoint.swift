@@ -116,6 +116,10 @@ enum RoutesEndpoint {
     ///   - hasAllStops: If true, include waypoints. Default false.
     ///   - stopId: Filter results to a specific stop by ID511 code.
     case schedule(routes: String, booking: String? = nil, direction: String? = nil, destination: String? = nil, dayCode: String? = nil, hasAllStops: Bool? = nil, stopId: String? = nil)
+    /// https://api.actransit.org/transit/route/{routeName}/destinations
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    case destinations(routeName: String)
 }
 
 extension RoutesEndpoint {
@@ -181,6 +185,8 @@ extension RoutesEndpoint {
             } else {
                 "/route/\(routes)/schedule"
             }
+        case let .destinations(routeName):
+            "/route/\(routeName)/destinations"
         }
     }
 
@@ -295,6 +301,8 @@ extension RoutesEndpoint {
                 params.append(HTTPParameter(key: "stopId", value: stopId))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case .destinations:
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         }
     }
 

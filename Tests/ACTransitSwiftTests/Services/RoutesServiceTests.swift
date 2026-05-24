@@ -528,6 +528,28 @@ final class RoutesServiceTests {
         #expect(result[0].latitude == TimePoint.sample.latitude)
         #expect(result[0].longitude == TimePoint.sample.longitude)
     }
+
+    @Test("test .destinations() success case")
+    func destinations() async throws {
+        let jsonString = """
+        [
+            {
+                "RouteId": "72",
+                "DirectionId": 0,
+                "Direction": "Southbound",
+                "Destination": "To Jack London Square"
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.destinations(routeName: "72")
+        #expect(result.count == 1)
+        #expect(result[0].routeId == RouteDestination.sample.routeId)
+        #expect(result[0].directionId == RouteDestination.sample.directionId)
+        #expect(result[0].direction == RouteDestination.sample.direction)
+        #expect(result[0].destination == RouteDestination.sample.destination)
+    }
 }
 
 // MARK: - mocks
