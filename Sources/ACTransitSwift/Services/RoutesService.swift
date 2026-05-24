@@ -80,4 +80,15 @@ public struct RoutesService {
             decodeTo: [RouteDivision].self
         )
     }
+
+    /// Retrieves the timepoint pattern for a specific trip on a given route.
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    ///   - tripId: The trip identifier.
+    public func pattern(routeName: String, tripId: Int) async throws -> [TimePoint] {
+        try await performer.perform(
+            request: RoutesEndpoint.pattern(routeName: routeName, tripId: tripId).getRequest(token: token),
+            decodeTo: [TimePoint].self
+        )
+    }
 }

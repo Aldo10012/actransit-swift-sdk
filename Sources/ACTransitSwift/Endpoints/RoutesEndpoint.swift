@@ -57,6 +57,11 @@ enum RoutesEndpoint {
     ///   - scheduleType: Filter by schedule type: `Today`, `Saturday`, `Sunday`, or `Weekday`.
     ///   - byPattern: If true, return stops per stop pattern. Default false.
     case stops(routeName: String, booking: String? = nil, direction: String? = nil, destination: String? = nil, scheduleType: TripScheduleType? = nil, byPattern: Bool? = nil)
+    /// https://api.actransit.org/transit/route/{routeName}/trip/{tripId}/pattern
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    ///   - tripId: The trip identifier.
+    case pattern(routeName: String, tripId: Int)
 }
 
 extension RoutesEndpoint {
@@ -86,6 +91,8 @@ extension RoutesEndpoint {
             } else {
                 "/route/\(routeName)/stops"
             }
+        case let .pattern(routeName, tripId):
+            "/route/\(routeName)/trip/\(tripId)/pattern"
         }
     }
 
@@ -136,6 +143,8 @@ extension RoutesEndpoint {
                 params.append(HTTPParameter(key: "byPattern", value: String(byPattern)))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case .pattern:
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         }
     }
 

@@ -123,4 +123,15 @@ final class RoutesEndpointTests {
         #expect(endpoint.path == "/routes")
         #expect((request.parameters ?? []).contains(HTTPParameter(key: "sortType", value: "Alphabetical")))
     }
+
+    @Test("test RoutesEndpoint.pattern")
+    func pattern() {
+        let endpoint = RoutesEndpoint.pattern(routeName: "72", tripId: 11_861_464)
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/route/72/trip/11861464/pattern")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/route/72/trip/11861464/pattern")
+        #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
+    }
 }

@@ -163,6 +163,28 @@ final class RoutesServiceTests {
         #expect(result[0].isAllNighter == RouteDivision.sample.isAllNighter)
         #expect(result[0].isSchool == RouteDivision.sample.isSchool)
     }
+
+    @Test("test .pattern() success case")
+    func pattern() async throws {
+        let jsonString = """
+        [
+            {
+                "TripId": 11861464,
+                "Sequence": 1,
+                "Latitude": 37.9554659,
+                "Longitude": -122.3358682
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.pattern(routeName: "72", tripId: TimePoint.sample.tripId)
+        #expect(result.count == 1)
+        #expect(result[0].tripId == TimePoint.sample.tripId)
+        #expect(result[0].sequence == TimePoint.sample.sequence)
+        #expect(result[0].latitude == TimePoint.sample.latitude)
+        #expect(result[0].longitude == TimePoint.sample.longitude)
+    }
 }
 
 // MARK: - mocks
