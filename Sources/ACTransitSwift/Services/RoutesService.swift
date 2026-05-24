@@ -148,4 +148,15 @@ public struct RoutesService {
             decodeTo: [RouteWaypointsFast].self
         )
     }
+
+    /// Retrieves all trips traveling along one or more routes today.
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers.
+    ///   - direction: Optional direction or destination to filter by (comma delimited).
+    public func tripsToday(routes: String, direction: String? = nil) async throws -> [TripStopToday] {
+        try await performer.perform(
+            request: RoutesEndpoint.tripsToday(routes: routes, direction: direction).getRequest(token: token),
+            decodeTo: [TripStopToday].self
+        )
+    }
 }

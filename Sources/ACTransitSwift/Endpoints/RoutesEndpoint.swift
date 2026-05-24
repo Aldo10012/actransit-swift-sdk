@@ -89,6 +89,11 @@ enum RoutesEndpoint {
     ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
     ///   - scheduleType: Filter by schedule type: `Weekday`, `Saturday`, or `Sunday`.
     case waypointsFast(routes: String, booking: String? = nil, scheduleType: TripScheduleType? = nil)
+    /// https://api.actransit.org/transit/route/{routes}/tripstoday?direction={direction}
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers.
+    ///   - direction: Optional direction or destination to filter by (comma delimited).
+    case tripsToday(routes: String, direction: String? = nil)
 }
 
 extension RoutesEndpoint {
@@ -138,6 +143,8 @@ extension RoutesEndpoint {
             } else {
                 "/route/\(routes)/waypointsfast"
             }
+        case let .tripsToday(routes, _):
+            "/route/\(routes)/tripstoday"
         }
     }
 
@@ -211,6 +218,12 @@ extension RoutesEndpoint {
             var params: [HTTPParameter] = [tokenParam]
             if let scheduleType {
                 params.append(HTTPParameter(key: "scheduleType", value: scheduleType.queryValue))
+            }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .tripsToday(_, direction):
+            var params: [HTTPParameter] = [tokenParam]
+            if let direction {
+                params.append(HTTPParameter(key: "direction", value: direction))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }
