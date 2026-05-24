@@ -58,6 +58,28 @@ final class StopsServiceTests {
         #expect(result.count == StopSummary.sample.count)
         #expect(result.lastUpdatedDateTime == StopSummary.sample.lastUpdatedDateTime)
     }
+
+    @Test("test .nearbyByPath() success case")
+    func nearbyByPath() async throws {
+        let jsonString = """
+        [
+            {
+                "StopId": 55888,
+                "Name": "Contra Costa College",
+                "Latitude": 37.9710794,
+                "Longitude": -122.3398753,
+                "City": "Richmond",
+                "ScheduledTime": "2026-05-23T05:10:00.000-07:00"
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.nearbyByPath(latitude: 37.9710794, longitude: -122.3398753)
+        #expect(result.count == 1)
+        #expect(result[0].stopId == Stop.sample.stopId)
+        #expect(result[0].name == Stop.sample.name)
+    }
 }
 
 // MARK: - mocks
