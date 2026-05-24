@@ -10,7 +10,7 @@ final class VehicleCharacteristicsTests {
         #expect(result.vehicleId == "9999")
         #expect(result.isActive == VehicleCharacteristics.sample.isActive)
         #expect(result.description == VehicleCharacteristics.sample.description)
-        #expect(result.make == VehicleCharacteristics.sample.make)
+        #expect(result.manufacturer == VehicleCharacteristics.sample.manufacturer)
         #expect(result.propulsionType == VehicleCharacteristics.sample.propulsionType)
         #expect(result.hasWiFi == VehicleCharacteristics.sample.hasWiFi)
         #expect(result.hasAC == VehicleCharacteristics.sample.hasAC)

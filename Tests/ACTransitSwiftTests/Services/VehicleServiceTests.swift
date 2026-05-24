@@ -152,7 +152,7 @@ final class VehicleServiceTests {
 
         let result = try await sut.vehicleCharacteristics(vehicleId: "1505")
         #expect(result.vehicleId == VehicleCharacteristics.sample.vehicleId)
-        #expect(result.make == VehicleCharacteristics.sample.make)
+        #expect(result.manufacturer == VehicleCharacteristics.sample.manufacturer)
         #expect(result.propulsionType == VehicleCharacteristics.sample.propulsionType)
     }
 
@@ -186,7 +186,7 @@ final class VehicleServiceTests {
         #expect(result[0].vehicleId == VehicleCharacteristics.sample.vehicleId)
         #expect(result[0].isActive == VehicleCharacteristics.sample.isActive)
         #expect(result[0].description == VehicleCharacteristics.sample.description)
-        #expect(result[0].make == VehicleCharacteristics.sample.make)
+        #expect(result[0].manufacturer == VehicleCharacteristics.sample.manufacturer)
         #expect(result[0].propulsionType == VehicleCharacteristics.sample.propulsionType)
         #expect(result[0].hasWiFi == VehicleCharacteristics.sample.hasWiFi)
         #expect(result[0].hasAC == VehicleCharacteristics.sample.hasAC)

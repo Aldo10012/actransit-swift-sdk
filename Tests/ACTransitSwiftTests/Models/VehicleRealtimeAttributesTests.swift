@@ -104,6 +104,18 @@ final class VehicleRealtimeAttributesTests {
         #expect(decoded.dateTimeAPCReported == original.dateTimeAPCReported)
     }
 
+    @Test("round-trips encode → decode with nil dates")
+    func roundTripMinimal() throws {
+        let original = VehicleRealtimeAttributes.minimal
+        let encoded = try JSONEncoder().encode(original)
+        let decoded = try JSONDecoder().decode(VehicleRealtimeAttributes.self, from: encoded)
+        #expect(decoded.vehicleId == original.vehicleId)
+        #expect(decoded.dateTimePositionReported == nil)
+        #expect(decoded.dateTimeAPCReported == nil)
+        #expect(decoded.vehicleCapacity == nil)
+        #expect(decoded.estimatedOccupancyStatus == nil)
+    }
+
     // MARK: - Mock Data
 
     @Test("sample has non-nil dates")

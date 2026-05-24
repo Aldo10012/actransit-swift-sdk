@@ -94,16 +94,28 @@ extension VehicleEndpoint {
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .bulkRealtimeAttributes(vehicles, route):
-            var bodyDict: [String: Any] = ["Vehicles": vehicles]
-            if let route {
-                bodyDict["Route"] = route
-            }
-            let bodyData = try? JSONSerialization.data(withJSONObject: bodyDict)
+            let bodyData = try? JSONEncoder().encode(BulkRealtimeAttributesBody(vehicles: vehicles, route: route))
             return factory.build(httpMethod: .POST, baseUrlString: url, parameters: [tokenParam], headers: [.contentType(.json)], body: bodyData)
         }
     }
 
     enum Constants {
         static let tokenKey = "token"
+    }
+}
+
+private struct BulkRealtimeAttributesBody: Encodable {
+    let vehicles: [String]
+    let route: String?
+
+    enum CodingKeys: String, CodingKey {
+        case vehicles = "Vehicles"
+        case route = "Route"
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(vehicles, forKey: .vehicles)
+        try container.encodeIfPresent(route, forKey: .route)
     }
 }

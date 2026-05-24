@@ -13,7 +13,7 @@ public struct VehicleCharacteristics: Codable, Sendable {
     /// Brief explanation of the vehicle's classification.
     public let vehicleTypeDescription: String
     /// String indicating the maker of the vehicle.
-    public let make: String
+    public let manufacturer: String
     /// String indicating the serial number of the vehicle.
     public let serialNumber: String
     /// String indicating the license number of the vehicle (when available).
@@ -39,7 +39,7 @@ public struct VehicleCharacteristics: Codable, Sendable {
         description: String,
         vehicleType: String,
         vehicleTypeDescription: String,
-        make: String,
+        manufacturer: String,
         serialNumber: String,
         licenseNumber: String?,
         length: String,
@@ -55,7 +55,7 @@ public struct VehicleCharacteristics: Codable, Sendable {
         self.description = description
         self.vehicleType = vehicleType
         self.vehicleTypeDescription = vehicleTypeDescription
-        self.make = make
+        self.manufacturer = manufacturer
         self.serialNumber = serialNumber
         self.licenseNumber = licenseNumber
         self.length = length
@@ -73,7 +73,7 @@ public struct VehicleCharacteristics: Codable, Sendable {
         case description = "Description"
         case vehicleType = "VehicleType"
         case vehicleTypeDescription = "VehicleTypeDescription"
-        case make = "Make"
+        case manufacturer = "Make"
         case serialNumber = "SerialNumber"
         case licenseNumber = "LicenseNumber"
         case length = "Length"
@@ -93,7 +93,7 @@ public struct VehicleCharacteristics: Codable, Sendable {
         description: "Gillig - Diesel",
         vehicleType: "40",
         vehicleTypeDescription: "Standard Bus",
-        make: "Gillig",
+        manufacturer: "Gillig",
         serialNumber: "12345",
         licenseNumber: "1234567",
         length: "40",
@@ -111,7 +111,7 @@ public struct VehicleCharacteristics: Codable, Sendable {
         description: "Gillig - Diesel",
         vehicleType: "40",
         vehicleTypeDescription: "Standard Bus",
-        make: "Gillig",
+        manufacturer: "Gillig",
         serialNumber: "12345",
         licenseNumber: nil,
         length: "40",
@@ -129,7 +129,7 @@ public struct VehicleCharacteristics: Codable, Sendable {
         description: String = sample.description,
         vehicleType: String = sample.vehicleType,
         vehicleTypeDescription: String = sample.vehicleTypeDescription,
-        make: String = sample.make,
+        manufacturer: String = sample.manufacturer,
         serialNumber: String = sample.serialNumber,
         licenseNumber: String? = sample.licenseNumber,
         length: String = sample.length,
@@ -146,7 +146,7 @@ public struct VehicleCharacteristics: Codable, Sendable {
             description: description,
             vehicleType: vehicleType,
             vehicleTypeDescription: vehicleTypeDescription,
-            make: make,
+            manufacturer: manufacturer,
             serialNumber: serialNumber,
             licenseNumber: licenseNumber,
             length: length,
