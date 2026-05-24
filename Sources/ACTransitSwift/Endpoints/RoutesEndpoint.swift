@@ -94,6 +94,11 @@ enum RoutesEndpoint {
     ///   - routes: Comma-delimited route identifiers.
     ///   - direction: Optional direction or destination to filter by (comma delimited).
     case tripsToday(routes: String, direction: String? = nil)
+    /// https://api.actransit.org/transit/route/{routes}/tripstops?direction={direction}
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers.
+    ///   - direction: Optional direction or destination to filter by (comma delimited).
+    case tripStopsToday(routes: String, direction: String? = nil)
 }
 
 extension RoutesEndpoint {
@@ -145,6 +150,8 @@ extension RoutesEndpoint {
             }
         case let .tripsToday(routes, _):
             "/route/\(routes)/tripstoday"
+        case let .tripStopsToday(routes, _):
+            "/route/\(routes)/tripstops"
         }
     }
 
@@ -221,6 +228,12 @@ extension RoutesEndpoint {
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .tripsToday(_, direction):
+            var params: [HTTPParameter] = [tokenParam]
+            if let direction {
+                params.append(HTTPParameter(key: "direction", value: direction))
+            }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .tripStopsToday(_, direction):
             var params: [HTTPParameter] = [tokenParam]
             if let direction {
                 params.append(HTTPParameter(key: "direction", value: direction))
