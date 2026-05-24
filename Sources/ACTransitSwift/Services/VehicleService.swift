@@ -72,4 +72,15 @@ public struct VehicleService {
             decodeTo: [VehicleRealtimeAttributes].self
         )
     }
+
+    /// Returns real-time attributes for multiple vehicles specified in the request body.
+    /// - Parameters:
+    ///   - vehicles: Collection of vehicle IDs (bus numbers).
+    ///   - route: Route name (e.g., `72`).
+    public func bulkRealtimeAttributes(vehicles: [String], route: String? = nil) async throws -> [VehicleRealtimeAttributes] {
+        try await performer.perform(
+            request: VehicleEndpoint.bulkRealtimeAttributes(vehicles: vehicles, route: route).getRequest(token: token),
+            decodeTo: [VehicleRealtimeAttributes].self
+        )
+    }
 }

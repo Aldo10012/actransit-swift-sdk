@@ -29,6 +29,11 @@ enum VehicleEndpoint {
     ///   - routeName: Route name identifier.
     ///   - vehicleId: Optional vehicle ID filter.
     case routeRealtimeAttributes(routeName: String, vehicleId: String? = nil)
+    /// https://api.actransit.org/transit/vehicle/realtimeattributes
+    /// - Parameters:
+    ///   - vehicles: Collection of vehicle IDs (bus numbers).
+    ///   - route: Route name (e.g., `72`).
+    case bulkRealtimeAttributes(vehicles: [String], route: String? = nil)
 }
 
 extension VehicleEndpoint {
@@ -46,6 +51,8 @@ extension VehicleEndpoint {
             "/vehicle/\(vehicleId)/realtimeattributes"
         case let .routeRealtimeAttributes(routeName, _):
             "/vehicle/route/\(routeName)/realtimeattributes"
+        case .bulkRealtimeAttributes:
+            "/vehicle/realtimeattributes"
         }
     }
 
@@ -85,6 +92,13 @@ extension VehicleEndpoint {
                 params.append(HTTPParameter(key: "vehicleId", value: vehicleId))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .bulkRealtimeAttributes(vehicles, route):
+            var bodyDict: [String: Any] = ["Vehicles": vehicles]
+            if let route {
+                bodyDict["Route"] = route
+            }
+            let bodyData = try? JSONSerialization.data(withJSONObject: bodyDict)
+            return factory.build(httpMethod: .POST, baseUrlString: url, parameters: [tokenParam], headers: [.contentType(.json)], body: bodyData)
         }
     }
 
