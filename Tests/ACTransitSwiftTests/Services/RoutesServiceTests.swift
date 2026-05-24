@@ -550,6 +550,38 @@ final class RoutesServiceTests {
         #expect(result[0].direction == RouteDestination.sample.direction)
         #expect(result[0].destination == RouteDestination.sample.destination)
     }
+
+    @Test("test .exceptions() success case")
+    func exceptions() async throws {
+        let jsonString = """
+        {
+            "BookingId": "2604SP",
+            "DateExceptions": [
+                {
+                    "RouteId": "72",
+                    "ServiceExceptions": [
+                        {
+                            "ExceptionCode": "EX001",
+                            "PatternId": "147",
+                            "TripId": ["2305020"],
+                            "OperatingDays": "Mondays through Fridays except holidays",
+                            "ExceptionDates": ["2026-05-26"],
+                            "ExceptionNotices": ["No service on Memorial Day"]
+                        }
+                    ]
+                }
+            ]
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.exceptions(routes: "72")
+        #expect(result.bookingId == RouteExceptions.sample.bookingId)
+        #expect(result.dateExceptions.count == 1)
+        #expect(result.dateExceptions[0].routeId == DateException.sample.routeId)
+        #expect(result.dateExceptions[0].serviceExceptions.count == 1)
+        #expect(result.dateExceptions[0].serviceExceptions[0].exceptionCode == ServiceException.sample.exceptionCode)
+    }
 }
 
 // MARK: - mocks

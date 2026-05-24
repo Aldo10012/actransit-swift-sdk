@@ -209,4 +209,15 @@ public struct RoutesService {
             decodeTo: [RouteDestination].self
         )
     }
+
+    /// Retrieves all service exceptions for the given route(s).
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers, or `all`.
+    ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+    public func exceptions(routes: String, booking: String? = nil) async throws -> RouteExceptions {
+        try await performer.perform(
+            request: RoutesEndpoint.exceptions(routes: routes, booking: booking).getRequest(token: token),
+            decodeTo: RouteExceptions.self
+        )
+    }
 }

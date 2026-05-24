@@ -120,6 +120,11 @@ enum RoutesEndpoint {
     /// - Parameters:
     ///   - routeName: The route identifier.
     case destinations(routeName: String)
+    /// https://api.actransit.org/transit/route/{routes}/exceptions/{booking}
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers, or `all`.
+    ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+    case exceptions(routes: String, booking: String? = nil)
 }
 
 extension RoutesEndpoint {
@@ -187,6 +192,12 @@ extension RoutesEndpoint {
             }
         case let .destinations(routeName):
             "/route/\(routeName)/destinations"
+        case let .exceptions(routes, booking):
+            if let booking {
+                "/route/\(routes)/exceptions/\(booking)"
+            } else {
+                "/route/\(routes)/exceptions"
+            }
         }
     }
 
@@ -302,6 +313,8 @@ extension RoutesEndpoint {
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case .destinations:
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
+        case .exceptions:
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         }
     }
