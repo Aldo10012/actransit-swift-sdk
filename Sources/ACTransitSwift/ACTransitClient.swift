@@ -10,6 +10,8 @@ public class ACTransitClient {
     public let routes: RoutesService
     /// Stop lookup and proximity search endpoints.
     public let stops: StopsService
+    /// Vehicle location, characteristics, and real-time occupancy endpoints.
+    public let vehicles: VehicleService
 
     public convenience init() {
         self.init(token: ACTransitPlugins.apiToken, performer: RequestPerformer())
@@ -20,5 +22,6 @@ public class ACTransitClient {
         trips = TripsService(token: token, performer: performer)
         routes = RoutesService(token: token, performer: performer)
         stops = StopsService(token: token, performer: performer)
+        vehicles = VehicleService(token: token, performer: performer)
     }
 }
