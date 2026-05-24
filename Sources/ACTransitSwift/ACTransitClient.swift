@@ -8,6 +8,8 @@ public class ACTransitClient {
     public let trips: TripsService
     /// Route listing, schedule, and stop endpoints.
     public let routes: RoutesService
+    /// Stop lookup and proximity search endpoints.
+    public let stops: StopsService
 
     public convenience init() {
         self.init(token: ACTransitPlugins.apiToken, performer: RequestPerformer())
@@ -17,5 +19,6 @@ public class ACTransitClient {
         gtfs = GTFSService(token: token, performer: performer)
         trips = TripsService(token: token, performer: performer)
         routes = RoutesService(token: token, performer: performer)
+        stops = StopsService(token: token, performer: performer)
     }
 }
