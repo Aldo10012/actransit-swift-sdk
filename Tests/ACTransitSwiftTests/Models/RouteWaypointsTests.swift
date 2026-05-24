@@ -27,4 +27,12 @@ final class RouteWaypointsTests {
         #expect(result.isDefault == RoutePattern.sample.isDefault)
         #expect(result.totalDistance == RoutePattern.sample.totalDistance)
     }
+
+    @Test("RouteWaypoints make() applies overrides independently")
+    func routeWaypointsMakeOverrides() {
+        let result = RouteWaypoints.make(routeAlpha: "51")
+        #expect(result.routeAlpha == "51")
+        #expect(result.booking == RouteWaypoints.sample.booking)
+        #expect(result.patterns.count == RouteWaypoints.sample.patterns.count)
+    }
 }
