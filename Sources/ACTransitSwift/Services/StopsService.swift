@@ -75,4 +75,14 @@ public struct StopsService {
             decodeTo: [TripStopToday].self
         )
     }
+
+    /// Retrieves all routes and destinations available at a given stop.
+    /// - Parameters:
+    ///   - stopId: The stop for whose destinations should be retrieved.
+    public func destinations(stopId: Int) async throws -> StopDestination {
+        try await performer.perform(
+            request: StopsEndpoint.destinations(stopId: stopId).getRequest(token: token),
+            decodeTo: StopDestination.self
+        )
+    }
 }
