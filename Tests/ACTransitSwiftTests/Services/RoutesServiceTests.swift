@@ -164,6 +164,52 @@ final class RoutesServiceTests {
         #expect(result[0].isSchool == RouteDivision.sample.isSchool)
     }
 
+    @Test("test .waypoints() success case")
+    func waypoints() async throws {
+        let jsonString = """
+        [
+            {
+                "Booking": "2604SP",
+                "RouteAlpha": "72",
+                "Patterns": [
+                    {
+                        "DirectionId": 5,
+                        "Direction": "NORTHBOUND",
+                        "Destination": "To Contra Costa College",
+                        "FirstPlaceId": "2NWN",
+                        "LastPlaceId": "CCCO",
+                        "IsDefault": true,
+                        "TotalDistance": 74035,
+                        "Waypoints": [
+                            {
+                                "OrderID": 0,
+                                "Latitude": 37.796567,
+                                "Longitude": -122.27785,
+                                "Heading": 131.4,
+                                "DistanceToNextStop": 723,
+                                "DistanceFromStart": 0,
+                                "StopSequence": 1
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.waypoints(routes: "72")
+        #expect(result.count == 1)
+        #expect(result[0].booking == RouteWaypoints.sample.booking)
+        #expect(result[0].routeAlpha == RouteWaypoints.sample.routeAlpha)
+        #expect(result[0].patterns.count == 1)
+        #expect(result[0].patterns[0].directionId == RoutePattern.sample.directionId)
+        #expect(result[0].patterns[0].direction == RoutePattern.sample.direction)
+        #expect(result[0].patterns[0].waypoints.count == 1)
+        #expect(result[0].patterns[0].waypoints[0].orderId == RouteWaypoint.sample.orderId)
+        #expect(result[0].patterns[0].waypoints[0].latitude == RouteWaypoint.sample.latitude)
+    }
+
     @Test("test .tripEstimate() success case")
     func tripEstimate() async throws {
         let jsonString = """

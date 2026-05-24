@@ -124,4 +124,16 @@ public struct RoutesService {
             decodeTo: [TripEstimate].self
         )
     }
+
+    /// Retrieves all waypoints currently servicing the specified route.
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers, or `all`.
+    ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+    ///   - scheduleType: Filter by schedule type: `Weekday`, `Saturday`, or `Sunday`.
+    public func waypoints(routes: String, booking: String? = nil, scheduleType: TripScheduleType? = nil) async throws -> [RouteWaypoints] {
+        try await performer.perform(
+            request: RoutesEndpoint.waypoints(routes: routes, booking: booking, scheduleType: scheduleType).getRequest(token: token),
+            decodeTo: [RouteWaypoints].self
+        )
+    }
 }

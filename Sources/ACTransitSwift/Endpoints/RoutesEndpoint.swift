@@ -77,6 +77,12 @@ enum RoutesEndpoint {
     ///   - fromStopId: The origin stop identifier.
     ///   - toStopId: The destination stop identifier.
     case tripEstimate(routeName: String, fromStopId: Int, toStopId: Int)
+    /// https://api.actransit.org/transit/route/{routes}/waypoints/{booking}?scheduleType={scheduleType}
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers, or `all`.
+    ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+    ///   - scheduleType: Filter by schedule type: `Weekday`, `Saturday`, or `Sunday`.
+    case waypoints(routes: String, booking: String? = nil, scheduleType: TripScheduleType? = nil)
 }
 
 extension RoutesEndpoint {
@@ -114,6 +120,12 @@ extension RoutesEndpoint {
             "/route/\(routeName)/vehicles"
         case let .tripEstimate(routeName, _, _):
             "/route/\(routeName)/tripestimate"
+        case let .waypoints(routes, booking, _):
+            if let booking {
+                "/route/\(routes)/waypoints/\(booking)"
+            } else {
+                "/route/\(routes)/waypoints"
+            }
         }
     }
 
@@ -176,6 +188,12 @@ extension RoutesEndpoint {
                 HTTPParameter(key: "fromStopId", value: String(fromStopId)),
                 HTTPParameter(key: "toStopId", value: String(toStopId))
             ]
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .waypoints(_, _, scheduleType):
+            var params: [HTTPParameter] = [tokenParam]
+            if let scheduleType {
+                params.append(HTTPParameter(key: "scheduleType", value: scheduleType.queryValue))
+            }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }
     }

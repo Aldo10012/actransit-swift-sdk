@@ -135,6 +135,35 @@ final class RoutesEndpointTests {
         #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
     }
 
+    @Test("test RoutesEndpoint.waypoints")
+    func waypoints() {
+        let endpoint = RoutesEndpoint.waypoints(routes: "72")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/route/72/waypoints")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/route/72/waypoints")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+    }
+
+    @Test("test RoutesEndpoint.waypoints with booking")
+    func waypointsWithBooking() {
+        let endpoint = RoutesEndpoint.waypoints(routes: "72", booking: "Current")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/route/72/waypoints/Current")
+        #expect(request.baseUrl == "https://api.actransit.org/transit/route/72/waypoints/Current")
+    }
+
+    @Test("test RoutesEndpoint.waypoints with scheduleType")
+    func waypointsWithScheduleType() {
+        let endpoint = RoutesEndpoint.waypoints(routes: "72", scheduleType: .weekday)
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/route/72/waypoints")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "scheduleType", value: "Weekday")))
+    }
+
     @Test("test RoutesEndpoint.tripEstimate")
     func tripEstimate() {
         let endpoint = RoutesEndpoint.tripEstimate(routeName: "72", fromStopId: 55888, toStopId: 51632)
