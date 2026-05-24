@@ -39,4 +39,15 @@ public struct VehicleService {
             decodeTo: VehicleCharacteristics.self
         )
     }
+
+    /// Returns real-time position and passenger occupancy data for one or more vehicles.
+    /// - Parameters:
+    ///   - vehicleId: Vehicle (bus) number filter.
+    ///   - routeName: Route name filter.
+    public func realtimeAttributes(vehicleId: String? = nil, routeName: String? = nil) async throws -> [VehicleRealtimeAttributes] {
+        try await performer.perform(
+            request: VehicleEndpoint.realtimeAttributes(vehicleId: vehicleId, routeName: routeName).getRequest(token: token),
+            decodeTo: [VehicleRealtimeAttributes].self
+        )
+    }
 }
