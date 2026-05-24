@@ -91,6 +91,13 @@ final class StopTests {
         #expect(dict?["ScheduledTime"] as? String != nil)
     }
 
+    @Test("encodes nil scheduledTime")
+    func encodesNilScheduledTime() throws {
+        let encoded = try JSONEncoder().encode(Stop.minimal)
+        let dict = try JSONSerialization.jsonObject(with: encoded) as? [String: Any]
+        #expect(dict?["ScheduledTime"] is NSNull)
+    }
+
     @Test("round-trips encode → decode with scheduledTime")
     func roundTripWithScheduledTime() throws {
         let date = ISO8601DateFormatter.ACTFormat.date(from: "2026-05-23T05:10:00.000-07:00")!
