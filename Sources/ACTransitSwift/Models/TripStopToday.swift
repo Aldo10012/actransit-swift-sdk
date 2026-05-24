@@ -5,6 +5,7 @@ public struct TripStopToday: Codable, Sendable {
     public let routeId: String
     public let directionId: Int
     public let direction: String
+    /// String (e.g. "Saturday") rather than TripScheduleType because this endpoint returns text, not the integer raw value.
     public let scheduleType: String
     public let headsign: String
     public let destination: String

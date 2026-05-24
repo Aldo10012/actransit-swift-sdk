@@ -111,7 +111,7 @@ public struct TimeTableStop: Codable, Sendable {
         stopLongitude: Double = sample.stopLongitude,
         stopLatitude: Double = sample.stopLatitude
     ) -> TimeTableStop {
-        TimeTableStop(stopId: stopId, stopDescription: stopDescription, placeId: placeId, stopLongitude: stopLongitude, stopLatitude: stopLatitude) // No test coverage
+        TimeTableStop(stopId: stopId, stopDescription: stopDescription, placeId: placeId, stopLongitude: stopLongitude, stopLatitude: stopLatitude)
     }
 }
 

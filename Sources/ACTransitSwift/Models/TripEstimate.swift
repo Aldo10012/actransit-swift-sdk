@@ -40,7 +40,7 @@ public struct TripEstimate: Codable, Sendable {
         destinationStopId: 51632,
         expectedDepartureTime: "2026-05-23T21:35:00",
         tripDuration: "01:05:00",
-        vehicleId: nil
+        vehicleId: 1505
     )
 
     public static let minimal = TripEstimate(

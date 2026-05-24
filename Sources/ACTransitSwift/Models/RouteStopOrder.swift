@@ -6,9 +6,9 @@ public struct StopOrder: Codable, Sendable {
     public let stopId: Int
     /// Name of the stop.
     public let name: String
-    /// Stop for the position to evaulate
+    /// Stop for the position to evaluate
     public let latitude: Double
-    /// Stop for the position to evaulate.
+    /// Stop for the position to evaluate.
     public let longitude: Double
     /// The order of the stop in the current line and direction/destination.
     public let order: Int

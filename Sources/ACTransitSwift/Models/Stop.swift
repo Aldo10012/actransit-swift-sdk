@@ -78,8 +78,8 @@ public struct Stop: Codable, Sendable {
         name: "Contra Costa College",
         latitude: 37.9710794,
         longitude: -122.3398753,
-        city: nil,
-        scheduledTime: nil
+        city: "Richmond",
+        scheduledTime: ISO8601DateFormatter.ACTFormat.date(from: "2026-05-23T05:10:00.000-07:00")!
     )
 
     public static let minimal = Stop(

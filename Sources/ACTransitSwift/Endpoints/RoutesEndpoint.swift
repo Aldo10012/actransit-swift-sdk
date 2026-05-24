@@ -1,7 +1,7 @@
 import EZNetworking
 import Foundation
 
-public enum RouteSortType: String {
+public enum RouteSortType: String, Codable, Sendable {
     case alphabetical = "Alphabetical"
     case natural = "Natural"
 }
