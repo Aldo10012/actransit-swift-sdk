@@ -83,6 +83,12 @@ enum RoutesEndpoint {
     ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
     ///   - scheduleType: Filter by schedule type: `Weekday`, `Saturday`, or `Sunday`.
     case waypoints(routes: String, booking: String? = nil, scheduleType: TripScheduleType? = nil)
+    /// https://api.actransit.org/transit/route/{routes}/waypointsfast/{booking}?scheduleType={scheduleType}
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers, or `all`.
+    ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+    ///   - scheduleType: Filter by schedule type: `Weekday`, `Saturday`, or `Sunday`.
+    case waypointsFast(routes: String, booking: String? = nil, scheduleType: TripScheduleType? = nil)
 }
 
 extension RoutesEndpoint {
@@ -125,6 +131,12 @@ extension RoutesEndpoint {
                 "/route/\(routes)/waypoints/\(booking)"
             } else {
                 "/route/\(routes)/waypoints"
+            }
+        case let .waypointsFast(routes, booking, _):
+            if let booking {
+                "/route/\(routes)/waypointsfast/\(booking)"
+            } else {
+                "/route/\(routes)/waypointsfast"
             }
         }
     }
@@ -190,6 +202,12 @@ extension RoutesEndpoint {
             ]
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .waypoints(_, _, scheduleType):
+            var params: [HTTPParameter] = [tokenParam]
+            if let scheduleType {
+                params.append(HTTPParameter(key: "scheduleType", value: scheduleType.queryValue))
+            }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .waypointsFast(_, _, scheduleType):
             var params: [HTTPParameter] = [tokenParam]
             if let scheduleType {
                 params.append(HTTPParameter(key: "scheduleType", value: scheduleType.queryValue))

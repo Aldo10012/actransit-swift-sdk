@@ -164,6 +164,40 @@ final class RoutesServiceTests {
         #expect(result[0].isSchool == RouteDivision.sample.isSchool)
     }
 
+    @Test("test .waypointsFast() success case")
+    func waypointsFast() async throws {
+        let jsonString = """
+        [
+            {
+                "Booking": "2604SP",
+                "RouteAlpha": "72",
+                "Patterns": [
+                    {
+                        "DirectionId": 5,
+                        "Direction": "NORTHBOUND",
+                        "Destination": "To Contra Costa College",
+                        "FirstPlaceId": "2NWN",
+                        "LastPlaceId": "CCCO",
+                        "IsDefault": true,
+                        "TotalDistance": 74035,
+                        "Waypoints": ["37.796567,-122.27785", "37.796486,-122.277406"]
+                    }
+                ]
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.waypointsFast(routes: "72")
+        #expect(result.count == 1)
+        #expect(result[0].booking == RouteWaypointsFast.sample.booking)
+        #expect(result[0].routeAlpha == RouteWaypointsFast.sample.routeAlpha)
+        #expect(result[0].patterns.count == 1)
+        #expect(result[0].patterns[0].directionId == RoutePatternFast.sample.directionId)
+        #expect(result[0].patterns[0].waypoints.count == 2)
+        #expect(result[0].patterns[0].waypoints[0] == RoutePatternFast.sample.waypoints[0])
+    }
+
     @Test("test .waypoints() success case")
     func waypoints() async throws {
         let jsonString = """

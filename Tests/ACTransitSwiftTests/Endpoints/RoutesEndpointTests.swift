@@ -135,6 +135,26 @@ final class RoutesEndpointTests {
         #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
     }
 
+    @Test("test RoutesEndpoint.waypointsFast")
+    func waypointsFast() {
+        let endpoint = RoutesEndpoint.waypointsFast(routes: "72")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/route/72/waypointsfast")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/route/72/waypointsfast")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+    }
+
+    @Test("test RoutesEndpoint.waypointsFast with booking")
+    func waypointsFastWithBooking() {
+        let endpoint = RoutesEndpoint.waypointsFast(routes: "72", booking: "Current")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/route/72/waypointsfast/Current")
+        #expect(request.baseUrl == "https://api.actransit.org/transit/route/72/waypointsfast/Current")
+    }
+
     @Test("test RoutesEndpoint.waypoints")
     func waypoints() {
         let endpoint = RoutesEndpoint.waypoints(routes: "72")

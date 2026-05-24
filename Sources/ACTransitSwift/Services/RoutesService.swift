@@ -136,4 +136,16 @@ public struct RoutesService {
             decodeTo: [RouteWaypoints].self
         )
     }
+
+    /// Retrieves all waypoints for the specified route, optimized for speed (waypoints as coordinate strings).
+    /// - Parameters:
+    ///   - routes: Comma-delimited route identifiers, or `all`.
+    ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+    ///   - scheduleType: Filter by schedule type: `Weekday`, `Saturday`, or `Sunday`.
+    public func waypointsFast(routes: String, booking: String? = nil, scheduleType: TripScheduleType? = nil) async throws -> [RouteWaypointsFast] {
+        try await performer.perform(
+            request: RoutesEndpoint.waypointsFast(routes: routes, booking: booking, scheduleType: scheduleType).getRequest(token: token),
+            decodeTo: [RouteWaypointsFast].self
+        )
+    }
 }
