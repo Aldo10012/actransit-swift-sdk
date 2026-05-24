@@ -346,4 +346,15 @@ final class RoutesEndpointTests {
         #expect(endpoint.path == "/route/72/exceptions/Current")
         #expect(request.baseUrl == "https://api.actransit.org/transit/route/72/exceptions/Current")
     }
+
+    @Test("test RoutesEndpoint.profile")
+    func profile() {
+        let endpoint = RoutesEndpoint.profile(routes: "72")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/route/72/profile")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/route/72/profile")
+        #expect(request.parameters == [HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)])
+    }
 }

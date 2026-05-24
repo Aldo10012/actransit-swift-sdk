@@ -220,4 +220,14 @@ public struct RoutesService {
             decodeTo: RouteExceptions.self
         )
     }
+
+    /// Retrieves profile descriptions for the given route(s).
+    /// - Parameters:
+    ///   - routes: Comma-separated list of route identifiers, or `all`.
+    public func profile(routes: String) async throws -> [RouteProfile] {
+        try await performer.perform(
+            request: RoutesEndpoint.profile(routes: routes).getRequest(token: token),
+            decodeTo: [RouteProfile].self
+        )
+    }
 }

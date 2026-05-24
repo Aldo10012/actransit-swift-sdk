@@ -582,6 +582,24 @@ final class RoutesServiceTests {
         #expect(result.dateExceptions[0].serviceExceptions.count == 1)
         #expect(result.dateExceptions[0].serviceExceptions[0].exceptionCode == ServiceException.sample.exceptionCode)
     }
+
+    @Test("test .profile() success case")
+    func profile() async throws {
+        let jsonString = """
+        [
+            {
+                "RouteId": "72",
+                "Profile": "Contra Costa College to Jack London Square via San Pablo Ave., El Cerrito del Norte BART, and Downtown Oakland."
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.profile(routes: "72")
+        #expect(result.count == 1)
+        #expect(result[0].routeId == RouteProfile.sample.routeId)
+        #expect(result[0].profile == RouteProfile.sample.profile)
+    }
 }
 
 // MARK: - mocks

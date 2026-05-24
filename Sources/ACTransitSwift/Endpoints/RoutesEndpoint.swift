@@ -125,6 +125,10 @@ enum RoutesEndpoint {
     ///   - routes: Comma-delimited route identifiers, or `all`.
     ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
     case exceptions(routes: String, booking: String? = nil)
+    /// https://api.actransit.org/transit/route/{routes}/profile
+    /// - Parameters:
+    ///   - routes: Comma-separated list of route identifiers, or `all`.
+    case profile(routes: String)
 }
 
 extension RoutesEndpoint {
@@ -198,6 +202,8 @@ extension RoutesEndpoint {
             } else {
                 "/route/\(routes)/exceptions"
             }
+        case let .profile(routes):
+            "/route/\(routes)/profile"
         }
     }
 
@@ -315,6 +321,8 @@ extension RoutesEndpoint {
         case .destinations:
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         case .exceptions:
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
+        case .profile:
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         }
     }
