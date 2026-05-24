@@ -3,6 +3,11 @@ import Foundation
 
 enum TripsEndpoint {
     /// https://api.actransit.org/transit/Help/Api/GET-trips-canceled
+    /// - Parameters:
+    ///   - lastIncidentUniqueId: Filter results to a specific incident by its unique ID.
+    ///   - lastOpenDateTime: Filter by the date/time the incident was opened.
+    ///   - tripDateTimeFrom: Start of the trip date/time range to filter by.
+    ///   - tripDateTimeTo: End of the trip date/time range to filter by.
     case canceled(
         lastIncidentUniqueId: Int? = nil,
         lastOpenDateTime: Date? = nil,
@@ -10,6 +15,8 @@ enum TripsEndpoint {
         tripDateTimeTo: Date? = nil
     )
     /// https://api.actransit.org/transit/Help/Api/GET-trips-tripcancellationinfo-tripNumber
+    /// - Parameters:
+    ///   - tripNumber: The trip identifier whose cancellation details should be retrieved.
     case cancellationInfo(tripNumber: Int)
 }
 
