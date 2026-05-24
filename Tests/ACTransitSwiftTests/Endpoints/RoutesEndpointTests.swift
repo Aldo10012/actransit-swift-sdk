@@ -1,0 +1,43 @@
+@testable import ACTransitSwift
+import EZNetworking
+import Foundation
+import Testing
+
+@Suite("Test RoutesEndpoint")
+final class RoutesEndpointTests {
+    enum Constants {
+        static let tokenKey = "token"
+        static let mockToken = "mockToken"
+    }
+
+    @Test("test RoutesEndpoint.routes")
+    func routes() {
+        let endpoint = RoutesEndpoint.routes()
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/routes")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/routes")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+    }
+
+    @Test("test RoutesEndpoint.routes with booking")
+    func routesWithBooking() {
+        let endpoint = RoutesEndpoint.routes(booking: "Current")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/routes/Current")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/routes/Current")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+    }
+
+    @Test("test RoutesEndpoint.routes with sortType")
+    func routesWithSortType() {
+        let endpoint = RoutesEndpoint.routes(sortType: .alphabetical)
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/routes")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "sortType", value: "Alphabetical")))
+    }
+}

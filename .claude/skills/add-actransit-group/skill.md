@@ -97,21 +97,34 @@ If a matching case is found, **skip silently** — add the path to the skipped-e
 
 ### 4b — Cross-reference the live API docs
 
-Fetch the live API documentation for the endpoint. Convert the path to the Help URL format by replacing `/` with `-` and replacing any `{param}` segments with the literal text `by-param`:
+**Find the Help URL** by fetching the Help index and locating the matching endpoint:
 
+```
+https://api.actransit.org/transit/Help
+```
+
+The Help URL format follows this pattern:
+- Replace `/` with `-` in the path
+- Remove `{` and `}` from path params (keep the param name)
+- Append required/key query params with `_paramName`
+
+Examples:
 - `gtfs/all` → `https://api.actransit.org/transit/Help/Api/GET-gtfs-all`
-- `routes/{booking}` → `https://api.actransit.org/transit/Help/Api/GET-routes-by-param`
+- `routes/{booking}?sortType={sortType}` → `https://api.actransit.org/transit/Help/Api/GET-routes-booking_sortType`
+- `trips/tripcancellationinfo/{tripNumber}` → `https://api.actransit.org/transit/Help/Api/GET-trips-tripcancellationinfo-tripNumber`
 
-> **Tip:** If the `by-param` URL returns an error page, try dropping the last `by-param` segment (for optional trailing path params) or check the main help page at `https://api.actransit.org/transit/Help` to find the correct URL pattern for this endpoint.
+If the constructed URL returns an error, fetch the Help index to find the exact URL.
 
-Fetch that URL and extract:
+Fetch the Help page for this endpoint and extract:
 1. The exact **response JSON sample**
-2. The **resource model name** (e.g. `GtfsScheduleInfo`, `Booking`) — look for the type name linked in the response description or in the URL `?modelName=` on the response type link
-3. All **path parameters** and their types (note any typed enums like `TransitApiRouteSortType`)
-4. All **query parameters** beyond `token` (note required vs optional, and typed enums)
+2. The **resource model name** — look for the `?modelName=` link in the response description (e.g. `RouteDivision`, `GtfsScheduleInfo`)
+3. All **path parameters**, their types, and full descriptions
+4. All **query parameters** beyond `token` — names, types, required vs optional, typed enum values, and full descriptions
 5. Whether the response is **binary** (ZIP / protobuf) rather than JSON
 
-**Verify and update the reference file** — if the live docs reveal discrepancies (missing fields, wrong types, typed enum names), update the reference file before proceeding.
+**Call the actual API to verify** — if an API token is available, call the live endpoint and confirm the response shape matches the docs. Use real response values for `.sample` data, not placeholder strings.
+
+**Verify and update the reference file** — if the live docs or live response reveal discrepancies (missing fields, wrong types, different model name), update the reference file before proceeding.
 
 ### 4c — Classify the endpoint
 
@@ -127,15 +140,20 @@ Follow the same patterns as the existing `GTFSEndpoint`, `GTFSService`, `GtfsInf
 - CodingKeys using PascalCase API key names
 - Custom `init(from:)` only for models with date fields (use `ISO8601DateFormatter.ACTFormat` via the shared extension — never declare a new per-struct formatter)
 - Static `.sample`, `.minimal` (if optional fields exist), and `.make(…)` factory
-- Doc comment `/// {help URL}` above the struct declaration
+- `.sample` values must use **real data from a live API call**, not placeholder strings
+- Doc comment `/// https://api.actransit.org/transit/Help/ResourceModel?modelName={ModelName}` above the struct declaration
+- For each property, fetch the ResourceModel page and add a `///` doc comment with the API's description. Only add a doc comment if the API docs provide a description for that property — omit it if they don't.
 - Write to `Sources/ACTransitSwift/Models/{ModelName}.swift`
 
 **If the response is `[String]`** (directions endpoint), no model file is needed.
 
 **Update the endpoint enum** (`Sources/ACTransitSwift/Endpoints/{Group}Endpoint.swift`):
 - Create the file if this is the first endpoint for the group, following the pattern of `GTFSEndpoint.swift`
-- Add a `///` doc comment with the Help URL above the new case
-- Use typed Swift enums for typed API parameters (e.g. `TransitApiRouteSortType` instead of `String`)
+- Add a `///` doc comment with the **actual API endpoint URL** above the new case — NOT the Help URL
+  - Format: `/// https://api.actransit.org/transit/{path}?{queryParams}` (only include non-token params)
+  - Example: `/// https://api.actransit.org/transit/routes/{booking}?sortType={sortType}`
+- Below the URL comment, add `/// - Parameters:` docstrings for each associated value, copied from the API docs description
+- Use typed Swift enums for typed API parameters (e.g. `RouteSortType` instead of `String`); define them in the endpoint file
 - Optional path params (bookingId, etc.) should use `= nil` defaults on the associated value
 - Required query params should be non-optional associated values
 - Extend both switch statements: `path` and `getRequest(token:)`
@@ -143,7 +161,7 @@ Follow the same patterns as the existing `GTFSEndpoint`, `GTFSService`, `GtfsInf
 **Update the service** (`Sources/ACTransitSwift/Services/{Group}Service.swift`):
 - Create the file if this is the first endpoint for the group, following the pattern of `GTFSService.swift`
 - If the service file is new, also add `public let {group}: {Group}Service` to `ACTransitClient` and initialize it in `init(token:performer:)`
-- Add the `public func` method with a one-line `///` doc comment
+- Add the `public func` method with a `///` doc comment: one summary line followed by `/// - Parameters:` for each argument, with descriptions copied from the API docs
 
 **Write model tests** (`Tests/ACTransitSwiftTests/Models/{ModelName}Tests.swift`):
 - Only needed for models with custom `init(from:)` decoders (i.e. date fields)

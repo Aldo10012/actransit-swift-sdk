@@ -25,17 +25,32 @@ Read the matching reference file for context about the endpoint.
 
 ## Step 2 — Cross-reference the live API docs
 
-Fetch the live API documentation for the endpoint. Convert the path to the Help URL format by replacing `/` with `-` and replacing any `{param}` segments with the literal text `by-param`:
+**Find the Help URL** by fetching the Help index and locating the matching endpoint:
 
+```
+https://api.actransit.org/transit/Help
+```
+
+The Help URL format follows this pattern:
+- Replace `/` with `-` in the path
+- Remove `{` and `}` from path params (keep the param name)
+- Append required/key query params with `_paramName`
+
+Examples:
 - `gtfs/all` → `https://api.actransit.org/transit/Help/Api/GET-gtfs-all`
-- `routes/{routeId}/stops` → `https://api.actransit.org/transit/Help/Api/GET-routes-by-param-stops`
+- `routes/{booking}?sortType={sortType}` → `https://api.actransit.org/transit/Help/Api/GET-routes-booking_sortType`
+- `trips/tripcancellationinfo/{tripNumber}` → `https://api.actransit.org/transit/Help/Api/GET-trips-tripcancellationinfo-tripNumber`
 
-Fetch that URL and extract:
+If the constructed URL returns an error, fetch the Help index to find the exact URL.
+
+Fetch the Help page for this endpoint and extract:
 1. The exact **response JSON sample**
-2. The **resource model name** (e.g. `GtfsScheduleInfo`, `Booking`) — look for the type name linked in the response description or in the URL `?modelName=` on the response type link
-3. All **path parameters** and their types
-4. All **query parameters** beyond `token`
+2. The **resource model name** — look for the `?modelName=` link in the response description
+3. All **path parameters**, their types, and full descriptions
+4. All **query parameters** beyond `token` — names, types, required vs optional, typed enum values, and full descriptions
 5. Whether the response is **binary** (ZIP / protobuf) rather than JSON
+
+**Call the actual API to verify** — if an API token is available, call the live endpoint and confirm the response shape matches the docs. Use real response values for `.sample` data, not placeholder strings.
 
 ### Verify and update the reference file
 
@@ -74,12 +89,16 @@ Invoke the `swift-struct-generator` skill with:
 - The instruction that all types must be `public`, `Codable`, and `Sendable`
 - Note any date fields (ISO 8601 with potential 7 fractional-second digits) so the generator handles them with a custom decoder using `ISO8601DateFormatter.ACTFormat` from the shared extension — never declare a new per-struct formatter
 
-Above the struct declaration, add a `///` doc comment with the API doc URL:
+Above the struct declaration, add a `///` doc comment with the ResourceModel URL:
 
 ```swift
-/// https://api.actransit.org/transit/Help/Api/GET-gtfs-all
+/// https://api.actransit.org/transit/Help/ResourceModel?modelName=GtfsInfo
 public struct GtfsInfo: Codable, Sendable {
 ```
+
+`.sample` values must use **real data from a live API call**, not placeholder strings like `"sample string 1"`.
+
+For each property, fetch `https://api.actransit.org/transit/Help/ResourceModel?modelName={ModelName}` and add a `///` doc comment with the API's description above the property declaration. Only add a doc comment if the API docs provide a description for that property — omit it if they don't.
 
 Write the generated file to:
 ```
@@ -94,11 +113,11 @@ If the file doesn't exist yet (new resource group), create it following the same
 
 Add the new case and extend both switch statements:
 
-Above each new case, add a `///` doc comment with the API doc URL:
+Above each new case, add a `///` doc comment with the **actual API endpoint URL** (not the Help URL), followed by `/// - Parameters:` docstrings for each associated value:
 
 **Standard (no path params):**
 ```swift
-/// https://api.actransit.org/transit/Help/Api/GET-gtfs-all
+/// https://api.actransit.org/transit/gtfs/all
 case all
 
 // path switch:
@@ -111,15 +130,21 @@ case .all:
 
 **Parameterized:**
 ```swift
-/// https://api.actransit.org/transit/Help/Api/GET-gtfs-by-param
-case booking(bookingId: String)
+/// https://api.actransit.org/transit/routes/{booking}?sortType={sortType}
+/// - Parameters:
+///   - booking: Unique id representing a specific schedule. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+///   - sortType: Indicates how the routes should be sorted. Default is natural sort.
+case routes(booking: String? = nil, sortType: RouteSortType? = nil)
 
 // path switch:
-case .booking(let bookingId): "/gtfs/\(bookingId)"
+case let .routes(booking, _):
+    if let booking { "/routes/\(booking)" } else { "/routes" }
 
 // getRequest(token:) switch:
-case .booking:
-    factory.build(httpMethod: .GET, baseUrlString: url, parameters: [apiTokenQueryParameter])
+case let .routes(_, sortType):
+    var params: [HTTPParameter] = [tokenParam]
+    if let sortType { params.append(HTTPParameter(key: "sortType", value: sortType.rawValue)) }
+    return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
 ```
 
 **Extra query params** (e.g. a `limit` param): add additional `HTTPParameter` values to the `parameters` array.
@@ -130,7 +155,7 @@ File: `Sources/ACTransitSwift/Services/{Group}Service.swift`
 
 If the file doesn't exist yet (new resource group), create it following the same pattern as `GTFSService.swift` or `TripsService.swift`, and add a `public let {group}: {Group}Service` property to `ACTransitClient` in `Sources/ACTransitSwift/ACTransitClient.swift`.
 
-Add a `public func` that calls through to the endpoint:
+Add a `public func` that calls through to the endpoint. Include a `///` summary line followed by `/// - Parameters:` docstrings for each argument, with descriptions copied from the API docs:
 
 **Standard:**
 ```swift
@@ -142,9 +167,15 @@ public func all() async throws -> [GtfsInfo] {
 
 **Parameterized:**
 ```swift
-/// Schedule for a specific booking ID.
-public func booking(bookingId: String) async throws -> GtfsInfo {
-    try await performer.perform(request: GTFSEndpoint.booking(bookingId: bookingId).getRequest(token: token), decodeTo: GtfsInfo.self)
+/// Retrieves all AC Transit routes for a given booking period.
+/// - Parameters:
+///   - booking: Unique id representing a specific schedule. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+///   - sortType: Indicates how the routes should be sorted. Default is natural sort.
+public func routes(booking: String? = nil, sortType: RouteSortType? = nil) async throws -> [RouteDivision] {
+    try await performer.perform(
+        request: RoutesEndpoint.routes(booking: booking, sortType: sortType).getRequest(token: token),
+        decodeTo: [RouteDivision].self
+    )
 }
 ```
 
