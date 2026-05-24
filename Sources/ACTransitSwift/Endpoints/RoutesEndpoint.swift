@@ -6,6 +6,12 @@ public enum RouteSortType: String {
     case natural = "Natural"
 }
 
+public enum TripScheduleType: String {
+    case weekday = "Weekday"
+    case saturday = "Saturday"
+    case sunday = "Sunday"
+}
+
 enum RoutesEndpoint {
     /// https://api.actransit.org/transit/routes/{booking}?sortType={sortType}
     /// - Parameters:
@@ -17,6 +23,12 @@ enum RoutesEndpoint {
     ///   - routeName: The route to be retrieved.
     ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
     case route(routeName: String, booking: String? = nil)
+    /// https://api.actransit.org/transit/route/{routeName}/trips
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    ///   - direction: Filter results by direction of travel.
+    ///   - scheduleType: Filter by schedule type: `Weekday`, `Saturday`, or `Sunday`.
+    case trips(routeName: String, direction: String? = nil, scheduleType: TripScheduleType? = nil)
 }
 
 extension RoutesEndpoint {
@@ -34,6 +46,8 @@ extension RoutesEndpoint {
             } else {
                 "/route/\(routeName)"
             }
+        case let .trips(routeName, _, _):
+            "/route/\(routeName)/trips"
         }
     }
 
@@ -51,6 +65,15 @@ extension RoutesEndpoint {
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case .route:
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
+        case let .trips(_, direction, scheduleType):
+            var params: [HTTPParameter] = [tokenParam]
+            if let direction {
+                params.append(HTTPParameter(key: "direction", value: direction))
+            }
+            if let scheduleType {
+                params.append(HTTPParameter(key: "scheduleType", value: scheduleType.rawValue))
+            }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }
     }
 

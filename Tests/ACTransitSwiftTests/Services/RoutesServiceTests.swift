@@ -19,6 +19,30 @@ final class RoutesServiceTests {
 
     // MARK: - Tests
 
+    @Test("test .trips() success case")
+    func trips() async throws {
+        let jsonString = """
+        [
+            {
+                "TripId": 11861464,
+                "RouteName": "72",
+                "ScheduleType": 0,
+                "StartTime": "2000-01-01T04:52:00",
+                "Direction": "Southbound"
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.trips(routeName: Trip.sample.routeName)
+        #expect(result.count == 1)
+        #expect(result[0].tripId == Trip.sample.tripId)
+        #expect(result[0].routeName == Trip.sample.routeName)
+        #expect(result[0].scheduleType == Trip.sample.scheduleType)
+        #expect(result[0].startTime == Trip.sample.startTime)
+        #expect(result[0].direction == Trip.sample.direction)
+    }
+
     @Test("test .route() success case")
     func route() async throws {
         let jsonString = """
