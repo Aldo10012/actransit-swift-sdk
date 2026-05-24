@@ -66,15 +66,13 @@ Returns all AC Transit routes for a given booking period.
 
 ## `GET /route/{routeName}/{booking}`
 
-Returns details for a specific route in a given booking period.
-
-> **Note:** The detail page for this endpoint returns HTTP 500 from the documentation server. Based on other route endpoints, it likely returns a single Route object with the same fields as `/routes/{booking}`.
+Returns details for a specific route in a given booking period. Response model is `Route` (3 fields: RouteId, Name, Description) — distinct from the `RouteDivision` model returned by `/routes/{booking}`.
 
 **Path Parameters**
 
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
-| routeName | string | Yes | Route identifier (e.g., `72`, `NL`) |
+| routeName | string | Yes | The route to be retrieved (e.g., `72`, `NL`) |
 | booking | string | No | Schedule identifier: `Current`, `Next`, or a specific BookingId |
 
 **Query Parameters**
@@ -82,6 +80,24 @@ Returns details for a specific route in a given booking period.
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | token | string | Yes | API authentication token |
+
+**Response Body** — Single Route object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| RouteId | string | Route's unique identifier |
+| Name | string | The Route's name as seen by the public |
+| Description | string | Additional information regarding the route |
+
+**Response Sample (JSON):**
+
+```json
+{
+    "RouteId": "72",
+    "Name": "72",
+    "Description": "CCC - San Pablo"
+}
+```
 
 ---
 

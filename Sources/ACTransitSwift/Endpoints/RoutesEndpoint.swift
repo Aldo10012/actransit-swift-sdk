@@ -12,6 +12,11 @@ enum RoutesEndpoint {
     ///   - booking: Unique id representing a specific schedule. Use `Current` or `nil` for the current schedule, `Next` for the next schedule, or a specific BookingId.
     ///   - sortType: Indicates how the routes should be sorted. Default is natural sort. Options: `Alphabetical` or `Natural`.
     case routes(booking: String? = nil, sortType: RouteSortType? = nil)
+    /// https://api.actransit.org/transit/route/{routeName}/{booking}
+    /// - Parameters:
+    ///   - routeName: The route to be retrieved.
+    ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+    case route(routeName: String, booking: String? = nil)
 }
 
 extension RoutesEndpoint {
@@ -22,6 +27,12 @@ extension RoutesEndpoint {
                 "/routes/\(booking)"
             } else {
                 "/routes"
+            }
+        case let .route(routeName, booking):
+            if let booking {
+                "/route/\(routeName)/\(booking)"
+            } else {
+                "/route/\(routeName)"
             }
         }
     }
@@ -38,6 +49,8 @@ extension RoutesEndpoint {
                 params.append(HTTPParameter(key: "sortType", value: sortType.rawValue))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case .route:
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         }
     }
 

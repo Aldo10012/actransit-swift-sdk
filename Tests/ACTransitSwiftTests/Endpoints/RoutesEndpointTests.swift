@@ -32,6 +32,26 @@ final class RoutesEndpointTests {
         #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
     }
 
+    @Test("test RoutesEndpoint.route")
+    func route() {
+        let endpoint = RoutesEndpoint.route(routeName: "72")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/route/72")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/route/72")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+    }
+
+    @Test("test RoutesEndpoint.route with booking")
+    func routeWithBooking() {
+        let endpoint = RoutesEndpoint.route(routeName: "72", booking: "Current")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/route/72/Current")
+        #expect(request.baseUrl == "https://api.actransit.org/transit/route/72/Current")
+    }
+
     @Test("test RoutesEndpoint.routes with sortType")
     func routesWithSortType() {
         let endpoint = RoutesEndpoint.routes(sortType: .alphabetical)

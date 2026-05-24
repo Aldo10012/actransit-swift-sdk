@@ -19,6 +19,23 @@ final class RoutesServiceTests {
 
     // MARK: - Tests
 
+    @Test("test .route() success case")
+    func route() async throws {
+        let jsonString = """
+        {
+            "RouteId": "72",
+            "Name": "72",
+            "Description": "CCC - San Pablo"
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.route(routeName: Route.sample.routeId)
+        #expect(result.routeId == Route.sample.routeId)
+        #expect(result.name == Route.sample.name)
+        #expect(result.description == Route.sample.description)
+    }
+
     @Test("test .routes() success case")
     func routes() async throws {
         let jsonString = """
