@@ -48,6 +48,15 @@ enum RoutesEndpoint {
     /// - Parameters:
     ///   - routeName: The route identifier.
     case directions(routeName: String)
+    /// https://api.actransit.org/transit/route/{routeName}/stops/{booking}
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+    ///   - direction: Filter by direction.
+    ///   - destination: Filter by destination; should match actrealtime API values.
+    ///   - scheduleType: Filter by schedule type: `Today`, `Saturday`, `Sunday`, or `Weekday`.
+    ///   - byPattern: If true, return stops per stop pattern. Default false.
+    case stops(routeName: String, booking: String? = nil, direction: String? = nil, destination: String? = nil, scheduleType: TripScheduleType? = nil, byPattern: Bool? = nil)
 }
 
 extension RoutesEndpoint {
@@ -71,6 +80,12 @@ extension RoutesEndpoint {
             "/route/\(routeName)/tripsinstructions"
         case let .directions(routeName):
             "/route/\(routeName)/directions"
+        case let .stops(routeName, booking, _, _, _, _):
+            if let booking {
+                "/route/\(routeName)/stops/\(booking)"
+            } else {
+                "/route/\(routeName)/stops"
+            }
         }
     }
 
@@ -106,6 +121,21 @@ extension RoutesEndpoint {
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case .directions:
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
+        case let .stops(_, _, direction, destination, scheduleType, byPattern):
+            var params: [HTTPParameter] = [tokenParam]
+            if let direction {
+                params.append(HTTPParameter(key: "direction", value: direction))
+            }
+            if let destination {
+                params.append(HTTPParameter(key: "destination", value: destination))
+            }
+            if let scheduleType {
+                params.append(HTTPParameter(key: "scheduleType", value: scheduleType.queryValue))
+            }
+            if let byPattern {
+                params.append(HTTPParameter(key: "byPattern", value: String(byPattern)))
+            }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }
     }
 

@@ -19,6 +19,38 @@ final class RoutesServiceTests {
 
     // MARK: - Tests
 
+    @Test("test .stops() success case")
+    func stops() async throws {
+        let jsonString = """
+        [
+            {
+                "Route": "72",
+                "Direction": "Northbound",
+                "Destination": "To Contra Costa College",
+                "Stops": [
+                    {
+                        "StopId": 51632,
+                        "Name": "2nd St & Washington St",
+                        "Latitude": 37.7965673,
+                        "Longitude": -122.2778501,
+                        "Order": 1
+                    }
+                ]
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.stops(routeName: RouteStopOrder.sample.route)
+        #expect(result.count == 1)
+        #expect(result[0].route == RouteStopOrder.sample.route)
+        #expect(result[0].direction == RouteStopOrder.sample.direction)
+        #expect(result[0].destination == RouteStopOrder.sample.destination)
+        #expect(result[0].stops.count == 1)
+        #expect(result[0].stops[0].stopId == StopOrder.sample.stopId)
+        #expect(result[0].stops[0].name == StopOrder.sample.name)
+    }
+
     @Test("test .directions() success case")
     func directions() async throws {
         let jsonString = """

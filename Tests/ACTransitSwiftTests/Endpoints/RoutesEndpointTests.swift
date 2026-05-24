@@ -43,6 +43,26 @@ final class RoutesEndpointTests {
         #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
     }
 
+    @Test("test RoutesEndpoint.stops")
+    func stops() {
+        let endpoint = RoutesEndpoint.stops(routeName: "72")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/route/72/stops")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/route/72/stops")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+    }
+
+    @Test("test RoutesEndpoint.stops with booking")
+    func stopsWithBooking() {
+        let endpoint = RoutesEndpoint.stops(routeName: "72", booking: "Current")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/route/72/stops/Current")
+        #expect(request.baseUrl == "https://api.actransit.org/transit/route/72/stops/Current")
+    }
+
     @Test("test RoutesEndpoint.directions")
     func directions() {
         let endpoint = RoutesEndpoint.directions(routeName: "72")

@@ -10,6 +10,21 @@ public struct RoutesService {
         self.performer = performer
     }
 
+    /// Retrieves all stops for a given route, organized by direction or stop pattern.
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    ///   - booking: Schedule identifier. Use `Current` or `nil` for the current schedule, `Next` for the next, or a specific BookingId.
+    ///   - direction: Filter by direction.
+    ///   - destination: Filter by destination; should match actrealtime API values.
+    ///   - scheduleType: Filter by schedule type: `Today`, `Saturday`, `Sunday`, or `Weekday`.
+    ///   - byPattern: If true, return stops per stop pattern. Default false.
+    public func stops(routeName: String, booking: String? = nil, direction: String? = nil, destination: String? = nil, scheduleType: TripScheduleType? = nil, byPattern: Bool? = nil) async throws -> [RouteStopOrder] {
+        try await performer.perform(
+            request: RoutesEndpoint.stops(routeName: routeName, booking: booking, direction: direction, destination: destination, scheduleType: scheduleType, byPattern: byPattern).getRequest(token: token),
+            decodeTo: [RouteStopOrder].self
+        )
+    }
+
     /// Retrieves all directions serviced by a given route.
     /// - Parameters:
     ///   - routeName: The route identifier.
