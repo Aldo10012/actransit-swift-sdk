@@ -130,4 +130,16 @@ final class VehicleEndpointTests {
         #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
         #expect(request.body != nil)
     }
+
+    @Test("test VehicleEndpoint.bulkRealtimeAttributes(vehicles:route:) includes route in body")
+    func bulkRealtimeAttributesWithRoute() throws {
+        let endpoint = VehicleEndpoint.bulkRealtimeAttributes(vehicles: ["1505"], route: "72")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(request.httpMethod == .POST)
+        let bodyData = try #require(request.body?.toData())
+        let json = try #require(try JSONSerialization.jsonObject(with: bodyData) as? [String: Any])
+        #expect(json["Route"] as? String == "72")
+        #expect((json["Vehicles"] as? [String]) == ["1505"])
+    }
 }
