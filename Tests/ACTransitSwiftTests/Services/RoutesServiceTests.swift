@@ -164,6 +164,32 @@ final class RoutesServiceTests {
         #expect(result[0].isSchool == RouteDivision.sample.isSchool)
     }
 
+    @Test("test .tripEstimate() success case")
+    func tripEstimate() async throws {
+        let jsonString = """
+        [
+            {
+                "RouteName": "72",
+                "OriginStopId": 55888,
+                "DestinationStopId": 51632,
+                "ExpectedDepartureTime": "2026-05-23T21:35:00",
+                "TripDuration": "01:05:00",
+                "VehicleId": null
+            }
+        ]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.tripEstimate(routeName: "72", fromStopId: 55888, toStopId: 51632)
+        #expect(result.count == 1)
+        #expect(result[0].routeName == TripEstimate.sample.routeName)
+        #expect(result[0].originStopId == TripEstimate.sample.originStopId)
+        #expect(result[0].destinationStopId == TripEstimate.sample.destinationStopId)
+        #expect(result[0].expectedDepartureTime == TripEstimate.sample.expectedDepartureTime)
+        #expect(result[0].tripDuration == TripEstimate.sample.tripDuration)
+        #expect(result[0].vehicleId == nil)
+    }
+
     @Test("test .vehicles() success case")
     func vehicles() async throws {
         let jsonString = """

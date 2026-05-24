@@ -112,4 +112,16 @@ public struct RoutesService {
             decodeTo: [Vehicle].self
         )
     }
+
+    /// Retrieves future trip estimates between two stops on a given route.
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    ///   - fromStopId: The origin stop identifier.
+    ///   - toStopId: The destination stop identifier.
+    public func tripEstimate(routeName: String, fromStopId: Int, toStopId: Int) async throws -> [TripEstimate] {
+        try await performer.perform(
+            request: RoutesEndpoint.tripEstimate(routeName: routeName, fromStopId: fromStopId, toStopId: toStopId).getRequest(token: token),
+            decodeTo: [TripEstimate].self
+        )
+    }
 }
