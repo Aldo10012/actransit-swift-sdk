@@ -56,6 +56,7 @@ extension VehicleEndpoint {
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func getRequest(token: String) -> Request {
         let factory = RequestFactoryImpl()
         let url = ACTransitPlugins.apiBaseURL + path
