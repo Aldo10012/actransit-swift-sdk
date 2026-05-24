@@ -85,4 +85,14 @@ public struct StopsService {
             decodeTo: StopDestination.self
         )
     }
+
+    /// Retrieves comprehensive profile information for a stop.
+    /// - Parameters:
+    ///   - stopId: 511's unique stop identifier whose stop information will be retrieved.
+    public func profile(stopId: Int) async throws -> StopProfile {
+        try await performer.perform(
+            request: StopsEndpoint.profile(stopId: stopId).getRequest(token: token),
+            decodeTo: StopProfile.self
+        )
+    }
 }

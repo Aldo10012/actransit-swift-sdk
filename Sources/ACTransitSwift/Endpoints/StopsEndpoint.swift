@@ -36,6 +36,10 @@ enum StopsEndpoint {
     /// - Parameters:
     ///   - stopId: The stop for whose destinations should be retrieved.
     case destinations(stopId: Int)
+    /// https://api.actransit.org/transit/stop/{stopId}/profile
+    /// - Parameters:
+    ///   - stopId: 511's unique stop identifier whose stop information will be retrieved.
+    case profile(stopId: Int)
 }
 
 extension StopsEndpoint {
@@ -55,6 +59,8 @@ extension StopsEndpoint {
             "/stops/\(stopId)/tripstoday"
         case let .destinations(stopId):
             "/stop/\(stopId)/destinations"
+        case let .profile(stopId):
+            "/stop/\(stopId)/profile"
         }
     }
 
@@ -77,7 +83,7 @@ extension StopsEndpoint {
         let url = ACTransitPlugins.apiBaseURL + path
         let tokenParam = HTTPParameter(key: Constants.tokenKey, value: token)
         switch self {
-        case .allStops, .summary, .nearbyByPath, .stopRoutes, .destinations:
+        case .allStops, .summary, .nearbyByPath, .stopRoutes, .destinations, .profile:
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         case let .tripsToday(_, routes, direction):
             var params: [HTTPParameter] = [tokenParam]

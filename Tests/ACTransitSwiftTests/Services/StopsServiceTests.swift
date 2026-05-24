@@ -179,6 +179,44 @@ final class StopsServiceTests {
         #expect(result.routeDestinations.count == 1)
         #expect(result.routeDestinations[0].routeId == StopRouteDestination.sample.routeId)
     }
+
+    @Test("test .profile() success case")
+    func profile() async throws {
+        let jsonString = """
+        {
+            "StopId": 55888,
+            "Street": "Giant Rd",
+            "City": "Richmond",
+            "SiteDirection": "NW corner",
+            "Site": "Giant Rd at Castro St",
+            "Corner": "NW",
+            "IsInService": true,
+            "Latitude": 37.9710794,
+            "Longitude": -122.3398753,
+            "Routes": "72,72R",
+            "AllowAlighting": true,
+            "AllowBoarding": true,
+            "PlaceId": "CCCO",
+            "PlaceDescription": "Contra Costa College",
+            "StopServiceAlerts": { "Url": "https://511.org/transit/alerts/55888" },
+            "Amenities": { "Url": "https://511.org/transit/amenities/55888" },
+            "Predictions": { "Url": "https://511.org/transit/real-time-arrivals?stopId=55888" },
+            "Map": { "Url": "https://511.org/transit/stops/map/55888" },
+            "Schedules": [
+                { "RouteId": "72", "Url": "https://511.org/transit/schedules/72" }
+            ]
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.profile(stopId: 55888)
+        #expect(result.stopId == StopProfile.sample.stopId)
+        #expect(result.city == StopProfile.sample.city)
+        #expect(result.isInService == StopProfile.sample.isInService)
+        #expect(result.routes == StopProfile.sample.routes)
+        #expect(result.schedules.count == 1)
+        #expect(result.schedules[0].routeId == RouteUrl.sample.routeId)
+    }
 }
 
 // MARK: - mocks
