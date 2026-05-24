@@ -19,6 +19,19 @@ final class RoutesServiceTests {
 
     // MARK: - Tests
 
+    @Test("test .directions() success case")
+    func directions() async throws {
+        let jsonString = """
+        ["NORTH", "Northbound", "SOUTH", "Southbound"]
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.directions(routeName: "72")
+        #expect(result.count == 4)
+        #expect(result[0] == "NORTH")
+        #expect(result[1] == "Northbound")
+    }
+
     @Test("test .tripsInstructions() success case")
     func tripsInstructions() async throws {
         let jsonString = """

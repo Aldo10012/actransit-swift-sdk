@@ -44,6 +44,10 @@ enum RoutesEndpoint {
     ///   - direction: Filter by direction of travel.
     ///   - scheduleType: Required. The schedule type: `Weekday`, `Saturday`, or `Sunday`.
     case tripsInstructions(routeName: String, direction: String? = nil, scheduleType: TripScheduleType)
+    /// https://api.actransit.org/transit/route/{routeName}/directions
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    case directions(routeName: String)
 }
 
 extension RoutesEndpoint {
@@ -65,6 +69,8 @@ extension RoutesEndpoint {
             "/route/\(routeName)/trips"
         case let .tripsInstructions(routeName, _, _):
             "/route/\(routeName)/tripsinstructions"
+        case let .directions(routeName):
+            "/route/\(routeName)/directions"
         }
     }
 
@@ -98,6 +104,8 @@ extension RoutesEndpoint {
             }
             params.append(HTTPParameter(key: "scheduleType", value: scheduleType.queryValue))
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case .directions:
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: [tokenParam])
         }
     }
 

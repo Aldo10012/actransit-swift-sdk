@@ -10,6 +10,16 @@ public struct RoutesService {
         self.performer = performer
     }
 
+    /// Retrieves all directions serviced by a given route.
+    /// - Parameters:
+    ///   - routeName: The route identifier.
+    public func directions(routeName: String) async throws -> [String] {
+        try await performer.perform(
+            request: RoutesEndpoint.directions(routeName: routeName).getRequest(token: token),
+            decodeTo: [String].self
+        )
+    }
+
     /// Retrieves trips with operator driving instructions for a given route.
     /// - Parameters:
     ///   - routeName: The route identifier.
