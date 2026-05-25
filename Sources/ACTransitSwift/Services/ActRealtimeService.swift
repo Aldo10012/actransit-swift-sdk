@@ -112,4 +112,31 @@ public struct ActRealtimeService {
         )
         return response.value
     }
+
+    /// Returns stops for a route/direction pair, or looks up stops by ID.
+    /// - Parameters:
+    ///   - route: Single route designator. Required with `direction` if `stopId` is not provided. Optional.
+    ///   - direction: Single route direction. Required with `route` if `stopId` is not provided. Optional.
+    ///   - stopId: Comma-delimited stop IDs (up to 10). Mutually exclusive with `route`/`direction`. Optional.
+    ///   - callback: JSONP callback function name. Optional.
+    public func stop(route: String? = nil, direction: String? = nil, stopId: String? = nil, callback: String? = nil) async throws -> StopRequestResponse {
+        let response = try await performer.perform(
+            request: ActRealtimeEndpoint.stop(route: route, direction: direction, stopId: stopId, callback: callback).getRequest(token: token),
+            decodeTo: RequestResponseOfStopRequestResponse.self
+        )
+        return response.value
+    }
+
+    /// Returns all stops, optionally filtered to a single route.
+    /// - Parameters:
+    ///   - route: Single route designator to filter stops. Optional.
+    ///   - limitFields: If true, return only `stpid` and `stpnm`. Optional.
+    ///   - callback: JSONP callback function name. Optional.
+    public func allStops(route: String? = nil, limitFields: Bool? = nil, callback: String? = nil) async throws -> StopRequestResponse {
+        let response = try await performer.perform(
+            request: ActRealtimeEndpoint.allStops(route: route, limitFields: limitFields, callback: callback).getRequest(token: token),
+            decodeTo: RequestResponseOfStopRequestResponse.self
+        )
+        return response.value
+    }
 }

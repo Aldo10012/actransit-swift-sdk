@@ -258,6 +258,60 @@ final class ActRealtimeServiceTests {
         #expect(result.sb[0].srvc[0].rt == ServiceBulletin.sample.rt)
         #expect(result.sb[0].mod == Bulletin.sample.mod)
     }
+
+    @Test("test .stop() success case")
+    func stop() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "stops": [
+                    {
+                        "stpid": "55123",
+                        "stpnm": "Telegraph Ave & Ashby Ave",
+                        "lat": 37.8558,
+                        "lon": -122.2597,
+                        "dtradd": [],
+                        "dtrrem": []
+                    }
+                ],
+                "error": []
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.stop(route: "51A", direction: "TO DOWNTOWN BERKELEY")
+        #expect(result.stops.count == 1)
+        #expect(result.stops[0].stpid == BusTimeStop.sample.stpid)
+        #expect(result.stops[0].stpnm == BusTimeStop.sample.stpnm)
+        #expect(result.stops[0].lat == BusTimeStop.sample.lat)
+        #expect(result.stops[0].lon == BusTimeStop.sample.lon)
+    }
+
+    @Test("test .allStops() success case")
+    func allStops() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "stops": [
+                    {
+                        "stpid": "55123",
+                        "stpnm": "Telegraph Ave & Ashby Ave",
+                        "lat": 37.8558,
+                        "lon": -122.2597
+                    }
+                ],
+                "error": []
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.allStops()
+        #expect(result.stops.count == 1)
+        #expect(result.stops[0].stpid == BusTimeStop.sample.stpid)
+        #expect(result.stops[0].stpnm == BusTimeStop.sample.stpnm)
+    }
 }
 
 // MARK: - mocks

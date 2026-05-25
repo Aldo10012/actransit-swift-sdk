@@ -120,4 +120,33 @@ final class ActRealtimeEndpointTests {
         #expect((request.parameters ?? []).contains(HTTPParameter(key: "stpid", value: "55123")))
         #expect((request.parameters ?? []).contains(HTTPParameter(key: "callback", value: "myCallback")))
     }
+
+    @Test("test ActRealtimeEndpoint.stop")
+    func stop() {
+        let endpoint = ActRealtimeEndpoint.stop(route: "51A", direction: "TO DOWNTOWN BERKELEY", stopId: "55123", callback: "myCallback")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/actrealtime/stop")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/actrealtime/stop")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "rt", value: "51A")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "dir", value: "TO DOWNTOWN BERKELEY")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "stpid", value: "55123")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "callback", value: "myCallback")))
+    }
+
+    @Test("test ActRealtimeEndpoint.allStops")
+    func allStops() {
+        let endpoint = ActRealtimeEndpoint.allStops(route: "51A", limitFields: true, callback: "myCallback")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/actrealtime/allstops")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/actrealtime/allstops")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "rt", value: "51A")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "limitFields", value: "true")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "callback", value: "myCallback")))
+    }
 }

@@ -49,6 +49,19 @@ enum ActRealtimeEndpoint {
     ///   - stopId: Comma-delimited stop IDs. Required if `routes` is not provided.
     ///   - callback: JSONP callback function name. Optional.
     case serviceBulletin(routes: String? = nil, direction: String? = nil, stopId: String? = nil, callback: String? = nil)
+    /// https://api.actransit.org/transit/actrealtime/stop?rt={rt}&dir={dir}&stpid={stpid}&callback={callback}
+    /// - Parameters:
+    ///   - route: Single route designator. Required with `direction` if `stopId` is not provided.
+    ///   - direction: Single route direction. Required with `route` if `stopId` is not provided.
+    ///   - stopId: Comma-delimited stop IDs (up to 10). Mutually exclusive with `route`/`direction`.
+    ///   - callback: JSONP callback function name. Optional.
+    case stop(route: String? = nil, direction: String? = nil, stopId: String? = nil, callback: String? = nil)
+    /// https://api.actransit.org/transit/actrealtime/allstops?rt={rt}&limitFields={limitFields}&callback={callback}
+    /// - Parameters:
+    ///   - route: Single route designator to filter stops. Optional.
+    ///   - limitFields: If true, return only `stpid` and `stpnm`. Optional.
+    ///   - callback: JSONP callback function name. Optional.
+    case allStops(route: String? = nil, limitFields: Bool? = nil, callback: String? = nil)
 }
 
 extension ActRealtimeEndpoint {
@@ -62,6 +75,8 @@ extension ActRealtimeEndpoint {
         case .prediction: "/actrealtime/prediction"
         case .time: "/actrealtime/time"
         case .serviceBulletin: "/actrealtime/servicebulletin"
+        case .stop: "/actrealtime/stop"
+        case .allStops: "/actrealtime/allstops"
         }
     }
 
@@ -115,6 +130,19 @@ extension ActRealtimeEndpoint {
             if let routes { params.append(HTTPParameter(key: "rt", value: routes)) }
             if let direction { params.append(HTTPParameter(key: "rtdir", value: direction)) }
             if let stopId { params.append(HTTPParameter(key: "stpid", value: stopId)) }
+            if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .stop(route, direction, stopId, callback):
+            var params: [HTTPParameter] = [tokenParam]
+            if let route { params.append(HTTPParameter(key: "rt", value: route)) }
+            if let direction { params.append(HTTPParameter(key: "dir", value: direction)) }
+            if let stopId { params.append(HTTPParameter(key: "stpid", value: stopId)) }
+            if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .allStops(route, limitFields, callback):
+            var params: [HTTPParameter] = [tokenParam]
+            if let route { params.append(HTTPParameter(key: "rt", value: route)) }
+            if let limitFields { params.append(HTTPParameter(key: "limitFields", value: String(limitFields))) }
             if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }
