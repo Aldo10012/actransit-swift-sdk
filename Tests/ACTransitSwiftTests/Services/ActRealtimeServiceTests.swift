@@ -165,6 +165,47 @@ final class ActRealtimeServiceTests {
         #expect(result.ptr[0].pt[0].lat == PatternPoint.sample.lat)
         #expect(result.ptr[0].pt[0].lon == PatternPoint.sample.lon)
     }
+
+    @Test("test .prediction() success case")
+    func prediction() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "prd": [
+                    {
+                        "tmstmp": "20230615 14:25",
+                        "typ": "A",
+                        "stpnm": "Telegraph Ave & Ashby Ave",
+                        "stpid": "55123",
+                        "vid": "5016",
+                        "dstp": 1200,
+                        "rt": "51A",
+                        "rtdir": "TO DOWNTOWN BERKELEY",
+                        "des": "Downtown Berkeley",
+                        "prdtm": "20230615 14:30",
+                        "dly": false,
+                        "prdctdn": "5",
+                        "seq": 3
+                    }
+                ],
+                "error": []
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.prediction(stopId: "55123")
+        #expect(result.prd.count == 1)
+        #expect(result.prd[0].tmstmp == Prediction.sample.tmstmp)
+        #expect(result.prd[0].typ == Prediction.sample.typ)
+        #expect(result.prd[0].stpid == Prediction.sample.stpid)
+        #expect(result.prd[0].vid == Prediction.sample.vid)
+        #expect(result.prd[0].dstp == Prediction.sample.dstp)
+        #expect(result.prd[0].rt == Prediction.sample.rt)
+        #expect(result.prd[0].prdctdn == Prediction.sample.prdctdn)
+        #expect(result.prd[0].dly == Prediction.sample.dly)
+        #expect(result.prd[0].seq == Prediction.sample.seq)
+    }
 }
 
 // MARK: - mocks

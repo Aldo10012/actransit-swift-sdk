@@ -69,4 +69,21 @@ public struct ActRealtimeService {
         )
         return response.value
     }
+
+    /// Returns real-time arrival/departure predictions for stops or vehicles.
+    /// - Parameters:
+    ///   - stopId: Comma-delimited stop IDs (max 10). Mutually exclusive with `vehicleId`. Optional.
+    ///   - route: Comma-delimited route designators to filter results. Optional.
+    ///   - vehicleId: Comma-delimited vehicle IDs (max 10). Mutually exclusive with `stopId`. Optional.
+    ///   - top: Maximum number of predictions to return. Optional.
+    ///   - tmres: Time resolution: `s` (seconds) or `m` (minutes). Defaults to `m`. Optional.
+    ///   - showocprd: Whether to show occupancy prediction data. Optional.
+    ///   - callback: JSONP callback function name. Optional.
+    public func prediction(stopId: String? = nil, route: String? = nil, vehicleId: String? = nil, top: Int? = nil, tmres: String? = nil, showocprd: Bool? = nil, callback: String? = nil) async throws -> PredictionRequestResponse {
+        let response = try await performer.perform(
+            request: ActRealtimeEndpoint.prediction(stopId: stopId, route: route, vehicleId: vehicleId, top: top, tmres: tmres, showocprd: showocprd, callback: callback).getRequest(token: token),
+            decodeTo: RequestResponseOfPredictionRequestResponse.self
+        )
+        return response.value
+    }
 }

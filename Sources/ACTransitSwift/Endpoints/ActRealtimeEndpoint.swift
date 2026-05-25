@@ -27,6 +27,16 @@ enum ActRealtimeEndpoint {
     ///   - route: Single route identifier to return all active patterns. Mutually exclusive with `patternIds`.
     ///   - callback: JSONP callback function name. Optional.
     case pattern(patternIds: String? = nil, route: String? = nil, callback: String? = nil)
+    /// https://api.actransit.org/transit/actrealtime/prediction?stpid={stpid}&rt={rt}&vid={vid}&top={top}&tmres={tmres}&callback={callback}&showocprd={showocprd}
+    /// - Parameters:
+    ///   - stopId: Comma-delimited stop IDs (max 10). Mutually exclusive with `vehicleId`.
+    ///   - route: Comma-delimited route designators to filter results. Optional.
+    ///   - vehicleId: Comma-delimited vehicle IDs (max 10). Mutually exclusive with `stopId`.
+    ///   - top: Maximum number of predictions to return. Optional.
+    ///   - tmres: Time resolution: `s` (seconds) or `m` (minutes). Defaults to `m`. Optional.
+    ///   - showocprd: Whether to show occupancy prediction data. Optional.
+    ///   - callback: JSONP callback function name. Optional.
+    case prediction(stopId: String? = nil, route: String? = nil, vehicleId: String? = nil, top: Int? = nil, tmres: String? = nil, showocprd: Bool? = nil, callback: String? = nil)
 }
 
 extension ActRealtimeEndpoint {
@@ -37,6 +47,7 @@ extension ActRealtimeEndpoint {
         case .line: "/actrealtime/line"
         case .locale: "/actrealtime/locale"
         case .pattern: "/actrealtime/pattern"
+        case .prediction: "/actrealtime/prediction"
         }
     }
 
@@ -68,6 +79,16 @@ extension ActRealtimeEndpoint {
             var params: [HTTPParameter] = [tokenParam]
             if let patternIds { params.append(HTTPParameter(key: "pid", value: patternIds)) }
             if let route { params.append(HTTPParameter(key: "rt", value: route)) }
+            if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .prediction(stopId, route, vehicleId, top, tmres, showocprd, callback):
+            var params: [HTTPParameter] = [tokenParam]
+            if let stopId { params.append(HTTPParameter(key: "stpid", value: stopId)) }
+            if let route { params.append(HTTPParameter(key: "rt", value: route)) }
+            if let vehicleId { params.append(HTTPParameter(key: "vid", value: vehicleId)) }
+            if let top { params.append(HTTPParameter(key: "top", value: String(top))) }
+            if let tmres { params.append(HTTPParameter(key: "tmres", value: tmres)) }
+            if let showocprd { params.append(HTTPParameter(key: "showocprd", value: String(showocprd))) }
             if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }
