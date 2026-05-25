@@ -73,6 +73,35 @@ final class ActRealtimeServiceTests {
         #expect(result.directions[0].id == ActRealtimeDirection.sample.id)
         #expect(result.directions[0].name == ActRealtimeDirection.sample.name)
     }
+
+    @Test("test .line() success case")
+    func line() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "routes": [
+                    {
+                        "rt": "51A",
+                        "rtnm": "Telegraph Ave",
+                        "rtclr": "#3366cc",
+                        "rtdd": "51A",
+                        "rtpidatafeed": "AC_TRANSIT_BT"
+                    }
+                ],
+                "error": []
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.line()
+        #expect(result.routes.count == 1)
+        #expect(result.routes[0].rt == BusTimeRoute.sample.rt)
+        #expect(result.routes[0].rtnm == BusTimeRoute.sample.rtnm)
+        #expect(result.routes[0].rtclr == BusTimeRoute.sample.rtclr)
+        #expect(result.routes[0].rtdd == BusTimeRoute.sample.rtdd)
+        #expect(result.routes[0].rtpidatafeed == BusTimeRoute.sample.rtpidatafeed)
+    }
 }
 
 // MARK: - mocks

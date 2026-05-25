@@ -34,4 +34,15 @@ public struct ActRealtimeService {
         )
         return response.value
     }
+
+    /// Returns the set of all routes serviced by the system.
+    /// - Parameters:
+    ///   - callback: JSONP callback function name. Optional.
+    public func line(callback: String? = nil) async throws -> RouteRequestResponse {
+        let response = try await performer.perform(
+            request: ActRealtimeEndpoint.line(callback: callback).getRequest(token: token),
+            decodeTo: RequestResponseOfRouteRequestResponse.self
+        )
+        return response.value
+    }
 }
