@@ -100,143 +100,143 @@ extension ActRealtimeEndpoint {
         switch self {
         case let .detour(route, direction, callback):
             var params: [HTTPParameter] = [tokenParam]
-            if let route { 
-                params.append(HTTPParameter(key: "rt", value: route)) 
+            if let route {
+                params.append(HTTPParameter(key: "rt", value: route))
             }
-            if let direction { 
-                params.append(HTTPParameter(key: "rtdir", value: direction)) 
+            if let direction {
+                params.append(HTTPParameter(key: "rtdir", value: direction))
             }
-            if let callback { 
-                params.append(HTTPParameter(key: "callback", value: callback)) 
+            if let callback {
+                params.append(HTTPParameter(key: "callback", value: callback))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .direction(route, callback):
             var params: [HTTPParameter] = [tokenParam, HTTPParameter(key: "rt", value: route)]
-            if let callback { 
-                params.append(HTTPParameter(key: "callback", value: callback)) 
+            if let callback {
+                params.append(HTTPParameter(key: "callback", value: callback))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .line(callback):
             var params: [HTTPParameter] = [tokenParam]
-            if let callback { 
-                params.append(HTTPParameter(key: "callback", value: callback)) 
+            if let callback {
+                params.append(HTTPParameter(key: "callback", value: callback))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .locale(callback):
             var params: [HTTPParameter] = [tokenParam]
-            if let callback { 
-                params.append(HTTPParameter(key: "callback", value: callback)) 
+            if let callback {
+                params.append(HTTPParameter(key: "callback", value: callback))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .pattern(patternIds, route, callback):
             var params: [HTTPParameter] = [tokenParam]
-            if let patternIds { 
-                params.append(HTTPParameter(key: "pid", value: patternIds)) 
+            if let patternIds {
+                params.append(HTTPParameter(key: "pid", value: patternIds))
             }
-            if let route { 
-                params.append(HTTPParameter(key: "rt", value: route)) 
+            if let route {
+                params.append(HTTPParameter(key: "rt", value: route))
             }
-            if let callback { 
-                params.append(HTTPParameter(key: "callback", value: callback)) 
+            if let callback {
+                params.append(HTTPParameter(key: "callback", value: callback))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .prediction(stopId, route, vehicleId, top, tmres, showocprd, callback):
             var params: [HTTPParameter] = [tokenParam]
-            if let stopId { 
-                params.append(HTTPParameter(key: "stpid", value: stopId)) 
+            if let stopId {
+                params.append(HTTPParameter(key: "stpid", value: stopId))
             }
-            if let route { 
-                params.append(HTTPParameter(key: "rt", value: route)) 
+            if let route {
+                params.append(HTTPParameter(key: "rt", value: route))
             }
-            if let vehicleId { 
-                params.append(HTTPParameter(key: "vid", value: vehicleId)) 
+            if let vehicleId {
+                params.append(HTTPParameter(key: "vid", value: vehicleId))
             }
-            if let top { 
-                params.append(HTTPParameter(key: "top", value: String(top))) 
+            if let top {
+                params.append(HTTPParameter(key: "top", value: String(top)))
             }
-            if let tmres { 
-                params.append(HTTPParameter(key: "tmres", value: tmres)) 
+            if let tmres {
+                params.append(HTTPParameter(key: "tmres", value: tmres))
             }
-            if let showocprd { 
-                params.append(HTTPParameter(key: "showocprd", value: String(showocprd))) 
+            if let showocprd {
+                params.append(HTTPParameter(key: "showocprd", value: String(showocprd)))
             }
-            if let callback { 
-                params.append(HTTPParameter(key: "callback", value: callback)) 
+            if let callback {
+                params.append(HTTPParameter(key: "callback", value: callback))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .time(unixTime, callback):
             var params: [HTTPParameter] = [tokenParam]
-            if let unixTime { 
-                params.append(HTTPParameter(key: "unixTime", value: String(unixTime))) 
+            if let unixTime {
+                params.append(HTTPParameter(key: "unixTime", value: String(unixTime)))
             }
-            if let callback { 
-                params.append(HTTPParameter(key: "callback", value: callback)) 
+            if let callback {
+                params.append(HTTPParameter(key: "callback", value: callback))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .serviceBulletin(routes, direction, stopId, callback):
             var params: [HTTPParameter] = [tokenParam]
-            if let routes { 
-                params.append(HTTPParameter(key: "rt", value: routes)) 
+            if let routes {
+                params.append(HTTPParameter(key: "rt", value: routes))
             }
-            if let direction { 
-                params.append(HTTPParameter(key: "rtdir", value: direction)) 
+            if let direction {
+                params.append(HTTPParameter(key: "rtdir", value: direction))
             }
-            if let stopId { 
-                params.append(HTTPParameter(key: "stpid", value: stopId)) 
+            if let stopId {
+                params.append(HTTPParameter(key: "stpid", value: stopId))
             }
-            if let callback { 
-                params.append(HTTPParameter(key: "callback", value: callback)) 
+            if let callback {
+                params.append(HTTPParameter(key: "callback", value: callback))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .stop(route, direction, stopId, callback):
             var params: [HTTPParameter] = [tokenParam]
-            if let route { 
-                params.append(HTTPParameter(key: "rt", value: route)) 
+            if let route {
+                params.append(HTTPParameter(key: "rt", value: route))
             }
-            if let direction { 
-                params.append(HTTPParameter(key: "dir", value: direction)) 
+            if let direction {
+                params.append(HTTPParameter(key: "dir", value: direction))
             }
-            if let stopId { 
-                params.append(HTTPParameter(key: "stpid", value: stopId)) 
+            if let stopId {
+                params.append(HTTPParameter(key: "stpid", value: stopId))
             }
-            if let callback { 
-                params.append(HTTPParameter(key: "callback", value: callback)) 
+            if let callback {
+                params.append(HTTPParameter(key: "callback", value: callback))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .allStops(route, limitFields, callback):
             var params: [HTTPParameter] = [tokenParam]
-            if let route { 
-                params.append(HTTPParameter(key: "rt", value: route)) 
+            if let route {
+                params.append(HTTPParameter(key: "rt", value: route))
             }
-            if let limitFields { 
-                params.append(HTTPParameter(key: "limitFields", value: String(limitFields))) 
+            if let limitFields {
+                params.append(HTTPParameter(key: "limitFields", value: String(limitFields)))
             }
-            if let callback { 
-                params.append(HTTPParameter(key: "callback", value: callback)) 
+            if let callback {
+                params.append(HTTPParameter(key: "callback", value: callback))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .vehicle(vehicleId, route, tmres, callback, lat, lng, searchRadius):
             var params: [HTTPParameter] = [tokenParam]
-            if let vehicleId { 
-                params.append(HTTPParameter(key: "vid", value: vehicleId)) 
+            if let vehicleId {
+                params.append(HTTPParameter(key: "vid", value: vehicleId))
             }
-            if let route { 
-                params.append(HTTPParameter(key: "rt", value: route)) 
+            if let route {
+                params.append(HTTPParameter(key: "rt", value: route))
             }
-            if let tmres { 
-                params.append(HTTPParameter(key: "tmres", value: tmres)) 
+            if let tmres {
+                params.append(HTTPParameter(key: "tmres", value: tmres))
             }
-            if let callback { 
-                params.append(HTTPParameter(key: "callback", value: callback)) 
+            if let callback {
+                params.append(HTTPParameter(key: "callback", value: callback))
             }
-            if let lat { 
-                params.append(HTTPParameter(key: "lat", value: String(lat))) 
+            if let lat {
+                params.append(HTTPParameter(key: "lat", value: String(lat)))
             }
-            if let lng { 
-                params.append(HTTPParameter(key: "lng", value: String(lng))) 
+            if let lng {
+                params.append(HTTPParameter(key: "lng", value: String(lng)))
             }
-            if let searchRadius { 
-                params.append(HTTPParameter(key: "searchRadius", value: String(searchRadius))) 
+            if let searchRadius {
+                params.append(HTTPParameter(key: "searchRadius", value: String(searchRadius)))
             }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }
