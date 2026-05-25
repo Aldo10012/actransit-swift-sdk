@@ -59,4 +59,4 @@ public struct StopRequestResponse: Codable, Sendable {
 }
 
 /// https://api.actransit.org/transit/Help/ResourceModel?modelName=RequestResponseOfStopRequestResponse
-public typealias RequestResponseOfStopRequestResponse = BustimeResponse<StopRequestResponse>
+public typealias RequestResponseOfStopRequestResponse = BusTimeResponse<StopRequestResponse>

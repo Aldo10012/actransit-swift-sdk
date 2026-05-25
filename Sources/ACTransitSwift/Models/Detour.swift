@@ -108,4 +108,4 @@ public struct DetourRequestResponse: Codable, Sendable {
 }
 
 /// https://api.actransit.org/transit/Help/ResourceModel?modelName=RequestResponseOfDetourRequestResponse
-public typealias RequestResponseOfDetourRequestResponse = BustimeResponse<DetourRequestResponse>
+public typealias RequestResponseOfDetourRequestResponse = BusTimeResponse<DetourRequestResponse>

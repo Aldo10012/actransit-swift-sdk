@@ -1,7 +1,7 @@
 import Foundation
 
-public struct BustimeResponse<T: Decodable & Sendable>: Decodable, Sendable {
-    let value: T
+public struct BusTimeResponse<T: Decodable & Sendable>: Decodable, Sendable {
+    public let value: T
 
     private enum Keys: String, CodingKey {
         case bustimeResponse = "bustime-response"

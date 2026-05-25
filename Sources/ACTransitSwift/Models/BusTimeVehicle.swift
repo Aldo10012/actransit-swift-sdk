@@ -170,4 +170,4 @@ public struct VehicleRequestResponse: Codable, Sendable {
 }
 
 /// https://api.actransit.org/transit/Help/Api/GET-actrealtime-vehicle_vid_rt_tmres_callback_lat_lng_searchRadius
-public typealias RequestResponseOfVehicleRequestResponse = BustimeResponse<VehicleRequestResponse>
+public typealias RequestResponseOfVehicleRequestResponse = BusTimeResponse<VehicleRequestResponse>

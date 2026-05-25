@@ -38,4 +38,4 @@ public struct DirectionRequestResponse: Codable, Sendable {
 }
 
 /// https://api.actransit.org/transit/Help/ResourceModel?modelName=RequestResponseOfDirectionRequestResponse
-public typealias RequestResponseOfDirectionRequestResponse = BustimeResponse<DirectionRequestResponse>
+public typealias RequestResponseOfDirectionRequestResponse = BusTimeResponse<DirectionRequestResponse>

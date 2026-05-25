@@ -11,9 +11,9 @@ public struct BusTimeRoute: Codable, Sendable {
     /// Language-specific route designator meant for display.
     public let rtdd: String
     /// (Multi-feed only) The identifier of the data feed.
-    public let rtpidatafeed: String
+    public let rtpidatafeed: String?
 
-    public init(rt: String, rtnm: String, rtclr: String, rtdd: String, rtpidatafeed: String) {
+    public init(rt: String, rtnm: String, rtclr: String, rtdd: String, rtpidatafeed: String? = nil) {
         self.rt = rt
         self.rtnm = rtnm
         self.rtclr = rtclr
@@ -36,7 +36,7 @@ public struct BusTimeRoute: Codable, Sendable {
         rtnm: String = sample.rtnm,
         rtclr: String = sample.rtclr,
         rtdd: String = sample.rtdd,
-        rtpidatafeed: String = sample.rtpidatafeed
+        rtpidatafeed: String? = sample.rtpidatafeed
     ) -> BusTimeRoute {
         BusTimeRoute(rt: rt, rtnm: rtnm, rtclr: rtclr, rtdd: rtdd, rtpidatafeed: rtpidatafeed)
     }
@@ -56,4 +56,4 @@ public struct RouteRequestResponse: Codable, Sendable {
 }
 
 /// https://api.actransit.org/transit/Help/ResourceModel?modelName=RequestResponseOfRouteRequestResponse
-public typealias RequestResponseOfRouteRequestResponse = BustimeResponse<RouteRequestResponse>
+public typealias RequestResponseOfRouteRequestResponse = BusTimeResponse<RouteRequestResponse>

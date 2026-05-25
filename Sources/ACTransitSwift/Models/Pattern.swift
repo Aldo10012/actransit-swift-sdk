@@ -113,4 +113,4 @@ public struct PatternRequestResponse: Codable, Sendable {
 }
 
 /// https://api.actransit.org/transit/Help/ResourceModel?modelName=RequestResponseOfPatternRequestResponse
-public typealias RequestResponseOfPatternRequestResponse = BustimeResponse<PatternRequestResponse>
+public typealias RequestResponseOfPatternRequestResponse = BusTimeResponse<PatternRequestResponse>

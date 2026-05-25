@@ -125,4 +125,4 @@ public struct ServiceBulletinRequestResponse: Codable, Sendable {
 }
 
 /// https://api.actransit.org/transit/Help/ResourceModel?modelName=RequestResponseOfServiceBulletinRequestResponse
-public typealias RequestResponseOfServiceBulletinRequestResponse = BustimeResponse<ServiceBulletinRequestResponse>
+public typealias RequestResponseOfServiceBulletinRequestResponse = BusTimeResponse<ServiceBulletinRequestResponse>

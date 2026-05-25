@@ -355,6 +355,70 @@ final class ActRealtimeServiceTests {
         #expect(result.vehicle[0].rtpidatafeed == BusTimeVehicle.sample.rtpidatafeed)
         #expect(result.vehicle[0].tmres == BusTimeVehicle.sample.tmres)
     }
+
+    // MARK: - Error path tests
+
+    @Test("test .detour() surfaces BusTimeError when API returns error")
+    func detourError() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "dtrs": [],
+                "error": [
+                    { "msg": "No data found for parameter" }
+                ]
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.detour()
+        #expect(result.dtrs.isEmpty)
+        #expect(result.error?.count == 1)
+        #expect(result.error?[0].msg == BusTimeError.sample.msg)
+    }
+
+    @Test("test .prediction() surfaces BusTimeError with vid context when API returns error")
+    func predictionError() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "prd": [],
+                "error": [
+                    { "vid": "9999", "msg": "No data found for parameter" }
+                ]
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.prediction(vehicleId: "9999")
+        #expect(result.prd.isEmpty)
+        #expect(result.error?.count == 1)
+        #expect(result.error?[0].vid == "9999")
+        #expect(result.error?[0].msg == BusTimeError.sample.msg)
+    }
+
+    @Test("test .stop() surfaces BusTimeError with stpid context when API returns error")
+    func stopError() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "stops": [],
+                "error": [
+                    { "stpid": "00000", "msg": "No data found for parameter" }
+                ]
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.stop(stopId: "00000")
+        #expect(result.stops.isEmpty)
+        #expect(result.error?.count == 1)
+        #expect(result.error?[0].stpid == "00000")
+        #expect(result.error?[0].msg == BusTimeError.sample.msg)
+    }
 }
 
 // MARK: - mocks

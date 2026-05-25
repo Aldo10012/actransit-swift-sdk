@@ -191,4 +191,4 @@ public struct PredictionRequestResponse: Codable, Sendable {
 }
 
 /// https://api.actransit.org/transit/Help/ResourceModel?modelName=RequestResponseOfPredictionRequestResponse
-public typealias RequestResponseOfPredictionRequestResponse = BustimeResponse<PredictionRequestResponse>
+public typealias RequestResponseOfPredictionRequestResponse = BusTimeResponse<PredictionRequestResponse>

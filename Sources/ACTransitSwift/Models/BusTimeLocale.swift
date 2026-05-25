@@ -43,4 +43,4 @@ public struct LocaleRequestResponse: Codable, Sendable {
 }
 
 /// https://api.actransit.org/transit/Help/ResourceModel?modelName=RequestResponseOfLocaleRequestResponse
-public typealias RequestResponseOfLocaleRequestResponse = BustimeResponse<LocaleRequestResponse>
+public typealias RequestResponseOfLocaleRequestResponse = BusTimeResponse<LocaleRequestResponse>

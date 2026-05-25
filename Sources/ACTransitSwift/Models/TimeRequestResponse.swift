@@ -26,4 +26,4 @@ public struct TimeRequestResponse: Codable, Sendable {
 }
 
 /// https://api.actransit.org/transit/Help/ResourceModel?modelName=RequestResponseOfTimeRequestResponse
-public typealias RequestResponseOfTimeRequestResponse = BustimeResponse<TimeRequestResponse>
+public typealias RequestResponseOfTimeRequestResponse = BusTimeResponse<TimeRequestResponse>
