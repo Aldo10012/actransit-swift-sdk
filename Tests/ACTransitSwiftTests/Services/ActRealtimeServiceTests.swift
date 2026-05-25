@@ -312,6 +312,49 @@ final class ActRealtimeServiceTests {
         #expect(result.stops[0].stpid == BusTimeStop.sample.stpid)
         #expect(result.stops[0].stpnm == BusTimeStop.sample.stpnm)
     }
+
+    @Test("test .vehicle() success case")
+    func vehicle() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "vehicle": [
+                    {
+                        "vid": "5016",
+                        "tmstmp": "20230615 14:25",
+                        "lat": "37.855800",
+                        "lon": "-122.259700",
+                        "hdg": "180",
+                        "pid": 12345,
+                        "pdist": 1200,
+                        "rt": "51A",
+                        "des": "Downtown Berkeley BART Station",
+                        "dly": false,
+                        "rtpidatafeed": "AC_TRANSIT_BT",
+                        "tmres": "M"
+                    }
+                ],
+                "error": []
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.vehicle(vehicleId: "5016")
+        #expect(result.vehicle.count == 1)
+        #expect(result.vehicle[0].vid == BusTimeVehicle.sample.vid)
+        #expect(result.vehicle[0].tmstmp == BusTimeVehicle.sample.tmstmp)
+        #expect(result.vehicle[0].lat == BusTimeVehicle.sample.lat)
+        #expect(result.vehicle[0].lon == BusTimeVehicle.sample.lon)
+        #expect(result.vehicle[0].hdg == BusTimeVehicle.sample.hdg)
+        #expect(result.vehicle[0].pid == BusTimeVehicle.sample.pid)
+        #expect(result.vehicle[0].pdist == BusTimeVehicle.sample.pdist)
+        #expect(result.vehicle[0].rt == BusTimeVehicle.sample.rt)
+        #expect(result.vehicle[0].des == BusTimeVehicle.sample.des)
+        #expect(result.vehicle[0].dly == BusTimeVehicle.sample.dly)
+        #expect(result.vehicle[0].rtpidatafeed == BusTimeVehicle.sample.rtpidatafeed)
+        #expect(result.vehicle[0].tmres == BusTimeVehicle.sample.tmres)
+    }
 }
 
 // MARK: - mocks

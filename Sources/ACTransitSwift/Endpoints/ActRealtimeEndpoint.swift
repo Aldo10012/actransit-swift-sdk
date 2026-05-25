@@ -62,6 +62,16 @@ enum ActRealtimeEndpoint {
     ///   - limitFields: If true, return only `stpid` and `stpnm`. Optional.
     ///   - callback: JSONP callback function name. Optional.
     case allStops(route: String? = nil, limitFields: Bool? = nil, callback: String? = nil)
+    /// https://api.actransit.org/transit/actrealtime/vehicle?vid={vid}&rt={rt}&tmres={tmres}&callback={callback}&lat={lat}&lng={lng}&searchRadius={searchRadius}
+    /// - Parameters:
+    ///   - vehicleId: Comma-delimited list of vehicle IDs. Mutually exclusive with `route`. Optional.
+    ///   - route: Comma-delimited list of route designators. Mutually exclusive with `vehicleId`. Optional.
+    ///   - tmres: Time resolution: `s` (seconds) or `m` (minutes). Defaults to `m`. Optional.
+    ///   - callback: JSONP callback function name. Optional.
+    ///   - lat: Latitude coordinate for geographic filtering. Requires `lng` and `searchRadius`. Optional.
+    ///   - lng: Longitude coordinate for geographic filtering. Requires `lat` and `searchRadius`. Optional.
+    ///   - searchRadius: Search distance in feet from `lat`/`lng`. Optional.
+    case vehicle(vehicleId: String? = nil, route: String? = nil, tmres: String? = nil, callback: String? = nil, lat: Double? = nil, lng: Double? = nil, searchRadius: Double? = nil)
 }
 
 extension ActRealtimeEndpoint {
@@ -77,6 +87,7 @@ extension ActRealtimeEndpoint {
         case .serviceBulletin: "/actrealtime/servicebulletin"
         case .stop: "/actrealtime/stop"
         case .allStops: "/actrealtime/allstops"
+        case .vehicle: "/actrealtime/vehicle"
         }
     }
 
@@ -144,6 +155,16 @@ extension ActRealtimeEndpoint {
             if let route { params.append(HTTPParameter(key: "rt", value: route)) }
             if let limitFields { params.append(HTTPParameter(key: "limitFields", value: String(limitFields))) }
             if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .vehicle(vehicleId, route, tmres, callback, lat, lng, searchRadius):
+            var params: [HTTPParameter] = [tokenParam]
+            if let vehicleId { params.append(HTTPParameter(key: "vid", value: vehicleId)) }
+            if let route { params.append(HTTPParameter(key: "rt", value: route)) }
+            if let tmres { params.append(HTTPParameter(key: "tmres", value: tmres)) }
+            if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
+            if let lat { params.append(HTTPParameter(key: "lat", value: String(lat))) }
+            if let lng { params.append(HTTPParameter(key: "lng", value: String(lng))) }
+            if let searchRadius { params.append(HTTPParameter(key: "searchRadius", value: String(searchRadius))) }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }
     }

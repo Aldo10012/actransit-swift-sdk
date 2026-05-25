@@ -139,4 +139,21 @@ public struct ActRealtimeService {
         )
         return response.value
     }
+
+    /// Returns real-time location and status information for vehicles.
+    /// - Parameters:
+    ///   - vehicleId: Comma-delimited list of vehicle IDs (max 10). Mutually exclusive with `route`. Optional.
+    ///   - route: Comma-delimited list of route designators. Mutually exclusive with `vehicleId`. Optional.
+    ///   - tmres: Time resolution: `s` (seconds) or `m` (minutes). Defaults to `m`. Optional.
+    ///   - callback: JSONP callback function name. Optional.
+    ///   - lat: Latitude coordinate for geographic filtering. Requires `lng` and `searchRadius`. Optional.
+    ///   - lng: Longitude coordinate for geographic filtering. Requires `lat` and `searchRadius`. Optional.
+    ///   - searchRadius: Search distance in feet from `lat`/`lng`. Optional.
+    public func vehicle(vehicleId: String? = nil, route: String? = nil, tmres: String? = nil, callback: String? = nil, lat: Double? = nil, lng: Double? = nil, searchRadius: Double? = nil) async throws -> VehicleRequestResponse {
+        let response = try await performer.perform(
+            request: ActRealtimeEndpoint.vehicle(vehicleId: vehicleId, route: route, tmres: tmres, callback: callback, lat: lat, lng: lng, searchRadius: searchRadius).getRequest(token: token),
+            decodeTo: RequestResponseOfVehicleRequestResponse.self
+        )
+        return response.value
+    }
 }

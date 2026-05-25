@@ -149,4 +149,22 @@ final class ActRealtimeEndpointTests {
         #expect((request.parameters ?? []).contains(HTTPParameter(key: "limitFields", value: "true")))
         #expect((request.parameters ?? []).contains(HTTPParameter(key: "callback", value: "myCallback")))
     }
+
+    @Test("test ActRealtimeEndpoint.vehicle")
+    func vehicle() {
+        let endpoint = ActRealtimeEndpoint.vehicle(vehicleId: "5016", route: "51A", tmres: "s", callback: "myCallback", lat: 37.8558, lng: -122.2597, searchRadius: 500.0)
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/actrealtime/vehicle")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/actrealtime/vehicle")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "vid", value: "5016")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "rt", value: "51A")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "tmres", value: "s")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "callback", value: "myCallback")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "lat", value: "37.8558")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "lng", value: "-122.2597")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "searchRadius", value: "500.0")))
+    }
 }
