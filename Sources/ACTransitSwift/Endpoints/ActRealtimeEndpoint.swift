@@ -17,6 +17,10 @@ enum ActRealtimeEndpoint {
     /// - Parameters:
     ///   - callback: JSONP callback function name. Optional.
     case line(callback: String? = nil)
+    /// https://api.actransit.org/transit/actrealtime/locale?callback={callback}
+    /// - Parameters:
+    ///   - callback: JSONP callback function name. Optional.
+    case locale(callback: String? = nil)
 }
 
 extension ActRealtimeEndpoint {
@@ -25,6 +29,7 @@ extension ActRealtimeEndpoint {
         case .detour: "/actrealtime/detour"
         case .direction: "/actrealtime/direction"
         case .line: "/actrealtime/line"
+        case .locale: "/actrealtime/locale"
         }
     }
 
@@ -45,6 +50,10 @@ extension ActRealtimeEndpoint {
             if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .line(callback):
+            var params: [HTTPParameter] = [tokenParam]
+            if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .locale(callback):
             var params: [HTTPParameter] = [tokenParam]
             if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)

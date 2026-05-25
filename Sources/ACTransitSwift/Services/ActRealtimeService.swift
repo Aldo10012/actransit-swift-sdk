@@ -45,4 +45,15 @@ public struct ActRealtimeService {
         )
         return response.value
     }
+
+    /// Returns available language locales for the BusTime system.
+    /// - Parameters:
+    ///   - callback: JSONP callback function name. Optional.
+    public func locale(callback: String? = nil) async throws -> LocaleRequestResponse {
+        let response = try await performer.perform(
+            request: ActRealtimeEndpoint.locale(callback: callback).getRequest(token: token),
+            decodeTo: RequestResponseOfLocaleRequestResponse.self
+        )
+        return response.value
+    }
 }

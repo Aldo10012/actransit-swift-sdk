@@ -102,6 +102,26 @@ final class ActRealtimeServiceTests {
         #expect(result.routes[0].rtdd == BusTimeRoute.sample.rtdd)
         #expect(result.routes[0].rtpidatafeed == BusTimeRoute.sample.rtpidatafeed)
     }
+
+    @Test("test .locale() success case")
+    func locale() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "locale": [
+                    { "localestring": "en", "displayname": "English" }
+                ],
+                "error": []
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.locale()
+        #expect(result.locale.count == 1)
+        #expect(result.locale[0].localeString == BusTimeLocale.sample.localeString)
+        #expect(result.locale[0].displayName == BusTimeLocale.sample.displayName)
+    }
 }
 
 // MARK: - mocks
