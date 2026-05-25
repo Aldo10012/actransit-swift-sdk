@@ -126,7 +126,7 @@ Returns all trips for a given route, optionally filtered by direction and schedu
 | TripId | integer | Trip identifier |
 | RouteName | string | Route name |
 | ScheduleType | integer | 0 = Weekday, etc. |
-| StartTime | datetime | ISO 8601 scheduled start time |
+| StartTime | datetime | Scheduled start time; the date portion is always a fixed placeholder (`2000-01-01`) — use only the time component |
 | Direction | string | Trip direction |
 
 **Response Sample (JSON):**
@@ -174,7 +174,7 @@ Returns trips with operator driving instructions for a given route.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| TimePoints | Collection of TimePointInstruction | Driving instructions at each time point |
+| TimePoints | Collection of TimePointInstruction \| null | Driving instructions at each time point; may be `null` |
 | InstructionsText | string | Operator driving instructions as plain text |
 | TripId | integer | Trip identifier |
 | RouteName | string | Route name |
@@ -228,10 +228,10 @@ Returns all directions serviced by a given route.
 |------|------|----------|-------------|
 | token | string | Yes | API authentication token |
 
-**Response Body** — Array of strings (direction names)
+**Response Body** — Array of strings. Each direction appears **twice**: first as an abbreviated code, then as the full name.
 
 ```json
-["Northbound", "Southbound"]
+["NORTH", "Northbound", "SOUTH", "Southbound"]
 ```
 
 ---
@@ -914,6 +914,8 @@ Returns service exceptions (cancellations, deviations, notices) for specified ro
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | token | string | Yes | API authentication token |
+
+> **Note:** Returns HTTP 404 (not an empty array) when no exceptions exist for the requested route.
 
 **Response Body**
 

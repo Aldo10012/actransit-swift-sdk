@@ -21,58 +21,63 @@ Returns all revenue trip exceptions matching provided filter criteria.
 | Field | Type | Description |
 |-------|------|-------------|
 | TripExceptionId | integer | Exception record identifier |
-| EventType | string | Type of exception event |
+| EventType | string | Type of exception event (e.g. `"Canceled"`) |
 | IncidentId | string | Incident identifier |
 | IncidentUniqueId | integer | Unique incident identifier |
 | OpenDateTime | datetime | When incident was opened |
 | IncidentAddDateTime | datetime | When incident was added |
+| ScheduleType | string | Schedule classification (e.g. `"Weekday"`, `"Saturday"`, `"Sunday"`) |
+| SourceType | string | Source system that logged the exception (e.g. `"Incident"`) |
+| TripNumber | integer | Public trip number |
+| InternalTripNumber | integer | Internal trip number |
 | TripStartTime | datetime | Trip scheduled start time |
 | RouteAlpha | string | Route identifier |
 | Direction | string | Trip direction |
-| TripNumber | integer | Public trip number |
-| InternalTripNumber | integer | Internal trip number |
 | PatternId | integer | Pattern identifier |
+| BookingId | string | Booking period identifier (e.g. `"2604SP"`) |
+| FromId511 | string | 511 origin stop identifier |
 | FromStopId | string | Origin stop identifier |
+| ToId511 | string | 511 destination stop identifier |
 | ToStopId | string | Destination stop identifier |
 | FromStopDescription | string | Origin stop description |
-| ToStopDescription | string | Destination stop description |
 | FromStopLatitude | decimal | Origin stop latitude |
 | FromStopLongitude | decimal | Origin stop longitude |
+| ToStopDescription | string | Destination stop description |
 | ToStopLatitude | decimal | Destination stop latitude |
 | ToStopLongitude | decimal | Destination stop longitude |
-| StopsInOrder | string | Ordered stop list |
+| StopsInOrder | string | Comma-delimited ordered stop ID list |
 
 **Response Sample (JSON):**
 
 ```json
 [
   {
-    "TripExceptionId": 1,
-    "EventType": "sample string 2",
-    "IncidentId": "sample string 3",
-    "IncidentUniqueId": 4,
-    "OpenDateTime": "2026-05-21T17:57:14.8531098-07:00",
-    "IncidentAddDateTime": "2026-05-21T17:57:14.8531098-07:00",
-    "ScheduleType": "sample string 5",
-    "SourceType": "sample string 6",
-    "TripNumber": 1,
-    "InternalTripNumber": 1,
-    "TripStartTime": "2026-05-21T17:57:14.8531098-07:00",
-    "RouteAlpha": "sample string 7",
-    "Direction": "sample string 8",
-    "PatternId": 1,
-    "BookingId": "sample string 9",
-    "FromId511": "sample string 10",
-    "FromStopId": "sample string 11",
-    "ToId511": "sample string 12",
-    "ToStopId": "sample string 13",
-    "FromStopDescription": "sample string 14",
-    "FromStopLatitude": 1.0,
-    "FromStopLongitude": 1.0,
-    "ToStopDescription": "sample string 15",
-    "ToStopLatitude": 1.0,
-    "ToStopLongitude": 1.0,
-    "StopsInOrder": "sample string 16"
+    "TripExceptionId": 346120,
+    "EventType": "Canceled",
+    "IncidentId": "SI260522931495",
+    "IncidentUniqueId": 201364184,
+    "OpenDateTime": "2026-05-21T17:09:13.703",
+    "IncidentAddDateTime": "2026-05-21T17:12:25",
+    "ScheduleType": "Weekday",
+    "SourceType": "Incident",
+    "TripNumber": 9212020,
+    "InternalTripNumber": 11856497,
+    "TripStartTime": "2026-05-21T17:07:00",
+    "RouteAlpha": "65",
+    "Direction": "Eastbound",
+    "PatternId": 135,
+    "BookingId": "2604SP",
+    "FromId511": "51096",
+    "FromStopId": "9902480",
+    "ToId511": "53077",
+    "ToStopId": "0303000",
+    "FromStopDescription": "Allston Way & Shattuck Av",
+    "FromStopLatitude": 37.869491,
+    "FromStopLongitude": -122.267649,
+    "ToStopDescription": "Grizzly Peak Blvd & Senior Av",
+    "ToStopLatitude": 37.883035,
+    "ToStopLongitude": -122.235678,
+    "StopsInOrder": "57501,59432,52105,57512,53215,56320,54357"
   }
 ]
 ```

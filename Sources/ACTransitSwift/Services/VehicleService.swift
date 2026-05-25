@@ -33,10 +33,10 @@ public struct VehicleService {
     /// Returns physical and operational specifications for a specific vehicle.
     /// - Parameters:
     ///   - vehicleId: Vehicle (bus) number.
-    public func vehicleCharacteristics(vehicleId: String) async throws -> VehicleCharacteristics {
+    public func vehicleCharacteristics(vehicleId: String) async throws -> [VehicleCharacteristics] {
         try await performer.perform(
             request: VehicleEndpoint.vehicleCharacteristics(vehicleId: vehicleId).getRequest(token: token),
-            decodeTo: VehicleCharacteristics.self
+            decodeTo: [VehicleCharacteristics].self
         )
     }
 
@@ -55,10 +55,10 @@ public struct VehicleService {
     /// - Parameters:
     ///   - vehicleId: Vehicle (bus) number.
     ///   - routeName: Name of the route that the vehicle is currently servicing.
-    public func vehicleRealtimeAttributes(vehicleId: String, routeName: String? = nil) async throws -> VehicleRealtimeAttributes {
+    public func vehicleRealtimeAttributes(vehicleId: String, routeName: String? = nil) async throws -> [VehicleRealtimeAttributes] {
         try await performer.perform(
             request: VehicleEndpoint.vehicleRealtimeAttributes(vehicleId: vehicleId, routeName: routeName).getRequest(token: token),
-            decodeTo: VehicleRealtimeAttributes.self
+            decodeTo: [VehicleRealtimeAttributes].self
         )
     }
 
