@@ -21,6 +21,12 @@ enum ActRealtimeEndpoint {
     /// - Parameters:
     ///   - callback: JSONP callback function name. Optional.
     case locale(callback: String? = nil)
+    /// https://api.actransit.org/transit/actrealtime/pattern?pid={pid}&rt={rt}&callback={callback}
+    /// - Parameters:
+    ///   - patternIds: Comma-delimited list of pattern IDs (max 10). Mutually exclusive with `route`.
+    ///   - route: Single route identifier to return all active patterns. Mutually exclusive with `patternIds`.
+    ///   - callback: JSONP callback function name. Optional.
+    case pattern(patternIds: String? = nil, route: String? = nil, callback: String? = nil)
 }
 
 extension ActRealtimeEndpoint {
@@ -30,6 +36,7 @@ extension ActRealtimeEndpoint {
         case .direction: "/actrealtime/direction"
         case .line: "/actrealtime/line"
         case .locale: "/actrealtime/locale"
+        case .pattern: "/actrealtime/pattern"
         }
     }
 
@@ -55,6 +62,12 @@ extension ActRealtimeEndpoint {
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         case let .locale(callback):
             var params: [HTTPParameter] = [tokenParam]
+            if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .pattern(patternIds, route, callback):
+            var params: [HTTPParameter] = [tokenParam]
+            if let patternIds { params.append(HTTPParameter(key: "pid", value: patternIds)) }
+            if let route { params.append(HTTPParameter(key: "rt", value: route)) }
             if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }

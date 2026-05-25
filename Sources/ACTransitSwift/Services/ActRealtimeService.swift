@@ -56,4 +56,17 @@ public struct ActRealtimeService {
         )
         return response.value
     }
+
+    /// Returns geo-positional points and stops describing route pattern layouts.
+    /// - Parameters:
+    ///   - patternIds: Comma-delimited list of pattern IDs (max 10). Mutually exclusive with `route`. Optional.
+    ///   - route: Single route identifier to return all active patterns. Mutually exclusive with `patternIds`. Optional.
+    ///   - callback: JSONP callback function name. Optional.
+    public func pattern(patternIds: String? = nil, route: String? = nil, callback: String? = nil) async throws -> PatternRequestResponse {
+        let response = try await performer.perform(
+            request: ActRealtimeEndpoint.pattern(patternIds: patternIds, route: route, callback: callback).getRequest(token: token),
+            decodeTo: RequestResponseOfPatternRequestResponse.self
+        )
+        return response.value
+    }
 }

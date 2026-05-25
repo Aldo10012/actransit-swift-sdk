@@ -122,6 +122,49 @@ final class ActRealtimeServiceTests {
         #expect(result.locale[0].localeString == BusTimeLocale.sample.localeString)
         #expect(result.locale[0].displayName == BusTimeLocale.sample.displayName)
     }
+
+    @Test("test .pattern() success case")
+    func pattern() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "ptr": [
+                    {
+                        "pid": 12345,
+                        "ln": 52800,
+                        "rtdir": "TO DOWNTOWN BERKELEY",
+                        "pt": [
+                            {
+                                "seq": 1,
+                                "typ": "S",
+                                "stpid": "55123",
+                                "stpnm": "Telegraph Ave & Ashby Ave",
+                                "pdist": 0,
+                                "lat": 37.8558,
+                                "lon": -122.2597
+                            }
+                        ]
+                    }
+                ],
+                "error": []
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.pattern(route: "51A")
+        #expect(result.ptr.count == 1)
+        #expect(result.ptr[0].pid == Pattern.sample.pid)
+        #expect(result.ptr[0].ln == Pattern.sample.ln)
+        #expect(result.ptr[0].rtdir == Pattern.sample.rtdir)
+        #expect(result.ptr[0].pt.count == 1)
+        #expect(result.ptr[0].pt[0].seq == PatternPoint.sample.seq)
+        #expect(result.ptr[0].pt[0].typ == PatternPoint.sample.typ)
+        #expect(result.ptr[0].pt[0].stpid == PatternPoint.sample.stpid)
+        #expect(result.ptr[0].pt[0].stpnm == PatternPoint.sample.stpnm)
+        #expect(result.ptr[0].pt[0].lat == PatternPoint.sample.lat)
+        #expect(result.ptr[0].pt[0].lon == PatternPoint.sample.lon)
+    }
 }
 
 // MARK: - mocks

@@ -60,4 +60,18 @@ final class ActRealtimeEndpointTests {
         #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
         #expect((request.parameters ?? []).contains(HTTPParameter(key: "callback", value: "myCallback")))
     }
+
+    @Test("test ActRealtimeEndpoint.pattern")
+    func pattern() {
+        let endpoint = ActRealtimeEndpoint.pattern(patternIds: "12345", route: "51A", callback: "myCallback")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/actrealtime/pattern")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/actrealtime/pattern")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "pid", value: "12345")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "rt", value: "51A")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "callback", value: "myCallback")))
+    }
 }
