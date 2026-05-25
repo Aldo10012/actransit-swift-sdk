@@ -169,6 +169,34 @@ final class ACTransitClientTests {
         #expect(result.currentTripId == Vehicle.sample.currentTripId)
     }
 
+    @Test("test .actRealtime.detour() success case")
+    func actRealtimeDetour() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "dtrs": [
+                    {
+                        "id": "1234",
+                        "ver": "1",
+                        "st": "1",
+                        "desc": "Route 51A detour near Telegraph Ave due to road closure.",
+                        "rtdirs": [{ "rt": "51A", "dir": "TO DOWNTOWN BERKELEY" }],
+                        "startdt": "20230615 08:00",
+                        "enddt": "20230615 20:00"
+                    }
+                ],
+                "error": []
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.actRealtime.detour()
+        #expect(result.dtrs.count == 1)
+        #expect(result.dtrs[0].id == Detour.sample.id)
+        #expect(result.dtrs[0].desc == Detour.sample.desc)
+    }
+
     @Test("test .trips.canceled() success case")
     func tripsCanceled() async throws {
         let jsonString = """

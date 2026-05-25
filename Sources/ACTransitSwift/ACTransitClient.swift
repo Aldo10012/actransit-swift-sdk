@@ -12,6 +12,8 @@ public class ACTransitClient {
     public let stops: StopsService
     /// Vehicle location, characteristics, and real-time occupancy endpoints.
     public let vehicles: VehicleService
+    /// BusTime® real-time endpoints.
+    public let actRealtime: ActRealtimeService
 
     public convenience init() {
         self.init(token: ACTransitPlugins.apiToken, performer: RequestPerformer())
@@ -23,5 +25,6 @@ public class ACTransitClient {
         routes = RoutesService(token: token, performer: performer)
         stops = StopsService(token: token, performer: performer)
         vehicles = VehicleService(token: token, performer: performer)
+        actRealtime = ActRealtimeService(token: token, performer: performer)
     }
 }
