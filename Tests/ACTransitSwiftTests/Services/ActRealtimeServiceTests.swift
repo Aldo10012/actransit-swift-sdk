@@ -53,6 +53,26 @@ final class ActRealtimeServiceTests {
         #expect(result.dtrs[0].startdt == Detour.sample.startdt)
         #expect(result.dtrs[0].enddt == Detour.sample.enddt)
     }
+
+    @Test("test .direction() success case")
+    func direction() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "directions": [
+                    { "id": "TO DOWNTOWN BERKELEY", "name": "TO DOWNTOWN BERKELEY" }
+                ],
+                "error": []
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.direction(route: "51A")
+        #expect(result.directions.count == 1)
+        #expect(result.directions[0].id == ActRealtimeDirection.sample.id)
+        #expect(result.directions[0].name == ActRealtimeDirection.sample.name)
+    }
 }
 
 // MARK: - mocks

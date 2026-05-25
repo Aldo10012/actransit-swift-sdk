@@ -22,4 +22,16 @@ public struct ActRealtimeService {
         )
         return response.value
     }
+
+    /// Returns the set of directions serviced by a specified route.
+    /// - Parameters:
+    ///   - route: Single route designator (e.g., `20`, `NL`).
+    ///   - callback: JSONP callback function name. Optional.
+    public func direction(route: String, callback: String? = nil) async throws -> DirectionRequestResponse {
+        let response = try await performer.perform(
+            request: ActRealtimeEndpoint.direction(route: route, callback: callback).getRequest(token: token),
+            decodeTo: RequestResponseOfDirectionRequestResponse.self
+        )
+        return response.value
+    }
 }
