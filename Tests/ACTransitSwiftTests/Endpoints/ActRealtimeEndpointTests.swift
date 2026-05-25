@@ -105,4 +105,19 @@ final class ActRealtimeEndpointTests {
         #expect((request.parameters ?? []).contains(HTTPParameter(key: "unixTime", value: "true")))
         #expect((request.parameters ?? []).contains(HTTPParameter(key: "callback", value: "myCallback")))
     }
+
+    @Test("test ActRealtimeEndpoint.serviceBulletin")
+    func serviceBulletin() {
+        let endpoint = ActRealtimeEndpoint.serviceBulletin(routes: "51A", direction: "TO DOWNTOWN BERKELEY", stopId: "55123", callback: "myCallback")
+        let request = endpoint.getRequest(token: Constants.mockToken)
+
+        #expect(endpoint.path == "/actrealtime/servicebulletin")
+        #expect(request.httpMethod == .GET)
+        #expect(request.baseUrl == "https://api.actransit.org/transit/actrealtime/servicebulletin")
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: Constants.tokenKey, value: Constants.mockToken)))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "rt", value: "51A")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "rtdir", value: "TO DOWNTOWN BERKELEY")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "stpid", value: "55123")))
+        #expect((request.parameters ?? []).contains(HTTPParameter(key: "callback", value: "myCallback")))
+    }
 }

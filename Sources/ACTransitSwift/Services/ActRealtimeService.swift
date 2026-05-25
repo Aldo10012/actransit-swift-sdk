@@ -98,4 +98,18 @@ public struct ActRealtimeService {
         )
         return response.value
     }
+
+    /// Returns active service bulletins for specified routes or stops.
+    /// - Parameters:
+    ///   - routes: Comma-delimited route designators. Required if `stopId` is not provided. Optional.
+    ///   - direction: Single route direction. Optional.
+    ///   - stopId: Comma-delimited stop IDs. Required if `routes` is not provided. Optional.
+    ///   - callback: JSONP callback function name. Optional.
+    public func serviceBulletin(routes: String? = nil, direction: String? = nil, stopId: String? = nil, callback: String? = nil) async throws -> ServiceBulletinRequestResponse {
+        let response = try await performer.perform(
+            request: ActRealtimeEndpoint.serviceBulletin(routes: routes, direction: direction, stopId: stopId, callback: callback).getRequest(token: token),
+            decodeTo: RequestResponseOfServiceBulletinRequestResponse.self
+        )
+        return response.value
+    }
 }

@@ -42,6 +42,13 @@ enum ActRealtimeEndpoint {
     ///   - unixTime: If true, returns milliseconds elapsed since Unix epoch (UTC). Optional.
     ///   - callback: JSONP callback function name. Optional.
     case time(unixTime: Bool? = nil, callback: String? = nil)
+    /// https://api.actransit.org/transit/actrealtime/servicebulletin?rt={rt}&rtdir={rtdir}&stpid={stpid}&callback={callback}
+    /// - Parameters:
+    ///   - routes: Comma-delimited route designators. Required if `stopId` is not provided.
+    ///   - direction: Single route direction. Optional.
+    ///   - stopId: Comma-delimited stop IDs. Required if `routes` is not provided.
+    ///   - callback: JSONP callback function name. Optional.
+    case serviceBulletin(routes: String? = nil, direction: String? = nil, stopId: String? = nil, callback: String? = nil)
 }
 
 extension ActRealtimeEndpoint {
@@ -54,6 +61,7 @@ extension ActRealtimeEndpoint {
         case .pattern: "/actrealtime/pattern"
         case .prediction: "/actrealtime/prediction"
         case .time: "/actrealtime/time"
+        case .serviceBulletin: "/actrealtime/servicebulletin"
         }
     }
 
@@ -100,6 +108,13 @@ extension ActRealtimeEndpoint {
         case let .time(unixTime, callback):
             var params: [HTTPParameter] = [tokenParam]
             if let unixTime { params.append(HTTPParameter(key: "unixTime", value: String(unixTime))) }
+            if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .serviceBulletin(routes, direction, stopId, callback):
+            var params: [HTTPParameter] = [tokenParam]
+            if let routes { params.append(HTTPParameter(key: "rt", value: routes)) }
+            if let direction { params.append(HTTPParameter(key: "rtdir", value: direction)) }
+            if let stopId { params.append(HTTPParameter(key: "stpid", value: stopId)) }
             if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }

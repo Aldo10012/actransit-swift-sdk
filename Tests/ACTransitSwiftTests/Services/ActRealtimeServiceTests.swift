@@ -222,6 +222,42 @@ final class ActRealtimeServiceTests {
         let result = try await sut.time()
         #expect(result.tm == TimeRequestResponse.sample.tm)
     }
+
+    @Test("test .serviceBulletin() success case")
+    func serviceBulletin() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "sb": [
+                    {
+                        "nm": "SB-2023-001",
+                        "sbj": "Route 51A Detour",
+                        "dtl": "Route 51A is detouring around Telegraph Ave due to construction.",
+                        "brf": "51A detour in effect.",
+                        "cse": "Construction",
+                        "efct": "Delays of up to 10 minutes",
+                        "prty": "Medium",
+                        "srvc": [
+                            { "rt": "51A", "rtdir": "TO DOWNTOWN BERKELEY", "stpid": "55123", "stpnm": "Telegraph Ave & Ashby Ave" }
+                        ],
+                        "mod": "20230615 08:00:00"
+                    }
+                ],
+                "error": []
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.serviceBulletin(routes: "51A")
+        #expect(result.sb.count == 1)
+        #expect(result.sb[0].nm == Bulletin.sample.nm)
+        #expect(result.sb[0].sbj == Bulletin.sample.sbj)
+        #expect(result.sb[0].prty == Bulletin.sample.prty)
+        #expect(result.sb[0].srvc.count == 1)
+        #expect(result.sb[0].srvc[0].rt == ServiceBulletin.sample.rt)
+        #expect(result.sb[0].mod == Bulletin.sample.mod)
+    }
 }
 
 // MARK: - mocks
