@@ -37,6 +37,11 @@ enum ActRealtimeEndpoint {
     ///   - showocprd: Whether to show occupancy prediction data. Optional.
     ///   - callback: JSONP callback function name. Optional.
     case prediction(stopId: String? = nil, route: String? = nil, vehicleId: String? = nil, top: Int? = nil, tmres: String? = nil, showocprd: Bool? = nil, callback: String? = nil)
+    /// https://api.actransit.org/transit/actrealtime/time?unixTime={unixTime}&callback={callback}
+    /// - Parameters:
+    ///   - unixTime: If true, returns milliseconds elapsed since Unix epoch (UTC). Optional.
+    ///   - callback: JSONP callback function name. Optional.
+    case time(unixTime: Bool? = nil, callback: String? = nil)
 }
 
 extension ActRealtimeEndpoint {
@@ -48,6 +53,7 @@ extension ActRealtimeEndpoint {
         case .locale: "/actrealtime/locale"
         case .pattern: "/actrealtime/pattern"
         case .prediction: "/actrealtime/prediction"
+        case .time: "/actrealtime/time"
         }
     }
 
@@ -89,6 +95,11 @@ extension ActRealtimeEndpoint {
             if let top { params.append(HTTPParameter(key: "top", value: String(top))) }
             if let tmres { params.append(HTTPParameter(key: "tmres", value: tmres)) }
             if let showocprd { params.append(HTTPParameter(key: "showocprd", value: String(showocprd))) }
+            if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
+            return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
+        case let .time(unixTime, callback):
+            var params: [HTTPParameter] = [tokenParam]
+            if let unixTime { params.append(HTTPParameter(key: "unixTime", value: String(unixTime))) }
             if let callback { params.append(HTTPParameter(key: "callback", value: callback)) }
             return factory.build(httpMethod: .GET, baseUrlString: url, parameters: params)
         }

@@ -86,4 +86,16 @@ public struct ActRealtimeService {
         )
         return response.value
     }
+
+    /// Returns the current BusTime system date and time, for client synchronization.
+    /// - Parameters:
+    ///   - unixTime: If true, returns milliseconds elapsed since Unix epoch (UTC). Optional.
+    ///   - callback: JSONP callback function name. Optional.
+    public func time(unixTime: Bool? = nil, callback: String? = nil) async throws -> TimeRequestResponse {
+        let response = try await performer.perform(
+            request: ActRealtimeEndpoint.time(unixTime: unixTime, callback: callback).getRequest(token: token),
+            decodeTo: RequestResponseOfTimeRequestResponse.self
+        )
+        return response.value
+    }
 }

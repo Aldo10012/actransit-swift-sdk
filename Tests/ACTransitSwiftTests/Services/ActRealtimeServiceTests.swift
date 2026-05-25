@@ -206,6 +206,22 @@ final class ActRealtimeServiceTests {
         #expect(result.prd[0].dly == Prediction.sample.dly)
         #expect(result.prd[0].seq == Prediction.sample.seq)
     }
+
+    @Test("test .time() success case")
+    func time() async throws {
+        let jsonString = """
+        {
+            "bustime-response": {
+                "tm": "20230615 14:30:00",
+                "error": []
+            }
+        }
+        """
+        setup(mockJSON: jsonString.data(using: .utf8))
+
+        let result = try await sut.time()
+        #expect(result.tm == TimeRequestResponse.sample.tm)
+    }
 }
 
 // MARK: - mocks
