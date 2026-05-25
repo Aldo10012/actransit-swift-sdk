@@ -77,26 +77,28 @@ Returns physical and operational specifications for one or all active vehicles.
 | SeatingCapacity | string | Seating capacity (numeric, nullable) |
 | LimitCapacity | string | Agency-enforced passenger limit |
 
-**Response Sample (JSON):**
+**Response Sample (JSON):** — array of objects
 
 ```json
-{
-  "VehicleId": "sample string 1",
-  "IsActive": true,
-  "Description": "sample string 3",
-  "VehicleType": "sample string 4",
-  "VehicleTypeDescription": "sample string 5",
-  "Make": "sample string 6",
-  "SerialNumber": "sample string 7",
-  "LicenseNumber": "sample string 8",
-  "Length": "sample string 9",
-  "PropulsionType": "sample string 10",
-  "HasWiFi": true,
-  "HasAC": true,
-  "StandingCapacity": "sample string 13",
-  "SeatingCapacity": "sample string 14",
-  "LimitCapacity": "sample string 15"
-}
+[
+  {
+    "VehicleId": "1342",
+    "IsActive": true,
+    "Description": "BUS: 2012, GILLIG, URBAN, 40'",
+    "VehicleType": "06",
+    "VehicleTypeDescription": "ST40 - Standard 40",
+    "Make": "GILLIG",
+    "SerialNumber": "15GGD2716D1182194",
+    "LicenseNumber": "1177753",
+    "Length": "40.00",
+    "PropulsionType": "DIESEL FUEL",
+    "HasWiFi": false,
+    "HasAC": true,
+    "StandingCapacity": "43",
+    "SeatingCapacity": "37",
+    "LimitCapacity": "47"
+  }
+]
 ```
 
 ---
@@ -117,28 +119,30 @@ Returns physical and operational specifications for a specific vehicle.
 |------|------|----------|-------------|
 | token | string | Yes | API authentication token |
 
-**Response Body** — Same structure as `GET /vehicle/characteristics` (single VehicleCharacteristics object, not array).
+**Response Body** — Same structure as `GET /vehicle/characteristics`. Returns a one-element **array** even for a specific vehicle.
 
 **Response Sample (JSON):**
 
 ```json
-{
-  "VehicleId": "sample string 1",
-  "IsActive": true,
-  "Description": "sample string 3",
-  "VehicleType": "sample string 4",
-  "VehicleTypeDescription": "sample string 5",
-  "Make": "sample string 6",
-  "SerialNumber": "sample string 7",
-  "LicenseNumber": "sample string 8",
-  "Length": "sample string 9",
-  "PropulsionType": "sample string 10",
-  "HasWiFi": true,
-  "HasAC": true,
-  "StandingCapacity": "sample string 13",
-  "SeatingCapacity": "sample string 14",
-  "LimitCapacity": "sample string 15"
-}
+[
+  {
+    "VehicleId": "1676",
+    "IsActive": true,
+    "Description": "BUS: 2022, GILLIG, URBAN, 40'",
+    "VehicleType": "06",
+    "VehicleTypeDescription": "ST40 - Standard 40",
+    "Make": "GILLIG",
+    "SerialNumber": "15GGD2710N3197800",
+    "LicenseNumber": "1566696",
+    "Length": "40.00",
+    "PropulsionType": "DIESEL FUEL",
+    "HasWiFi": false,
+    "HasAC": true,
+    "StandingCapacity": "43",
+    "SeatingCapacity": "37",
+    "LimitCapacity": "47"
+  }
+]
 ```
 
 ---
@@ -171,22 +175,24 @@ Returns real-time position and passenger occupancy data for one or more vehicles
 | EstimatedOccupancyStatus | string | `Not Crowded`, `Some Crowding`, or `Crowded` (nullable) |
 | DateTimeAPCReported | datetime | Last APC occupancy report timestamp (nullable) |
 
-**Response Sample (JSON):**
+**Response Sample (JSON):** — array of objects
 
 ```json
-{
-  "VehicleId": "sample string 1",
-  "CurrentRoute": "sample string 2",
-  "LastPositionLatitude": 1.1,
-  "LastPositionLongitude": 1.1,
-  "DateTimePositionReported": "2026-05-21T18:02:29.8646608-07:00",
-  "VehicleCapacity": 1,
-  "CurrentPassengerCount": 1,
-  "EstimatedOccupancyPercentage": 1,
-  "EstimatedOccupancyStatusColor": "sample string 3",
-  "EstimatedOccupancyStatus": "sample string 4",
-  "DateTimeAPCReported": "2026-05-21T18:02:29.8646608-07:00"
-}
+[
+  {
+    "VehicleId": "1354",
+    "CurrentRoute": "96",
+    "LastPositionLatitude": 37.79370880126953,
+    "LastPositionLongitude": -122.24005126953125,
+    "DateTimePositionReported": "2026-05-24T16:45:55.9669661-07:00",
+    "VehicleCapacity": 47,
+    "CurrentPassengerCount": null,
+    "EstimatedOccupancyPercentage": null,
+    "EstimatedOccupancyStatusColor": "#00b33c",
+    "EstimatedOccupancyStatus": "Not Crowded",
+    "DateTimeAPCReported": "2026-05-24T16:45:55.9669661-07:00"
+  }
+]
 ```
 
 ---
@@ -208,24 +214,26 @@ Returns real-time attributes for a specific vehicle, optionally filtered by rout
 | routename | string | No | Route name filter |
 | token | string | Yes | API authentication token |
 
-**Response Body** — Single VehicleRealtimeAttributes object (same fields as `GET /vehicle/realtimeattributes`).
+**Response Body** — **Array** of VehicleRealtimeAttributes objects (same fields as `GET /vehicle/realtimeattributes`). Returns a one-element array even for a specific vehicle.
 
 **Response Sample (JSON):**
 
 ```json
-{
-  "VehicleId": "sample string 1",
-  "CurrentRoute": "sample string 2",
-  "LastPositionLatitude": 1.1,
-  "LastPositionLongitude": 1.1,
-  "DateTimePositionReported": "2026-05-21T07:16:57.1593549-07:00",
-  "VehicleCapacity": 1,
-  "CurrentPassengerCount": 1,
-  "EstimatedOccupancyPercentage": 1,
-  "EstimatedOccupancyStatusColor": "sample string 3",
-  "EstimatedOccupancyStatus": "sample string 4",
-  "DateTimeAPCReported": "2026-05-21T07:16:57.1593549-07:00"
-}
+[
+  {
+    "VehicleId": "1676",
+    "CurrentRoute": "51A",
+    "LastPositionLatitude": 37.76605224609375,
+    "LastPositionLongitude": -122.24343872070313,
+    "DateTimePositionReported": "2026-05-24T16:46:26.7424664-07:00",
+    "VehicleCapacity": 47,
+    "CurrentPassengerCount": null,
+    "EstimatedOccupancyPercentage": null,
+    "EstimatedOccupancyStatusColor": "#00b33c",
+    "EstimatedOccupancyStatus": "Not Crowded",
+    "DateTimeAPCReported": "2026-05-24T16:46:26.7424664-07:00"
+  }
+]
 ```
 
 ---
@@ -247,24 +255,26 @@ Returns real-time attributes for vehicles on a specific route, optionally filter
 | vehicleId | string | No | Optional vehicle ID filter |
 | token | string | Yes | API authentication token |
 
-**Response Body** — Same structure as `GET /vehicle/realtimeattributes`.
+**Response Body** — **Array** of VehicleRealtimeAttributes objects (same fields as `GET /vehicle/realtimeattributes`).
 
 **Response Sample (JSON):**
 
 ```json
-{
-  "VehicleId": "sample string 1",
-  "CurrentRoute": "sample string 2",
-  "LastPositionLatitude": 1.1,
-  "LastPositionLongitude": 1.1,
-  "DateTimePositionReported": "2026-05-21T08:22:15.639476-07:00",
-  "VehicleCapacity": 1,
-  "CurrentPassengerCount": 1,
-  "EstimatedOccupancyPercentage": 1,
-  "EstimatedOccupancyStatusColor": "sample string 3",
-  "EstimatedOccupancyStatus": "sample string 4",
-  "DateTimeAPCReported": "2026-05-21T08:22:15.639476-07:00"
-}
+[
+  {
+    "VehicleId": "1669",
+    "CurrentRoute": "51A",
+    "LastPositionLatitude": 37.83527755737305,
+    "LastPositionLongitude": -122.2519302368164,
+    "DateTimePositionReported": "2026-05-24T16:46:26.7574861-07:00",
+    "VehicleCapacity": 47,
+    "CurrentPassengerCount": null,
+    "EstimatedOccupancyPercentage": null,
+    "EstimatedOccupancyStatusColor": "#00b33c",
+    "EstimatedOccupancyStatus": "Not Crowded",
+    "DateTimeAPCReported": "2026-05-24T16:46:26.7574861-07:00"
+  }
+]
 ```
 
 ---
@@ -298,17 +308,19 @@ Returns real-time attributes for multiple vehicles specified in the request body
 **Response Sample (JSON):**
 
 ```json
-{
-  "VehicleId": "sample string 1",
-  "CurrentRoute": "sample string 2",
-  "LastPositionLatitude": 1.1,
-  "LastPositionLongitude": 1.1,
-  "DateTimePositionReported": "2026-05-21T14:23:05.9520948-07:00",
-  "VehicleCapacity": 1,
-  "CurrentPassengerCount": 1,
-  "EstimatedOccupancyPercentage": 1,
-  "EstimatedOccupancyStatusColor": "sample string 3",
-  "EstimatedOccupancyStatus": "sample string 4",
-  "DateTimeAPCReported": "2026-05-21T14:23:05.9520948-07:00"
-}
+[
+  {
+    "VehicleId": "1676",
+    "CurrentRoute": "51A",
+    "LastPositionLatitude": 37.76605224609375,
+    "LastPositionLongitude": -122.24343872070312,
+    "DateTimePositionReported": "2026-05-24T16:46:26.7424664-07:00",
+    "VehicleCapacity": 47,
+    "CurrentPassengerCount": null,
+    "EstimatedOccupancyPercentage": null,
+    "EstimatedOccupancyStatusColor": "#00b33c",
+    "EstimatedOccupancyStatus": "Not Crowded",
+    "DateTimeAPCReported": "2026-05-24T16:46:26.7424664-07:00"
+  }
+]
 ```

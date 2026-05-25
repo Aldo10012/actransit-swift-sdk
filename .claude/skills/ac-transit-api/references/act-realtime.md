@@ -28,13 +28,14 @@ Returns active detours affecting transit service.
   "bustime-response": {
     "dtrs": [
       {
-        "id": "string",
-        "ver": "string",
-        "st": "string",
-        "desc": "string",
-        "rtdirs": [{ "rt": "string", "dir": "string" }],
-        "startdt": "string",
-        "enddt": "string"
+        "id": "2738D8B2-F31A-479E-A3E6-EF602C44C845",
+        "ver": 4,
+        "st": 1,
+        "desc": "O WB",
+        "rtdirs": [{ "rt": "O", "dir": "To San Francisco" }],
+        "startdt": "20260518 00:00",
+        "enddt": "20261026 23:59",
+        "rtpidatafeed": "bustime"
       }
     ],
     "error": [{ "msg": "string", "rt": "string", "vid": "string" }]
@@ -45,12 +46,13 @@ Returns active detours affecting transit service.
 | Field | Type | Description |
 |-------|------|-------------|
 | dtrs[].id | string | Detour identifier |
-| dtrs[].ver | string | Version |
-| dtrs[].st | string | Status |
+| dtrs[].ver | integer | Version number |
+| dtrs[].st | integer | Status code |
 | dtrs[].desc | string | Description of the detour |
 | dtrs[].rtdirs | array | Affected route/direction pairs |
-| dtrs[].startdt | string | Start date/time |
-| dtrs[].enddt | string | End date/time |
+| dtrs[].startdt | string | Start date/time (`YYYYMMDD HH:MM`) |
+| dtrs[].enddt | string | End date/time (`YYYYMMDD HH:MM`) |
+| dtrs[].rtpidatafeed | string | Data feed identifier (e.g. `"bustime"`) |
 
 ---
 
@@ -167,11 +169,12 @@ Returns geo-positional points and stops describing route pattern layouts.
   "bustime-response": {
     "ptr": [
       {
-        "pid": 1,
-        "ln": 5000,
-        "rtdir": "string",
+        "pid": 8260,
+        "ln": 48679.0,
+        "rtdir": "To Fruitvale BART",
         "pt": [
-          { "seq": 1, "typ": "string", "stpid": "string", "stpnm": "string", "pdist": 0, "lat": 37.8, "lon": -122.2 }
+          { "seq": 1, "typ": "S", "stpid": "54327", "stpnm": "College Av & Miles Av", "pdist": 0.0, "lat": 37.844542, "lon": -122.251966 },
+          { "seq": 2, "typ": "W", "pdist": 0.0, "lat": 37.844378, "lon": -122.251873 }
         ],
         "dtrid": "string",
         "dtrpt": []
@@ -182,18 +185,22 @@ Returns geo-positional points and stops describing route pattern layouts.
 }
 ```
 
+> `dtrid` and `dtrpt` are only present when a detour affects the pattern.
+
 | Field | Type | Description |
 |-------|------|-------------|
 | ptr[].pid | integer | Pattern ID |
-| ptr[].ln | integer | Pattern length |
+| ptr[].ln | decimal | Pattern length (feet) |
 | ptr[].rtdir | string | Route direction |
 | ptr[].pt[].seq | integer | Point sequence number |
-| ptr[].pt[].typ | string | Point type |
-| ptr[].pt[].stpid | string | Stop ID (if a stop) |
-| ptr[].pt[].stpnm | string | Stop name (if a stop) |
+| ptr[].pt[].typ | string | Point type: `S` = stop, `W` = waypoint |
+| ptr[].pt[].stpid | string | Stop ID — only present when `typ` is `S` |
+| ptr[].pt[].stpnm | string | Stop name — only present when `typ` is `S` |
 | ptr[].pt[].pdist | decimal | Distance from pattern start |
 | ptr[].pt[].lat | decimal | Latitude |
 | ptr[].pt[].lon | decimal | Longitude |
+| ptr[].dtrid | string | Detour ID affecting this pattern (optional) |
+| ptr[].dtrpt | array | Detour points (optional) |
 
 ---
 
@@ -223,20 +230,34 @@ Returns real-time arrival/departure predictions for stops or vehicles.
   "bustime-response": {
     "prd": [
       {
-        "tmstmp": "string",
-        "typ": "string",
-        "stpnm": "string",
-        "stpid": "string",
-        "vid": "string",
-        "dstp": 1234,
-        "rt": "string",
-        "rtdir": "string",
-        "des": "string",
-        "prdtm": "string",
+        "tmstmp": "20260524 16:32",
+        "typ": "A",
+        "stpnm": "Broadway & 12th St (12th St BART)",
+        "stpid": "50212",
+        "vid": "8004",
+        "dstp": 10567,
+        "rt": "51A",
+        "rtdd": "51A",
+        "rtdir": "To Fruitvale BART",
+        "des": "Fruitvale BART",
+        "prdtm": "20260524 16:47",
+        "tablockid": "51009",
+        "tatripid": "10551560",
+        "origtatripno": "11868504",
         "dly": false,
-        "prdctdn": "string",
-        "zone": "string",
-        "seq": 1
+        "dyn": 0,
+        "prdctdn": "14",
+        "zone": "",
+        "rid": "5107",
+        "tripid": "6057010",
+        "tripdyn": 0,
+        "schdtm": "20260524 16:44",
+        "geoid": "2476",
+        "seq": 17,
+        "psgld": "EMPTY",
+        "stst": 59100,
+        "stsd": "2026-05-24",
+        "flagstop": 0
       }
     ],
     "error": [{ "stpid": "string", "rt": "string", "vid": "string", "msg": "string" }]
@@ -246,20 +267,34 @@ Returns real-time arrival/departure predictions for stops or vehicles.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| tmstmp | string | Timestamp of the prediction |
+| tmstmp | string | Timestamp of the prediction (`YYYYMMDD HH:MM` or `HH:MM:SS`) |
 | typ | string | Prediction type: `A` = arrival, `D` = departure |
 | stpnm | string | Stop name |
 | stpid | string | Stop ID |
 | vid | string | Vehicle ID |
 | dstp | number | Distance to stop (feet) |
-| rt | string | Route |
+| rt | string | Route designator |
+| rtdd | string | Route display designation |
 | rtdir | string | Route direction |
 | des | string | Destination |
-| prdtm | string | Predicted time |
+| prdtm | string | Predicted arrival/departure time |
+| tablockid | string | Tablet/block ID |
+| tatripid | string | TA trip ID |
+| origtatripno | string | Original TA trip number |
 | dly | boolean | Whether vehicle is delayed |
-| prdctdn | string | Countdown to predicted time |
+| dyn | integer | Dynamic flag (`0` = static) |
+| prdctdn | string | Countdown string to predicted time |
 | zone | string | Zone identifier |
-| seq | number | Stop sequence |
+| rid | string | Internal route ID |
+| tripid | string | Trip ID |
+| tripdyn | integer | Trip dynamic flag |
+| schdtm | string | Scheduled time |
+| geoid | string | Stop geo ID |
+| seq | number | Stop sequence number |
+| psgld | string | Passenger load: `EMPTY`, `HALF_EMPTY`, `FULL`, etc. |
+| stst | integer | Scheduled start time (seconds past midnight) |
+| stsd | string | Service date (`YYYY-MM-DD`) |
+| flagstop | integer | Flag stop indicator (`0` = not a flag stop) |
 
 ---
 
@@ -277,16 +312,17 @@ Returns the current BusTime system date and time, for client synchronization.
 
 **Response Body**
 
+Default (`unixTime` omitted or `false`):
 ```json
-{
-  "bustime-response": {
-    "tm": {},
-    "error": [{ "rtpidatafeed": "string", "stpid": "string", "rt": "string", "vid": "string", "msg": "string" }]
-  }
-}
+{ "bustime-response": { "tm": "20260524 16:32:09" } }
 ```
 
-> The `tm` field contains the system timestamp; its exact sub-fields depend on the `unixTime` flag.
+With `unixTime=true`:
+```json
+{ "bustime-response": { "tm": "1779665530061" } }
+```
+
+> `tm` is always a **string**. Without `unixTime`, format is `YYYYMMDD HH:MM:SS`. With `unixTime=true`, it is milliseconds since the Unix epoch as a numeric string.
 
 ---
 
@@ -313,15 +349,16 @@ Returns active service bulletins for specified routes or stops.
   "bustime-response": {
     "sb": [
       {
-        "nm": "string",
-        "sbj": "string",
-        "dtl": "string",
-        "brf": "string",
-        "cse": "string",
-        "efct": "string",
-        "prty": "string",
-        "rtpidatafeed": "string",
-        "mod": "string",
+        "nm": "Sunday Schedules on Memorial Day",
+        "sbj": "Sunday Schedules on May 25",
+        "dtl": "On Memorial Day all lines operate on Sunday schedules.",
+        "brf": "Sunday Schedules on Memorial Day May 25",
+        "prty": "Medium",
+        "cse": "Holiday",
+        "efct": "Reduced service",
+        "rtpidatafeed": "bustime",
+        "mod": "20260524 15:55:26",
+        "url": "https://www.actransit.org/node/19519",
         "srvc": [{ "rt": "string", "rtdir": "string", "stpid": "string", "stpnm": "string" }]
       }
     ],
@@ -334,12 +371,14 @@ Returns active service bulletins for specified routes or stops.
 |-------|------|-------------|
 | nm | string | Bulletin name |
 | sbj | string | Subject |
-| dtl | string | Detail text |
+| dtl | string | Detail text (may contain HTML) |
 | brf | string | Brief description |
 | cse | string | Cause |
 | efct | string | Effect |
-| prty | string | Priority |
-| mod | string | Last modification timestamp |
+| prty | string | Priority (e.g. `"Medium"`) |
+| rtpidatafeed | string | Data feed identifier |
+| mod | string | Last modification timestamp (`YYYYMMDD HH:MM:SS`) |
+| url | string | URL to the full bulletin page (optional) |
 | srvc | array | Affected routes/stops |
 
 ---
@@ -367,10 +406,11 @@ Returns stops for a route/direction pair, or looks up stops by ID.
   "bustime-response": {
     "stops": [
       {
-        "stpid": "string",
-        "stpnm": "string",
-        "lat": 37.8,
-        "lon": -122.2,
+        "stpid": "50212",
+        "stpnm": "Broadway & 12th St (12th St BART)",
+        "lat": 37.803051,
+        "lon": -122.272065,
+        "geoid": "2476",
         "dtradd": ["string"],
         "dtrrem": ["string"]
       }
@@ -379,6 +419,16 @@ Returns stops for a route/direction pair, or looks up stops by ID.
   }
 }
 ```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| stops[].stpid | string | Stop ID |
+| stops[].stpnm | string | Stop name |
+| stops[].lat | decimal | Latitude |
+| stops[].lon | decimal | Longitude |
+| stops[].geoid | string | Geo location ID |
+| stops[].dtradd | array | Detour IDs added at this stop (optional — only present when a detour is active) |
+| stops[].dtrrem | array | Detour IDs removed at this stop (optional — only present when a detour is active) |
 
 ---
 
@@ -395,7 +445,7 @@ Returns all stops, optionally filtered to a single route, with optional field li
 | callback | string | No | JSONP callback function name |
 | token | string | Yes | API authentication token |
 
-**Response Body** — Same structure as `/actrealtime/stop` (array of stop objects inside `bustime-response.stops`).
+**Response Body** — Same structure as `/actrealtime/stop` (array of stop objects inside `bustime-response.stops`). When `limitFields=true`, only `stpid` and `stpnm` are returned per stop.
 
 **Response Sample (JSON):**
 
@@ -404,46 +454,36 @@ Returns all stops, optionally filtered to a single route, with optional field li
   "bustime-response": {
     "stops": [
       {
-        "stpid": "sample string 1",
-        "stpnm": "sample string 2",
-        "lat": 3.0,
-        "lon": 4.0,
-        "dtradd": [
-          "sample string 1",
-          "sample string 2"
-        ],
-        "dtrrem": [
-          "sample string 1",
-          "sample string 2"
-        ]
+        "stpid": "59999",
+        "stpnm": "7th St & Franklin St",
+        "lat": 37.799014,
+        "lon": -122.273177,
+        "geoid": "2247"
       },
       {
-        "stpid": "sample string 1",
-        "stpnm": "sample string 2",
-        "lat": 3.0,
-        "lon": 4.0,
-        "dtradd": [
-          "sample string 1",
-          "sample string 2"
-        ],
-        "dtrrem": [
-          "sample string 1",
-          "sample string 2"
-        ]
+        "stpid": "50212",
+        "stpnm": "Broadway & 12th St (12th St BART)",
+        "lat": 37.803051,
+        "lon": -122.272065,
+        "geoid": "2476",
+        "dtradd": ["2738D8B2-F31A-479E-A3E6-EF602C44C845"],
+        "dtrrem": []
       }
     ],
     "error": [
       {
-        "rtpidatafeed": "sample string 1",
-        "stpid": "sample string 2",
-        "rt": "sample string 3",
-        "vid": "sample string 4",
-        "msg": "sample string 5"
+        "rtpidatafeed": "bustime",
+        "stpid": "string",
+        "rt": "string",
+        "vid": "string",
+        "msg": "string"
       }
     ]
   }
 }
 ```
+
+> `dtradd` and `dtrrem` are only present on stops affected by an active detour.
 
 ---
 
@@ -464,4 +504,63 @@ Returns real-time vehicle location and tracking data, with optional geographic f
 | searchRadius | decimal | No | Search distance in feet from lat/lng |
 | token | string | Yes | API authentication token |
 
-**Response** — `HttpResponseMessage` (parse `bustime-response` envelope; vehicle object fields mirror other actrealtime vehicle responses).
+**Response Body**
+
+```json
+{
+  "bustime-response": {
+    "vehicle": [
+      {
+        "vid": "1676",
+        "rtpidatafeed": "bustime",
+        "tmstmp": "20260524 16:32",
+        "lat": "37.775203704833984",
+        "lon": "-122.22671508789062",
+        "hdg": "301",
+        "pid": 8198,
+        "pdist": 785,
+        "rt": "51A",
+        "des": "Rockridge BART",
+        "dly": false,
+        "spd": 0,
+        "tablockid": "51001",
+        "tatripid": "10551629",
+        "zone": "",
+        "mode": 0,
+        "psgld": "EMPTY",
+        "oid": "46052",
+        "or": false,
+        "blk": 145595101,
+        "tripid": 12180010,
+        "tripdyn": 0
+      }
+    ],
+    "error": null
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| vid | string | Vehicle ID |
+| rtpidatafeed | string | Data feed identifier (e.g. `"bustime"`) |
+| tmstmp | string | Timestamp of position (`YYYYMMDD HH:MM` or `HH:MM:SS` per `tmres`) |
+| lat | string | Latitude (returned as string) |
+| lon | string | Longitude (returned as string) |
+| hdg | string | Heading in degrees (`"0"`–`"359"`) |
+| pid | integer | Active pattern ID |
+| pdist | integer | Distance traveled along pattern (feet) |
+| rt | string | Route designator |
+| des | string | Destination |
+| dly | boolean | Whether vehicle is delayed |
+| spd | integer | Speed (mph) |
+| tablockid | string | Tablet/block ID |
+| tatripid | string | TA trip ID |
+| zone | string | Zone identifier |
+| mode | integer | Mode flag |
+| psgld | string | Passenger load: `EMPTY`, `HALF_EMPTY`, `FULL`, etc. |
+| oid | string | Operator ID |
+| or | boolean | Whether operator is on relief |
+| blk | integer | Block number |
+| tripid | integer | Trip ID |
+| tripdyn | integer | Trip dynamic flag |

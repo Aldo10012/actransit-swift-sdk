@@ -122,13 +122,15 @@ Returns stops within a radius of the given coordinates (optional params as query
 
 **Response Body** — Array of Stop objects (same fields as `GET /stops`), ordered by distance nearest to farthest.
 
+> **Note:** This endpoint (query-string form) may return an empty body in practice. Prefer the all-path-parameter form `GET /stops/{latitude}/{longitude}/{distance}/{active}/{routeName}` which is more reliable.
+
 ---
 
 ## `GET /stops/{stopId}/predictions`
 
 Returns arrival/departure predictions for a given stop.
 
-> **Note:** The live documentation page for this endpoint returns HTTP 500. The endpoint exists in the API index but its detail page is inaccessible. Based on other prediction endpoints, the response likely mirrors `/actrealtime/prediction` or returns simplified prediction objects.
+> **Note:** This endpoint returns a simplified prediction model — distinct from the richer `/actrealtime/prediction` response.
 
 **Path Parameters**
 
@@ -141,6 +143,34 @@ Returns arrival/departure predictions for a given stop.
 | Name | Type | Required | Description |
 |------|------|----------|-------------|
 | token | string | Yes | API authentication token |
+
+**Response Body** — Array of Prediction objects
+
+| Field | Type | Description |
+|-------|------|-------------|
+| StopId | integer | Stop identifier |
+| TripId | integer | Trip identifier |
+| VehicleId | integer | Vehicle identifier |
+| RouteName | string | Route name (e.g. `"51A"`) |
+| PredictedDelayInSeconds | integer | Seconds of delay (negative = early) |
+| PredictedDeparture | datetime | Predicted departure time |
+| PredictionDateTime | datetime | When this prediction was generated |
+
+**Response Sample (JSON):**
+
+```json
+[
+  {
+    "StopId": 50212,
+    "TripId": 11868436,
+    "VehicleId": 1669,
+    "RouteName": "51A",
+    "PredictedDelayInSeconds": -240,
+    "PredictedDeparture": "2026-05-24T16:56:00",
+    "PredictionDateTime": "2026-05-24T16:49:10"
+  }
+]
+```
 
 ---
 

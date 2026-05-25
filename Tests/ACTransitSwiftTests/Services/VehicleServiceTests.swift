@@ -76,26 +76,29 @@ final class VehicleServiceTests {
     @Test("test .vehicleRealtimeAttributes(vehicleId:) success case")
     func vehicleRealtimeAttributes() async throws {
         let jsonString = """
-        {
-            "VehicleId": "1505",
-            "CurrentRoute": "51A",
-            "LastPositionLatitude": 37.8376083374023,
-            "LastPositionLongitude": -122.281852722168,
-            "DateTimePositionReported": "2026-05-23T21:17:35.000-07:00",
-            "VehicleCapacity": 60,
-            "CurrentPassengerCount": 25,
-            "EstimatedOccupancyPercentage": 42,
-            "EstimatedOccupancyStatusColor": "#00CC00",
-            "EstimatedOccupancyStatus": "Not Crowded",
-            "DateTimeAPCReported": "2026-05-23T21:17:35.000-07:00"
-        }
+        [
+            {
+                "VehicleId": "1505",
+                "CurrentRoute": "51A",
+                "LastPositionLatitude": 37.8376083374023,
+                "LastPositionLongitude": -122.281852722168,
+                "DateTimePositionReported": "2026-05-23T21:17:35.000-07:00",
+                "VehicleCapacity": 60,
+                "CurrentPassengerCount": 25,
+                "EstimatedOccupancyPercentage": 42,
+                "EstimatedOccupancyStatusColor": "#00CC00",
+                "EstimatedOccupancyStatus": "Not Crowded",
+                "DateTimeAPCReported": "2026-05-23T21:17:35.000-07:00"
+            }
+        ]
         """
         setup(mockJSON: jsonString.data(using: .utf8))
 
         let result = try await sut.vehicleRealtimeAttributes(vehicleId: "1505")
-        #expect(result.vehicleId == VehicleRealtimeAttributes.sample.vehicleId)
-        #expect(result.currentRoute == VehicleRealtimeAttributes.sample.currentRoute)
-        #expect(result.vehicleCapacity == VehicleRealtimeAttributes.sample.vehicleCapacity)
+        #expect(result.count == 1)
+        #expect(result[0].vehicleId == VehicleRealtimeAttributes.sample.vehicleId)
+        #expect(result[0].currentRoute == VehicleRealtimeAttributes.sample.currentRoute)
+        #expect(result[0].vehicleCapacity == VehicleRealtimeAttributes.sample.vehicleCapacity)
     }
 
     @Test("test .realtimeAttributes() success case")
@@ -130,30 +133,33 @@ final class VehicleServiceTests {
     @Test("test .vehicleCharacteristics(vehicleId:) success case")
     func vehicleCharacteristics() async throws {
         let jsonString = """
-        {
-            "VehicleId": "1505",
-            "IsActive": true,
-            "Description": "Gillig - Diesel",
-            "VehicleType": "40",
-            "VehicleTypeDescription": "Standard Bus",
-            "Make": "Gillig",
-            "SerialNumber": "12345",
-            "LicenseNumber": "1234567",
-            "Length": "40",
-            "PropulsionType": "Diesel",
-            "HasWiFi": true,
-            "HasAC": true,
-            "StandingCapacity": "30",
-            "SeatingCapacity": "38",
-            "LimitCapacity": "60"
-        }
+        [
+            {
+                "VehicleId": "1505",
+                "IsActive": true,
+                "Description": "Gillig - Diesel",
+                "VehicleType": "40",
+                "VehicleTypeDescription": "Standard Bus",
+                "Make": "Gillig",
+                "SerialNumber": "12345",
+                "LicenseNumber": "1234567",
+                "Length": "40",
+                "PropulsionType": "Diesel",
+                "HasWiFi": true,
+                "HasAC": true,
+                "StandingCapacity": "30",
+                "SeatingCapacity": "38",
+                "LimitCapacity": "60"
+            }
+        ]
         """
         setup(mockJSON: jsonString.data(using: .utf8))
 
         let result = try await sut.vehicleCharacteristics(vehicleId: "1505")
-        #expect(result.vehicleId == VehicleCharacteristics.sample.vehicleId)
-        #expect(result.manufacturer == VehicleCharacteristics.sample.manufacturer)
-        #expect(result.propulsionType == VehicleCharacteristics.sample.propulsionType)
+        #expect(result.count == 1)
+        #expect(result[0].vehicleId == VehicleCharacteristics.sample.vehicleId)
+        #expect(result[0].manufacturer == VehicleCharacteristics.sample.manufacturer)
+        #expect(result[0].propulsionType == VehicleCharacteristics.sample.propulsionType)
     }
 
     @Test("test .characteristics() success case")
