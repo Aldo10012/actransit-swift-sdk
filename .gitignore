@@ -5,3 +5,7 @@
 
 .swiftpm/xcode/xcuserdata/
 .swiftpm/xcode/package.xcworkspace/xcuserdata/
+
+# Xcode user-specific files
+xcuserdata/
+*.xcuserstate
