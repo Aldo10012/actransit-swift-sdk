@@ -1,52 +1,5 @@
 import Foundation
 
-/// https://api.actransit.org/transit/Help/ResourceModel?modelName=InfoUrl
-public struct InfoUrl: Codable, Sendable {
-    public let url: String
-
-    public init(url: String) {
-        self.url = url
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case url = "Url"
-    }
-
-    public static let sample = InfoUrl(url: "https://511.org/transit/real-time-arrivals")
-
-    public static func make(url: String = sample.url) -> InfoUrl {
-        InfoUrl(url: url)
-    }
-}
-
-/// https://api.actransit.org/transit/Help/ResourceModel?modelName=RouteUrl
-public struct RouteUrl: Codable, Sendable {
-    public let routeId: String
-    public let url: String
-
-    public init(routeId: String, url: String) {
-        self.routeId = routeId
-        self.url = url
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case routeId = "RouteId"
-        case url = "Url"
-    }
-
-    public static let sample = RouteUrl(
-        routeId: "72",
-        url: "https://511.org/transit/schedules/72"
-    )
-
-    public static func make(
-        routeId: String = sample.routeId,
-        url: String = sample.url
-    ) -> RouteUrl {
-        RouteUrl(routeId: routeId, url: url)
-    }
-}
-
 /// https://api.actransit.org/transit/Help/ResourceModel?modelName=StopProfile
 public struct StopProfile: Codable, Sendable {
     public let stopId: Int
