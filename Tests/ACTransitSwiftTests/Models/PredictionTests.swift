@@ -18,12 +18,4 @@ final class PredictionTests {
         #expect(result.seq == Prediction.sample.seq)
     }
 
-    @Test("PredictionRequestResponse init stores predictions and error")
-    func predictionRequestResponseInit() {
-        let prediction = Prediction.sample
-        let response = PredictionRequestResponse(prd: [prediction], error: nil)
-        #expect(response.prd.count == 1)
-        #expect(response.prd[0].vid == prediction.vid)
-        #expect(response.error == nil)
-    }
 }

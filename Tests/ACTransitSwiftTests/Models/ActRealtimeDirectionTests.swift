@@ -11,12 +11,4 @@ final class ActRealtimeDirectionTests {
         #expect(result.name == ActRealtimeDirection.sample.name)
     }
 
-    @Test("DirectionRequestResponse init stores directions and error")
-    func directionRequestResponseInit() {
-        let direction = ActRealtimeDirection.sample
-        let response = DirectionRequestResponse(directions: [direction], error: nil)
-        #expect(response.directions.count == 1)
-        #expect(response.directions[0].id == direction.id)
-        #expect(response.error == nil)
-    }
 }

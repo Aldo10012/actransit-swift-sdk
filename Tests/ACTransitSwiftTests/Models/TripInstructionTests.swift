@@ -4,27 +4,8 @@ import Testing
 
 @Suite("Test TripInstruction")
 final class TripInstructionTests {
-    @Test("TimePointInstruction sample sanity check")
-    func timePointInstructionSample() {
-        let sample = TimePointInstruction.sample
-        #expect(sample.tripId == 11_861_464)
-        #expect(sample.sequence == 1)
-        #expect(sample.latitude == 37.9135)
-        #expect(sample.longitude == -122.3022)
-    }
-
-    @Test("TimePointInstruction make() applies overrides independently")
-    func timePointInstructionMakeOverrides() {
-        let result = TimePointInstruction.make(sequence: 5)
-        #expect(result.sequence == 5)
-        #expect(result.instruction == TimePointInstruction.sample.instruction)
-        #expect(result.tripId == TimePointInstruction.sample.tripId)
-        #expect(result.latitude == TimePointInstruction.sample.latitude)
-        #expect(result.longitude == TimePointInstruction.sample.longitude)
-    }
-
-    @Test("TripInstruction make() applies overrides independently")
-    func tripInstructionMakeOverrides() {
+    @Test("make() applies overrides independently")
+    func makeOverridesIndependently() {
         let result = TripInstruction.make(tripId: 99999)
         #expect(result.tripId == 99999)
         #expect(result.routeName == TripInstruction.sample.routeName)

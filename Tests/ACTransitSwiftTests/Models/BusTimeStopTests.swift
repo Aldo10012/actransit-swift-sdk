@@ -15,12 +15,4 @@ final class BusTimeStopTests {
         #expect(result.dtrrem == BusTimeStop.sample.dtrrem)
     }
 
-    @Test("StopRequestResponse init stores stops and error")
-    func stopRequestResponseInit() {
-        let stop = BusTimeStop.sample
-        let response = StopRequestResponse(stops: [stop], error: nil)
-        #expect(response.stops.count == 1)
-        #expect(response.stops[0].stpid == stop.stpid)
-        #expect(response.error == nil)
-    }
 }

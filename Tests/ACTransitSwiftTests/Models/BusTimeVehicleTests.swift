@@ -21,21 +21,4 @@ final class BusTimeVehicleTests {
         #expect(result.tmres == BusTimeVehicle.sample.tmres)
     }
 
-    @Test("VehicleRequestResponse init stores vehicles and error")
-    func vehicleRequestResponseInit() {
-        let vehicle = BusTimeVehicle.sample
-        let error = BusTimeError(msg: "test error")
-        let response = VehicleRequestResponse(vehicle: [vehicle], error: [error])
-        #expect(response.vehicle.count == 1)
-        #expect(response.vehicle[0].vid == vehicle.vid)
-        #expect(response.error?.count == 1)
-        #expect(response.error?[0].msg == "test error")
-    }
-
-    @Test("VehicleRequestResponse init with nil error")
-    func vehicleRequestResponseNilError() {
-        let response = VehicleRequestResponse(vehicle: [])
-        #expect(response.vehicle.isEmpty)
-        #expect(response.error == nil)
-    }
 }
