@@ -85,11 +85,17 @@ static func make(
 
 ## Output format
 
-Produce a single Swift file. Order:
+**One struct per file.** Each Swift type (struct) gets its own file named `TypeName.swift`. Never place two struct definitions in the same file — not even a parent and its child.
+
+- If the JSON has nested objects, generate one file per struct: `ParentType.swift`, `ChildType.swift`, etc.
+- Typealiases (e.g. `public typealias RequestResponseOfFoo = BusTimeResponse<Foo>`) are not structs and may live in the same file as the struct they wrap.
+- For each file, the order is:
 
 1. `import Foundation` (and `SwiftUI` only if the user's project uses it)
-2. Root struct, then nested structs in dependency order (innermost types first)
+2. The single struct, with properties → `CodingKeys` → custom init/encode (if any)
 3. `// MARK: - Mock Data` section at the bottom
+
+When generating output, list every file separately with its filename as a header.
 
 ## Example
 
@@ -105,7 +111,9 @@ Produce a single Swift file. Order:
 }
 ```
 
-**Output:**
+**Output — two separate files:**
+
+**`Stop.swift`**
 ```swift
 import Foundation
 
@@ -135,6 +143,11 @@ struct Stop: Codable {
         Stop(stopId: stopId, label: label, lat: lat, lon: lon)
     }
 }
+```
+
+**`Route.swift`**
+```swift
+import Foundation
 
 struct Route: Codable {
     let routeId: String
