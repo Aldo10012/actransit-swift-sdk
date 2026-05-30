@@ -126,7 +126,7 @@ Static factory: `.sample`, `.minimal` (if optional fields exist), and `.make(…
 
 Write the generated file to:
 ```
-Sources/ACTransitSwift/Models/{ModelName}.swift
+Sources/ACTransitSwift/DTOs/{ModelName}.swift
 ```
 
 ## Step 6 — Update the endpoint enum
@@ -206,7 +206,7 @@ public func routes(booking: String? = nil, sortType: RouteSortType? = nil) async
 
 ## Step 8 — Write model tests
 
-File: `Tests/ACTransitSwiftTests/Models/{ModelName}Tests.swift`
+File: `Tests/ACTransitSwiftTests/DTOs/{ModelName}Tests.swift`
 
 Use the Swift Testing framework (`import Testing`, `@Suite`, `@Test`, `#expect`). Follow the same structure as `GtfsScheduleInfoTests.swift`.
 

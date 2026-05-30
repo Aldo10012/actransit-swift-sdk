@@ -166,7 +166,7 @@ Follow the same patterns as the existing `GTFSEndpoint`, `GTFSService`, `GtfsInf
 - `.sample` values must use **real data from a live API call**, not placeholder strings
 - Doc comment `/// https://api.actransit.org/transit/Help/ResourceModel?modelName={ModelName}` above the struct declaration
 - For each property, fetch the ResourceModel page and add a `///` doc comment with the API's description. Only add a doc comment if the API docs provide a description for that property — omit it if they don't.
-- Write to `Sources/ACTransitSwift/Models/{ModelName}.swift`
+- Write to `Sources/ACTransitSwift/DTOs/{ModelName}.swift`
 
 **If the response is `[String]`** (directions endpoint), no model file is needed.
 
@@ -187,7 +187,7 @@ Follow the same patterns as the existing `GTFSEndpoint`, `GTFSService`, `GtfsInf
 - If the service file is new, also add `public let {group}: {Group}Service` to `ACTransitClient` and initialize it in `init(token:performer:)`
 - Add the `public func` method with a `///` doc comment: one summary line followed by `/// - Parameters:` for each argument, with descriptions copied from the API docs
 
-**Write model tests** (`Tests/ACTransitSwiftTests/Models/{ModelName}Tests.swift`):
+**Write model tests** (`Tests/ACTransitSwiftTests/DTOs/{ModelName}Tests.swift`):
 - Only needed for models with custom `init(from:)` decoders (i.e. date fields)
 - `@Suite("Test {ModelName}")` — name must start with `"Test "`
 - Cover: decode happy path, 7-digit fractional seconds, empty array, malformed date throws, encode PascalCase keys, round-trip, `.sample` sanity check, `.make()` override
